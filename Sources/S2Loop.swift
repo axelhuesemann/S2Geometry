@@ -41,15 +41,15 @@ public struct S2Loop: S2Region, Comparable {
 			super.init()
 		}
 		
-		private override var numEdges: Int {
+		public override var numEdges: Int {
 			return loop.numVertices
 		}
 		
-		private override func edgeFrom(index: Int) -> S2Point {
+		public override func edgeFrom(index: Int) -> S2Point {
 			return loop.vertex(index)
 		}
 		
-		private override func edgeTo(index: Int) -> S2Point {
+		public override func edgeTo(index: Int) -> S2Point {
 			return loop.vertex(index + 1)
 		}
 		
