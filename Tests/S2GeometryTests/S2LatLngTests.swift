@@ -18,9 +18,9 @@ import XCTest
 class S2LatLngTests: XCTestCase {
 	
 	func testBasic() {
-		let llRad = S2LatLng.fromRadians(lat: M_PI_4, lng: M_PI_2)
-		XCTAssert(llRad.lat.radians == M_PI_4)
-		XCTAssert(llRad.lng.radians == M_PI_2)
+		let llRad = S2LatLng.fromRadians(lat: 0.25 * .pi, lng: 0.5 * .pi)
+		XCTAssert(llRad.lat.radians == 0.25 * .pi)
+		XCTAssert(llRad.lng.radians == 0.5 * .pi)
 		XCTAssert(llRad.isValid)
 		let llDeg = S2LatLng.fromDegrees(lat: 45, lng: 90)
 		XCTAssertEqual(llDeg, llRad)
@@ -50,9 +50,9 @@ class S2LatLngTests: XCTestCase {
 	func testConversion() {
 		// Test special cases: poles, "date line"
 		XCTAssertEqualWithAccuracy(S2LatLng(point: S2LatLng.fromDegrees(lat: 90.0, lng: 65.0).point).lat.degrees, 90.0, accuracy: 1e-9)
-		XCTAssertEqual(S2LatLng(point: S2LatLng.fromRadians(lat: -M_PI_2, lng: 1).point).lat.radians, -M_PI_2)
+		XCTAssertEqual(S2LatLng(point: S2LatLng.fromRadians(lat: -0.5 * .pi, lng: 1).point).lat.radians, -0.5 * .pi)
 		XCTAssertEqualWithAccuracy(abs(S2LatLng(point: S2LatLng.fromDegrees(lat: 12.2, lng: 180.0).point).lng.degrees), 180.0, accuracy: 1e-9)
-		XCTAssertEqual(abs(S2LatLng(point: S2LatLng.fromRadians(lat: 0.1, lng: -M_PI).point).lng.radians), M_PI)
+		XCTAssertEqual(abs(S2LatLng(point: S2LatLng.fromRadians(lat: 0.1, lng: -.pi).point).lng.radians), .pi)
 		
 		// Test a bunch of random points.
 		for _ in 0 ..< 100000 {

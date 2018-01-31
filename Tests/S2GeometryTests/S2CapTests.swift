@@ -100,8 +100,8 @@ class S2CapTests: XCTestCase {
 		XCTAssert(xaxis.contains(other: empty))
 		XCTAssert(!xaxis.interiorIntersects(with: empty))
 		XCTAssert(hemi.contains(other: tiny))
-		XCTAssert(hemi.contains(other: S2Cap(axis: S2Point(x: 1, y: 0, z: 0), angle: S1Angle(radians: M_PI_4 - S2CapTests.eps))))
-		XCTAssert(!hemi.contains(other: S2Cap(axis: S2Point(x: 1, y: 0, z: 0), angle: S1Angle(radians: M_PI_4 + S2CapTests.eps))))
+		XCTAssert(hemi.contains(other: S2Cap(axis: S2Point(x: 1, y: 0, z: 0), angle: S1Angle(radians: 0.25 * .pi - S2CapTests.eps))))
+		XCTAssert(!hemi.contains(other: S2Cap(axis: S2Point(x: 1, y: 0, z: 0), angle: S1Angle(radians: 0.25 * .pi + S2CapTests.eps))))
 		XCTAssert(concave.contains(other: hemi))
 		XCTAssert(concave.interiorIntersects(with: hemi.complement))
 		XCTAssert(!concave.contains(other: S2Cap(axis: -concave.axis, height: 0.1)))
@@ -123,9 +123,9 @@ class S2CapTests: XCTestCase {
 		XCTAssert(rect.lng.isFull)
 		
 		// Cap that is tangent to the north pole.
-		rect = S2Cap(axis: S2Point.normalize(point: S2Point(x: 1, y: 0, z: 1)), angle: S1Angle(radians: M_PI_4)).rectBound
+		rect = S2Cap(axis: S2Point.normalize(point: S2Point(x: 1, y: 0, z: 1)), angle: S1Angle(radians: 0.25 * .pi)).rectBound
 		XCTAssertEqualWithAccuracy(rect.lat.lo, 0, accuracy: 1e-9);
-		XCTAssertEqualWithAccuracy(rect.lat.hi, M_PI_2, accuracy: 1e-9);
+		XCTAssertEqualWithAccuracy(rect.lat.hi, 0.5 * .pi, accuracy: 1e-9);
 		XCTAssert(rect.lng.isFull)
 
 		rect = S2Cap(axis: S2Point.normalize(point: S2Point(x: 1, y: 0, z: 1)), angle: S1Angle(degrees: 45)).rectBound
@@ -134,7 +134,7 @@ class S2CapTests: XCTestCase {
 		XCTAssert(rect.lng.isFull)
 
 		// The eastern hemisphere.
-		rect = S2Cap(axis: S2Point(x: 0, y: 1, z: 0), angle: S1Angle(radians: M_PI_2 + 5e-16)).rectBound
+		rect = S2Cap(axis: S2Point(x: 0, y: 1, z: 0), angle: S1Angle(radians: 0.5 * .pi + 5e-16)).rectBound
 		XCTAssertEqualWithAccuracy(rect.latLo.degrees, -90, accuracy: degreeEps)
 		XCTAssertEqualWithAccuracy(rect.latHi.degrees, 90, accuracy: degreeEps)
 		XCTAssert(rect.lng.isFull)
@@ -159,7 +159,7 @@ class S2CapTests: XCTestCase {
 		// and then check for the expected intersection/containment results.
 		
 		// The distance from the center of a face to one of its vertices.
-		let faceRadius = atan(M_SQRT2)
+		let faceRadius = atan(2.squareRoot())
 		
 		for face in 0 ..< 6 {
 			// The cell consisting of the entire face.
@@ -202,7 +202,7 @@ class S2CapTests: XCTestCase {
 				XCTAssertEqual(covering.mayIntersect(cell: cornerCell), center.dotProd(cornerCell.center) > 0)
 				
 				// A cap that barely intersects the edges of 'cap_face'.
-				let bulging = S2Cap(axis: center, angle: S1Angle(radians: M_PI_4 + S2CapTests.eps))
+				let bulging = S2Cap(axis: center, angle: S1Angle(radians: 0.25 * .pi + S2CapTests.eps))
 				XCTAssert(!bulging.contains(cell: rootCell))
 				XCTAssertEqual(bulging.mayIntersect(cell: rootCell), capFace != antiFace)
 				XCTAssertEqual(bulging.contains(cell: edgeCell), capFace == face)

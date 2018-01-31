@@ -52,22 +52,22 @@ class S1IntervalTests: XCTestCase {
 		// quad4 == [-Pi/2, 0]
 		
 		// Constructors and accessors.
-		let quad12 = S1Interval(lo: 0, hi: -M_PI)
+		let quad12 = S1Interval(lo: 0, hi: -.pi)
 		XCTAssertEqual(quad12.lo, 0.0)
-		XCTAssertEqual(quad12.hi, M_PI)
-		let quad34 = S1Interval(lo: -M_PI, hi: 0)
-		XCTAssertEqual(quad34.lo, M_PI)
+		XCTAssertEqual(quad12.hi, .pi)
+		let quad34 = S1Interval(lo: -.pi, hi: 0)
+		XCTAssertEqual(quad34.lo, .pi)
 		XCTAssertEqual(quad34.hi, 0.0)
-		let pi = S1Interval(lo: M_PI, hi: M_PI)
-		XCTAssertEqual(pi.lo, M_PI)
-		XCTAssertEqual(pi.hi, M_PI)
-		let mipi = S1Interval(lo: -M_PI, hi: -M_PI)
-		XCTAssertEqual(mipi.lo, M_PI)
-		XCTAssertEqual(mipi.hi, M_PI)
-		let quad23 = S1Interval(lo: M_PI_2, hi: -M_PI_2) // inverted
-		XCTAssertEqual(quad23.lo, M_PI_2)
-		XCTAssertEqual(quad23.hi, -M_PI_2)
-		let quad1 = S1Interval(lo: 0, hi: M_PI_2)
+		let pi = S1Interval(lo: .pi, hi: .pi)
+		XCTAssertEqual(pi.lo, .pi)
+		XCTAssertEqual(pi.hi, .pi)
+		let mipi = S1Interval(lo: -.pi, hi: -.pi)
+		XCTAssertEqual(mipi.lo, .pi)
+		XCTAssertEqual(mipi.hi, .pi)
+		let quad23 = S1Interval(lo: 0.5 * .pi, hi: -0.5 * .pi) // inverted
+		XCTAssertEqual(quad23.lo, 0.5 * .pi)
+		XCTAssertEqual(quad23.hi, -0.5 * .pi)
+		let quad1 = S1Interval(lo: 0, hi: 0.5 * .pi)
 		
 		// is_valid(), is_empty(), is_inverted()
 		let zero = S1Interval(lo: 0, hi: 0)
@@ -83,22 +83,22 @@ class S1IntervalTests: XCTestCase {
 		XCTAssert(mipi.isValid && !mipi.isEmpty && !mipi.isInverted)
 
 		// GetCenter(), GetLength()
-		XCTAssertEqual(quad12.center, M_PI_2)
-		XCTAssertEqual(quad12.length, M_PI)
-		XCTAssertEqualWithAccuracy(S1Interval(lo: 3.1, hi: 2.9).center, 3.0 - M_PI, accuracy: 1e-9)
-		XCTAssertEqualWithAccuracy(S1Interval(lo: -2.9, hi: -3.1).center, M_PI - 3.0, accuracy: 1e-9)
-		XCTAssertEqualWithAccuracy(S1Interval(lo: 2.1, hi: -2.1).center, M_PI, accuracy: 1e-9)
-		XCTAssertEqual(pi.center, M_PI)
+		XCTAssertEqual(quad12.center, 0.5 * .pi)
+		XCTAssertEqual(quad12.length, .pi)
+		XCTAssertEqualWithAccuracy(S1Interval(lo: 3.1, hi: 2.9).center, 3.0 - .pi, accuracy: 1e-9)
+		XCTAssertEqualWithAccuracy(S1Interval(lo: -2.9, hi: -3.1).center, .pi - 3.0, accuracy: 1e-9)
+		XCTAssertEqualWithAccuracy(S1Interval(lo: 2.1, hi: -2.1).center, .pi, accuracy: 1e-9)
+		XCTAssertEqual(pi.center, .pi)
 		XCTAssertEqual(pi.length, 0.0)
-		XCTAssertEqual(mipi.center, M_PI)
+		XCTAssertEqual(mipi.center, .pi)
 		XCTAssertEqual(mipi.length, 0.0)
-		XCTAssertEqual(abs(quad23.center), M_PI)
-		XCTAssertEqual(abs(quad23.length), M_PI)
-		let quad123 = S1Interval(lo: 0, hi: -M_PI_2)
-		XCTAssertEqualWithAccuracy(quad123.center, 0.75 * M_PI, accuracy: 1e-9)
-		XCTAssertEqualWithAccuracy(quad123.length, 1.5 * M_PI, accuracy: 1e-9)
+		XCTAssertEqual(abs(quad23.center), .pi)
+		XCTAssertEqual(abs(quad23.length), .pi)
+		let quad123 = S1Interval(lo: 0, hi: -0.5 * .pi)
+		XCTAssertEqualWithAccuracy(quad123.center, 0.75 * .pi, accuracy: 1e-9)
+		XCTAssertEqualWithAccuracy(quad123.length, 1.5 * .pi, accuracy: 1e-9)
 		XCTAssert(empty.length < 0)
-		XCTAssertEqual(full.length, 2 * M_PI)
+		XCTAssertEqual(full.length, 2 * .pi)
 		
 		// Complement()
 		XCTAssert(empty.complement.isFull)
@@ -108,36 +108,36 @@ class S1IntervalTests: XCTestCase {
 		XCTAssert(zero.complement.isFull)
 //		XCTAssert(quad12.complement.approxEquals(quad34))
 //		XCTAssert(quad34.complement.approxEquals(quad12))
-		let quad4 = S1Interval(lo: -M_PI_2, hi: 0)
+		let quad4 = S1Interval(lo: -0.5 * .pi, hi: 0)
 //		XCTAssert(quad123.complement.approxEquals(quad4))
-		let quad234 = S1Interval(lo: M_PI_2, hi: 0)
+		let quad234 = S1Interval(lo: 0.5 * .pi, hi: 0)
 		
 		// Contains(double), InteriorContains(double)
-		XCTAssert(!empty.contains(point: 0) && !empty.contains(point: M_PI) && !empty.contains(point: -M_PI));
-//		XCTAssert(!empty.interiorContains(S2.M_PI) && !empty.interiorContains(-S2.M_PI));
-//		XCTAssert(full.contains(0) && full.contains(S2.M_PI) && full.contains(-S2.M_PI));
-//		XCTAssert(full.interiorContains(S2.M_PI) && full.interiorContains(-S2.M_PI));
-//		XCTAssert(quad12.contains(0) && quad12.contains(S2.M_PI) && quad12.contains(-S2.M_PI));
-//		XCTAssert(quad12.interiorContains(S2.M_PI_2) && !quad12.interiorContains(0));
-//		XCTAssert(!quad12.interiorContains(S2.M_PI) && !quad12.interiorContains(-S2.M_PI));
-//		XCTAssert(quad23.contains(S2.M_PI_2) && quad23.contains(-S2.M_PI_2));
-//		XCTAssert(quad23.contains(S2.M_PI) && quad23.contains(-S2.M_PI));
+		XCTAssert(!empty.contains(point: 0) && !empty.contains(point: .pi) && !empty.contains(point: -.pi));
+//		XCTAssert(!empty.interiorContains(S2..pi) && !empty.interiorContains(-S2..pi));
+//		XCTAssert(full.contains(0) && full.contains(S2..pi) && full.contains(-S2..pi));
+//		XCTAssert(full.interiorContains(S2..pi) && full.interiorContains(-S2..pi));
+//		XCTAssert(quad12.contains(0) && quad12.contains(S2..pi) && quad12.contains(-S2..pi));
+//		XCTAssert(quad12.interiorContains(S2.0.5 * .pi) && !quad12.interiorContains(0));
+//		XCTAssert(!quad12.interiorContains(S2..pi) && !quad12.interiorContains(-S2..pi));
+//		XCTAssert(quad23.contains(S2.0.5 * .pi) && quad23.contains(-S2.0.5 * .pi));
+//		XCTAssert(quad23.contains(S2..pi) && quad23.contains(-S2..pi));
 //		XCTAssert(!quad23.contains(0));
-//		XCTAssert(!quad23.interiorContains(S2.M_PI_2) && !quad23.interiorContains(-S2.M_PI_2));
-//		XCTAssert(quad23.interiorContains(S2.M_PI) && quad23.interiorContains(-S2.M_PI));
+//		XCTAssert(!quad23.interiorContains(S2.0.5 * .pi) && !quad23.interiorContains(-S2.0.5 * .pi));
+//		XCTAssert(quad23.interiorContains(S2..pi) && quad23.interiorContains(-S2..pi));
 //		XCTAssert(!quad23.interiorContains(0));
-//		XCTAssert(pi.contains(S2.M_PI) && pi.contains(-S2.M_PI) && !pi.contains(0));
-//		XCTAssert(!pi.interiorContains(S2.M_PI) && !pi.interiorContains(-S2.M_PI));
-//		XCTAssert(mipi.contains(S2.M_PI) && mipi.contains(-S2.M_PI) && !mipi.contains(0));
-//		XCTAssert(!mipi.interiorContains(S2.M_PI) && !mipi.interiorContains(-S2.M_PI));
+//		XCTAssert(pi.contains(S2..pi) && pi.contains(-S2..pi) && !pi.contains(0));
+//		XCTAssert(!pi.interiorContains(S2..pi) && !pi.interiorContains(-S2..pi));
+//		XCTAssert(mipi.contains(S2..pi) && mipi.contains(-S2..pi) && !mipi.contains(0));
+//		XCTAssert(!mipi.interiorContains(S2..pi) && !mipi.interiorContains(-S2..pi));
 //		XCTAssert(zero.contains(0) && !zero.interiorContains(0));
 		
 		// Contains(S1Interval), InteriorContains(S1Interval),
 		// Intersects(), InteriorIntersects(), Union(), Intersection()
-		let quad2 = S1Interval(lo: M_PI_2, hi: -M_PI)
-		let quad3 = S1Interval(lo: M_PI, hi: -M_PI_2)
-		let pi2 = S1Interval(lo: M_PI_2, hi: M_PI_2)
-		let mipi2 = S1Interval(lo: -M_PI_2, hi: -M_PI_2)
+		let quad2 = S1Interval(lo: 0.5 * .pi, hi: -.pi)
+		let quad3 = S1Interval(lo: .pi, hi: -0.5 * .pi)
+		let pi2 = S1Interval(lo: 0.5 * .pi, hi: 0.5 * .pi)
+		let mipi2 = S1Interval(lo: -0.5 * .pi, hi: -0.5 * .pi)
 
 		testIntervalOps(empty, empty, "TTFF", empty, empty)
 		testIntervalOps(empty, full, "FFFF", full, empty)
@@ -156,7 +156,7 @@ class S1IntervalTests: XCTestCase {
 		testIntervalOps(zero, empty, "TTFF", zero, empty)
 		testIntervalOps(zero, full, "FFTF", full, zero)
 		testIntervalOps(zero, zero, "TFTF", zero, zero)
-		testIntervalOps(zero, pi, "FFFF", S1Interval(lo: 0, hi: M_PI), empty)
+		testIntervalOps(zero, pi, "FFFF", S1Interval(lo: 0, hi: .pi), empty)
 		testIntervalOps(zero, pi2, "FFFF", quad1, empty)
 		testIntervalOps(zero, mipi, "FFFF", quad12, empty)
 		testIntervalOps(zero, mipi2, "FFFF", quad4, empty)
@@ -166,7 +166,7 @@ class S1IntervalTests: XCTestCase {
 		testIntervalOps(pi2, empty, "TTFF", pi2, empty)
 		testIntervalOps(pi2, full, "FFTF", full, pi2)
 		testIntervalOps(pi2, zero, "FFFF", quad1, empty)
-		testIntervalOps(pi2, pi, "FFFF", S1Interval(lo: M_PI_2, hi: M_PI), empty)
+		testIntervalOps(pi2, pi, "FFFF", S1Interval(lo: 0.5 * .pi, hi: .pi), empty)
 		testIntervalOps(pi2, pi2, "TFTF", pi2, pi2)
 		testIntervalOps(pi2, mipi, "FFFF", quad2, empty)
 		testIntervalOps(pi2, mipi2, "FFFF", quad23, empty)
@@ -175,12 +175,12 @@ class S1IntervalTests: XCTestCase {
 		
 		testIntervalOps(pi, empty, "TTFF", pi, empty)
 		testIntervalOps(pi, full, "FFTF", full, pi)
-		testIntervalOps(pi, zero, "FFFF", S1Interval(lo: M_PI, hi: 0), empty)
+		testIntervalOps(pi, zero, "FFFF", S1Interval(lo: .pi, hi: 0), empty)
 		testIntervalOps(pi, pi, "TFTF", pi, pi)
-		testIntervalOps(pi, pi2, "FFFF", S1Interval(lo: M_PI_2, hi: M_PI), empty)
+		testIntervalOps(pi, pi2, "FFFF", S1Interval(lo: 0.5 * .pi, hi: .pi), empty)
 		testIntervalOps(pi, mipi, "TFTF", pi, pi)
 		testIntervalOps(pi, mipi2, "FFFF", quad3, empty)
-		testIntervalOps(pi, quad12, "FFTF", S1Interval(lo: 0, hi: M_PI), pi)
+		testIntervalOps(pi, quad12, "FFTF", S1Interval(lo: 0, hi: .pi), pi)
 		testIntervalOps(pi, quad23, "FFTF", quad23, pi)
 
 		testIntervalOps(mipi, empty, "TTFF", mipi, empty)
@@ -189,7 +189,7 @@ class S1IntervalTests: XCTestCase {
 		testIntervalOps(mipi, pi, "TFTF", mipi, mipi)
 		testIntervalOps(mipi, pi2, "FFFF", quad2, empty)
 		testIntervalOps(mipi, mipi, "TFTF", mipi, mipi)
-		testIntervalOps(mipi, mipi2, "FFFF", S1Interval(lo: -M_PI, hi: -M_PI_2), empty)
+		testIntervalOps(mipi, mipi2, "FFFF", S1Interval(lo: -.pi, hi: -0.5 * .pi), empty)
 		testIntervalOps(mipi, quad12, "FFTF", quad12, mipi)
 		testIntervalOps(mipi, quad23, "FFTF", quad23, mipi)
 		
@@ -209,9 +209,9 @@ class S1IntervalTests: XCTestCase {
 		testIntervalOps(quad23, mipi, "TTTT", quad23, mipi)
 		testIntervalOps(quad23, quad12, "FFTT", quad123, quad2)
 		testIntervalOps(quad23, quad23, "TFTT", quad23, quad23)
-		testIntervalOps(quad23, quad34, "FFTT", quad234, S1Interval(lo: -M_PI, hi: -M_PI_2))
+		testIntervalOps(quad23, quad34, "FFTT", quad234, S1Interval(lo: -.pi, hi: -0.5 * .pi))
 		
-		testIntervalOps(quad1, quad23, "FFTF", quad123, S1Interval(lo: M_PI_2, hi: M_PI_2))
+		testIntervalOps(quad1, quad23, "FFTF", quad123, S1Interval(lo: 0.5 * .pi, hi: 0.5 * .pi))
 		testIntervalOps(quad2, quad3, "FFTF", quad23, mipi)
 		testIntervalOps(quad3, quad2, "FFTF", quad23, pi)
 		testIntervalOps(quad2, pi, "TFTF", quad2, pi)
@@ -219,9 +219,9 @@ class S1IntervalTests: XCTestCase {
 		testIntervalOps(quad3, pi, "TFTF", quad3, pi)
 		testIntervalOps(quad3, mipi, "TFTF", quad3, mipi)
 		
-		let mid12 = S1Interval(lo: M_PI_2 - 0.02, hi: M_PI_2 + 0.01)
-		let mid23 = S1Interval(lo: M_PI - 0.01, hi: -M_PI + 0.02)
-		let mid34 = S1Interval(lo: -M_PI_2 - 0.02, hi: -M_PI_2 + 0.01)
+		let mid12 = S1Interval(lo: 0.5 * .pi - 0.02, hi: 0.5 * .pi + 0.01)
+		let mid23 = S1Interval(lo: .pi - 0.01, hi: -.pi + 0.02)
+		let mid34 = S1Interval(lo: -0.5 * .pi - 0.02, hi: -0.5 * .pi + 0.01)
 		let mid41 = S1Interval(lo: -0.01, hi: 0.02)
 		
 		let quad2hi = S1Interval(lo: mid23.lo, hi: quad12.hi)
@@ -257,18 +257,18 @@ class S1IntervalTests: XCTestCase {
 		var res = r.add(point: 0)
 		XCTAssertEqual(res, zero)
 		
-		res = r.add(point: M_PI)
+		res = r.add(point: .pi)
 		XCTAssertEqual(res, pi)
 		
-		res = r.add(point: -M_PI)
+		res = r.add(point: -.pi)
 		XCTAssertEqual(res, mipi)
 		
-		res = r.add(point: M_PI)
-		res = res.add(point: -M_PI)
+		res = r.add(point: .pi)
+		res = res.add(point: -.pi)
 		XCTAssertEqual(res, pi)
 		
-		res = res.add(point: -M_PI)
-		res = res.add(point: M_PI)
+		res = res.add(point: -.pi)
+		res = res.add(point: .pi)
 		XCTAssertEqual(res, mipi)
 		
 		res = r.add(point: mid12.lo)
@@ -279,23 +279,23 @@ class S1IntervalTests: XCTestCase {
 		res = res.add(point: mid23.hi)
 		XCTAssertEqual(res, mid23)
 		
-		res = quad1.add(point: -0.9 * M_PI)
-		res = res.add(point: -M_PI_2)
+		res = quad1.add(point: -0.9 * .pi)
+		res = res.add(point: -0.5 * .pi)
 		XCTAssertEqual(res, quad123)
 		
 		r = S1Interval.full
 		res = r.add(point: 0)
 		XCTAssert(res.isFull)
 		
-		res = r.add(point: M_PI)
+		res = r.add(point: .pi)
 		XCTAssert(res.isFull)
 		
-		res = r.add(point: -M_PI)
+		res = r.add(point: -.pi)
 		XCTAssert(res.isFull)
 		
 		// FromPointPair()
-		XCTAssertEqual(S1Interval(p1: -M_PI, p2: M_PI), pi)
-		XCTAssertEqual(S1Interval(p1: M_PI, p2: -M_PI), pi)
+		XCTAssertEqual(S1Interval(p1: -.pi, p2: .pi), pi)
+		XCTAssertEqual(S1Interval(p1: .pi, p2: -.pi), pi)
 		XCTAssertEqual(S1Interval(p1: mid34.hi, p2: mid34.lo), mid34)
 		XCTAssertEqual(S1Interval(p1: mid23.lo, p2: mid23.hi), mid23)
 		
@@ -303,11 +303,11 @@ class S1IntervalTests: XCTestCase {
 		XCTAssertEqual(empty.expanded(radius: 1), empty)
 		XCTAssertEqual(full.expanded(radius: 1), full)
 		XCTAssertEqual(zero.expanded(radius: 1), S1Interval(lo: -1, hi: 1))
-		XCTAssertEqual(mipi.expanded(radius: 0.01), S1Interval(lo: M_PI - 0.01, hi: -M_PI + 0.01))
+		XCTAssertEqual(mipi.expanded(radius: 0.01), S1Interval(lo: .pi - 0.01, hi: -.pi + 0.01))
 		XCTAssertEqual(pi.expanded(radius: 27), full)
-		XCTAssertEqual(pi.expanded(radius: M_PI_2), quad23)
-		XCTAssertEqual(pi2.expanded(radius: M_PI_2), quad12)
-		XCTAssertEqual(mipi2.expanded(radius: M_PI_2), quad34)
+		XCTAssertEqual(pi.expanded(radius: 0.5 * .pi), quad23)
+		XCTAssertEqual(pi2.expanded(radius: 0.5 * .pi), quad12)
+		XCTAssertEqual(mipi2.expanded(radius: 0.5 * .pi), quad34)
 		
 		// ApproxEquals()
 //		XCTAssert(empty.approxEquals(empty));

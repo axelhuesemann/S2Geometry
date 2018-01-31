@@ -304,7 +304,7 @@ public struct S2Cell: S2Region, Equatable {
 			
 			var lat = R1Interval(p1: getLatitude(i: i, j: j), p2: getLatitude(i: 1 - i, j: 1 - j))
 			lat = lat.expanded(radius: S2Cell.maxError).intersection(with: S2LatLngRect.fullLat)
-			if (lat.lo == -M_PI_2 || lat.hi == M_PI_2) {
+			if (lat.lo == -0.5 * .pi || lat.hi == 0.5 * .pi) {
 				return S2LatLngRect(lat: lat, lng: S1Interval.full)
 			}
 			let lng = S1Interval(p1: getLongitude(i: i, j: 1 - j), p2: getLongitude(i: 1 - i, j: j))
@@ -315,17 +315,17 @@ public struct S2Cell: S2Region, Equatable {
 		// assert (S2Projections.getNorm(face).get(face % 3) == ((face < 3) ? 1 : -1))
 		switch face {
 		case 0:
-			return S2LatLngRect(lat: R1Interval(lo: -M_PI_4, hi: M_PI_4), lng: S1Interval(lo: -M_PI_4, hi: M_PI_4))
+			return S2LatLngRect(lat: R1Interval(lo: -0.25 * .pi, hi: 0.25 * .pi), lng: S1Interval(lo: -0.25 * .pi, hi: 0.25 * .pi))
 		case 1:
-			return S2LatLngRect(lat: R1Interval(lo: -M_PI_4, hi: M_PI_4), lng: S1Interval(lo: M_PI_4, hi: 3 * M_PI_4))
+			return S2LatLngRect(lat: R1Interval(lo: -0.25 * .pi, hi: 0.25 * .pi), lng: S1Interval(lo: 0.25 * .pi, hi: 3 * 0.25 * .pi))
 		case 2:
-			return S2LatLngRect(lat: R1Interval(lo: S2Cell.poleMinLat, hi: M_PI_2), lng: S1Interval(lo: -M_PI, hi: M_PI))
+			return S2LatLngRect(lat: R1Interval(lo: S2Cell.poleMinLat, hi: 0.5 * .pi), lng: S1Interval(lo: -.pi, hi: .pi))
 		case 3:
-			return S2LatLngRect(lat: R1Interval(lo: -M_PI_4, hi: M_PI_4), lng: S1Interval(lo: 3 * M_PI_4, hi: -3 * M_PI_4))
+			return S2LatLngRect(lat: R1Interval(lo: -0.25 * .pi, hi: 0.25 * .pi), lng: S1Interval(lo: 3 * 0.25 * .pi, hi: -3 * 0.25 * .pi))
 		case 4:
-			return S2LatLngRect(lat: R1Interval(lo: -M_PI_4, hi: M_PI_4), lng: S1Interval(lo: -3 * M_PI_4, hi: -M_PI_4))
+			return S2LatLngRect(lat: R1Interval(lo: -0.25 * .pi, hi: 0.25 * .pi), lng: S1Interval(lo: -3 * 0.25 * .pi, hi: -0.25 * .pi))
 		default:
-			return S2LatLngRect(lat: R1Interval(lo: -M_PI_2, hi: -S2Cell.poleMinLat), lng: S1Interval(lo: -M_PI, hi: M_PI))
+			return S2LatLngRect(lat: R1Interval(lo: -0.5 * .pi, hi: -S2Cell.poleMinLat), lng: S1Interval(lo: -.pi, hi: .pi))
 		}
 	}
 	

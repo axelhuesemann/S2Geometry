@@ -7,29 +7,29 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		OBJ_51 /* R1Interval.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_9 /* R1Interval.swift */; };
-		OBJ_52 /* R2Vector.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_10 /* R2Vector.swift */; };
-		OBJ_53 /* S1Angle.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_11 /* S1Angle.swift */; };
-		OBJ_54 /* S1Interval.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_12 /* S1Interval.swift */; };
-		OBJ_55 /* S2.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_13 /* S2.swift */; };
-		OBJ_56 /* S2AreaCentroid.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_14 /* S2AreaCentroid.swift */; };
-		OBJ_57 /* S2Cap.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_15 /* S2Cap.swift */; };
-		OBJ_58 /* S2Cell.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_16 /* S2Cell.swift */; };
-		OBJ_59 /* S2CellId.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_17 /* S2CellId.swift */; };
-		OBJ_60 /* S2CellUnion.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_18 /* S2CellUnion.swift */; };
-		OBJ_61 /* S2Edge.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_19 /* S2Edge.swift */; };
-		OBJ_62 /* S2EdgeIndex.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_20 /* S2EdgeIndex.swift */; };
-		OBJ_63 /* S2EdgeUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_21 /* S2EdgeUtil.swift */; };
-		OBJ_64 /* S2LatLng.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_22 /* S2LatLng.swift */; };
-		OBJ_65 /* S2LatLngRect.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_23 /* S2LatLngRect.swift */; };
-		OBJ_66 /* S2Loop.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_24 /* S2Loop.swift */; };
-		OBJ_67 /* S2Point.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_25 /* S2Point.swift */; };
-		OBJ_68 /* S2Polygon.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_26 /* S2Polygon.swift */; };
-		OBJ_69 /* S2PolygonBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_27 /* S2PolygonBuilder.swift */; };
-		OBJ_70 /* S2Polyline.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_28 /* S2Polyline.swift */; };
-		OBJ_71 /* S2Projections.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_29 /* S2Projections.swift */; };
-		OBJ_72 /* S2Region.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_30 /* S2Region.swift */; };
-		OBJ_73 /* S2RegionCoverer.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_31 /* S2RegionCoverer.swift */; };
+		7750AE562022628A0008C02C /* R2Vector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7750AE3F202262880008C02C /* R2Vector.swift */; };
+		7750AE572022628A0008C02C /* S2Polyline.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7750AE40202262880008C02C /* S2Polyline.swift */; };
+		7750AE582022628A0008C02C /* S2PolygonBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7750AE41202262880008C02C /* S2PolygonBuilder.swift */; };
+		7750AE592022628A0008C02C /* S2LatLngRect.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7750AE42202262880008C02C /* S2LatLngRect.swift */; };
+		7750AE5A2022628A0008C02C /* S1Angle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7750AE43202262880008C02C /* S1Angle.swift */; };
+		7750AE5B2022628A0008C02C /* S2Polygon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7750AE44202262880008C02C /* S2Polygon.swift */; };
+		7750AE5C2022628A0008C02C /* S2Region.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7750AE45202262890008C02C /* S2Region.swift */; };
+		7750AE5D2022628A0008C02C /* S2Cell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7750AE46202262890008C02C /* S2Cell.swift */; };
+		7750AE5E2022628A0008C02C /* R1Interval.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7750AE47202262890008C02C /* R1Interval.swift */; };
+		7750AE5F2022628A0008C02C /* S2EdgeIndex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7750AE48202262890008C02C /* S2EdgeIndex.swift */; };
+		7750AE602022628A0008C02C /* S2AreaCentroid.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7750AE49202262890008C02C /* S2AreaCentroid.swift */; };
+		7750AE612022628A0008C02C /* S2CellId.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7750AE4A202262890008C02C /* S2CellId.swift */; };
+		7750AE622022628A0008C02C /* S2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7750AE4B202262890008C02C /* S2.swift */; };
+		7750AE632022628A0008C02C /* S2CellUnion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7750AE4C202262890008C02C /* S2CellUnion.swift */; };
+		7750AE642022628A0008C02C /* S2Edge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7750AE4D202262890008C02C /* S2Edge.swift */; };
+		7750AE652022628A0008C02C /* S2Cap.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7750AE4E202262890008C02C /* S2Cap.swift */; };
+		7750AE662022628A0008C02C /* S2EdgeUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7750AE4F202262890008C02C /* S2EdgeUtil.swift */; };
+		7750AE672022628A0008C02C /* S2LatLng.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7750AE50202262890008C02C /* S2LatLng.swift */; };
+		7750AE682022628A0008C02C /* S2Loop.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7750AE51202262890008C02C /* S2Loop.swift */; };
+		7750AE692022628A0008C02C /* S2Point.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7750AE52202262890008C02C /* S2Point.swift */; };
+		7750AE6A2022628A0008C02C /* S1Interval.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7750AE53202262890008C02C /* S1Interval.swift */; };
+		7750AE6B2022628A0008C02C /* S2Projections.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7750AE54202262890008C02C /* S2Projections.swift */; };
+		7750AE6C2022628A0008C02C /* S2RegionCoverer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7750AE55202262890008C02C /* S2RegionCoverer.swift */; };
 		OBJ_80 /* R1IntervalTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_34 /* R1IntervalTests.swift */; };
 		OBJ_81 /* S1AngleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_35 /* S1AngleTests.swift */; };
 		OBJ_82 /* S1IntervalTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_36 /* S1IntervalTests.swift */; };
@@ -53,28 +53,29 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		OBJ_10 /* R2Vector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = R2Vector.swift; sourceTree = "<group>"; };
-		OBJ_11 /* S1Angle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = S1Angle.swift; sourceTree = "<group>"; };
-		OBJ_12 /* S1Interval.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = S1Interval.swift; sourceTree = "<group>"; };
-		OBJ_13 /* S2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = S2.swift; sourceTree = "<group>"; };
-		OBJ_14 /* S2AreaCentroid.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = S2AreaCentroid.swift; sourceTree = "<group>"; };
-		OBJ_15 /* S2Cap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = S2Cap.swift; sourceTree = "<group>"; };
-		OBJ_16 /* S2Cell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = S2Cell.swift; sourceTree = "<group>"; };
-		OBJ_17 /* S2CellId.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = S2CellId.swift; sourceTree = "<group>"; };
-		OBJ_18 /* S2CellUnion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = S2CellUnion.swift; sourceTree = "<group>"; };
-		OBJ_19 /* S2Edge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = S2Edge.swift; sourceTree = "<group>"; };
-		OBJ_20 /* S2EdgeIndex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = S2EdgeIndex.swift; sourceTree = "<group>"; };
-		OBJ_21 /* S2EdgeUtil.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = S2EdgeUtil.swift; sourceTree = "<group>"; };
-		OBJ_22 /* S2LatLng.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = S2LatLng.swift; sourceTree = "<group>"; };
-		OBJ_23 /* S2LatLngRect.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = S2LatLngRect.swift; sourceTree = "<group>"; };
-		OBJ_24 /* S2Loop.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = S2Loop.swift; sourceTree = "<group>"; };
-		OBJ_25 /* S2Point.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = S2Point.swift; sourceTree = "<group>"; };
-		OBJ_26 /* S2Polygon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = S2Polygon.swift; sourceTree = "<group>"; };
-		OBJ_27 /* S2PolygonBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = S2PolygonBuilder.swift; sourceTree = "<group>"; };
-		OBJ_28 /* S2Polyline.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = S2Polyline.swift; sourceTree = "<group>"; };
-		OBJ_29 /* S2Projections.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = S2Projections.swift; sourceTree = "<group>"; };
-		OBJ_30 /* S2Region.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = S2Region.swift; sourceTree = "<group>"; };
-		OBJ_31 /* S2RegionCoverer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = S2RegionCoverer.swift; sourceTree = "<group>"; };
+		7750AE3F202262880008C02C /* R2Vector.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = R2Vector.swift; path = S2Geometry/R2Vector.swift; sourceTree = "<group>"; };
+		7750AE40202262880008C02C /* S2Polyline.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = S2Polyline.swift; path = S2Geometry/S2Polyline.swift; sourceTree = "<group>"; };
+		7750AE41202262880008C02C /* S2PolygonBuilder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = S2PolygonBuilder.swift; path = S2Geometry/S2PolygonBuilder.swift; sourceTree = "<group>"; };
+		7750AE42202262880008C02C /* S2LatLngRect.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = S2LatLngRect.swift; path = S2Geometry/S2LatLngRect.swift; sourceTree = "<group>"; };
+		7750AE43202262880008C02C /* S1Angle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = S1Angle.swift; path = S2Geometry/S1Angle.swift; sourceTree = "<group>"; };
+		7750AE44202262880008C02C /* S2Polygon.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = S2Polygon.swift; path = S2Geometry/S2Polygon.swift; sourceTree = "<group>"; };
+		7750AE45202262890008C02C /* S2Region.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = S2Region.swift; path = S2Geometry/S2Region.swift; sourceTree = "<group>"; };
+		7750AE46202262890008C02C /* S2Cell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = S2Cell.swift; path = S2Geometry/S2Cell.swift; sourceTree = "<group>"; };
+		7750AE47202262890008C02C /* R1Interval.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = R1Interval.swift; path = S2Geometry/R1Interval.swift; sourceTree = "<group>"; };
+		7750AE48202262890008C02C /* S2EdgeIndex.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = S2EdgeIndex.swift; path = S2Geometry/S2EdgeIndex.swift; sourceTree = "<group>"; };
+		7750AE49202262890008C02C /* S2AreaCentroid.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = S2AreaCentroid.swift; path = S2Geometry/S2AreaCentroid.swift; sourceTree = "<group>"; };
+		7750AE4A202262890008C02C /* S2CellId.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = S2CellId.swift; path = S2Geometry/S2CellId.swift; sourceTree = "<group>"; };
+		7750AE4B202262890008C02C /* S2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = S2.swift; path = S2Geometry/S2.swift; sourceTree = "<group>"; };
+		7750AE4C202262890008C02C /* S2CellUnion.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = S2CellUnion.swift; path = S2Geometry/S2CellUnion.swift; sourceTree = "<group>"; };
+		7750AE4D202262890008C02C /* S2Edge.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = S2Edge.swift; path = S2Geometry/S2Edge.swift; sourceTree = "<group>"; };
+		7750AE4E202262890008C02C /* S2Cap.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = S2Cap.swift; path = S2Geometry/S2Cap.swift; sourceTree = "<group>"; };
+		7750AE4F202262890008C02C /* S2EdgeUtil.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = S2EdgeUtil.swift; path = S2Geometry/S2EdgeUtil.swift; sourceTree = "<group>"; };
+		7750AE50202262890008C02C /* S2LatLng.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = S2LatLng.swift; path = S2Geometry/S2LatLng.swift; sourceTree = "<group>"; };
+		7750AE51202262890008C02C /* S2Loop.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = S2Loop.swift; path = S2Geometry/S2Loop.swift; sourceTree = "<group>"; };
+		7750AE52202262890008C02C /* S2Point.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = S2Point.swift; path = S2Geometry/S2Point.swift; sourceTree = "<group>"; };
+		7750AE53202262890008C02C /* S1Interval.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = S1Interval.swift; path = S2Geometry/S1Interval.swift; sourceTree = "<group>"; };
+		7750AE54202262890008C02C /* S2Projections.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = S2Projections.swift; path = S2Geometry/S2Projections.swift; sourceTree = "<group>"; };
+		7750AE55202262890008C02C /* S2RegionCoverer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = S2RegionCoverer.swift; path = S2Geometry/S2RegionCoverer.swift; sourceTree = "<group>"; };
 		OBJ_34 /* R1IntervalTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = R1IntervalTests.swift; sourceTree = "<group>"; };
 		OBJ_35 /* S1AngleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = S1AngleTests.swift; sourceTree = "<group>"; };
 		OBJ_36 /* S1IntervalTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = S1IntervalTests.swift; sourceTree = "<group>"; };
@@ -85,9 +86,8 @@
 		OBJ_41 /* S2LoopTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = S2LoopTests.swift; sourceTree = "<group>"; };
 		OBJ_42 /* Utilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utilities.swift; sourceTree = "<group>"; };
 		OBJ_44 /* S2Geometry.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = S2Geometry.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		OBJ_45 /* S2GeometryTests.xctest */ = {isa = PBXFileReference; lastKnownFileType = file; path = S2GeometryTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		OBJ_45 /* S2GeometryTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; path = S2GeometryTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		OBJ_6 /* Package.swift */ = {isa = PBXFileReference; explicitFileType = sourcecode.swift; path = Package.swift; sourceTree = "<group>"; };
-		OBJ_9 /* R1Interval.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = R1Interval.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -143,7 +143,7 @@
 			name = Products;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		OBJ_5 /*  */ = {
+		OBJ_5 = {
 			isa = PBXGroup;
 			children = (
 				OBJ_6 /* Package.swift */,
@@ -151,7 +151,6 @@
 				OBJ_32 /* Tests */,
 				OBJ_43 /* Products */,
 			);
-			name = "";
 			sourceTree = "<group>";
 		};
 		OBJ_7 /* Sources */ = {
@@ -165,29 +164,29 @@
 		OBJ_8 /* S2Geometry */ = {
 			isa = PBXGroup;
 			children = (
-				OBJ_9 /* R1Interval.swift */,
-				OBJ_10 /* R2Vector.swift */,
-				OBJ_11 /* S1Angle.swift */,
-				OBJ_12 /* S1Interval.swift */,
-				OBJ_13 /* S2.swift */,
-				OBJ_14 /* S2AreaCentroid.swift */,
-				OBJ_15 /* S2Cap.swift */,
-				OBJ_16 /* S2Cell.swift */,
-				OBJ_17 /* S2CellId.swift */,
-				OBJ_18 /* S2CellUnion.swift */,
-				OBJ_19 /* S2Edge.swift */,
-				OBJ_20 /* S2EdgeIndex.swift */,
-				OBJ_21 /* S2EdgeUtil.swift */,
-				OBJ_22 /* S2LatLng.swift */,
-				OBJ_23 /* S2LatLngRect.swift */,
-				OBJ_24 /* S2Loop.swift */,
-				OBJ_25 /* S2Point.swift */,
-				OBJ_26 /* S2Polygon.swift */,
-				OBJ_27 /* S2PolygonBuilder.swift */,
-				OBJ_28 /* S2Polyline.swift */,
-				OBJ_29 /* S2Projections.swift */,
-				OBJ_30 /* S2Region.swift */,
-				OBJ_31 /* S2RegionCoverer.swift */,
+				7750AE47202262890008C02C /* R1Interval.swift */,
+				7750AE3F202262880008C02C /* R2Vector.swift */,
+				7750AE43202262880008C02C /* S1Angle.swift */,
+				7750AE53202262890008C02C /* S1Interval.swift */,
+				7750AE4B202262890008C02C /* S2.swift */,
+				7750AE49202262890008C02C /* S2AreaCentroid.swift */,
+				7750AE4E202262890008C02C /* S2Cap.swift */,
+				7750AE46202262890008C02C /* S2Cell.swift */,
+				7750AE4A202262890008C02C /* S2CellId.swift */,
+				7750AE4C202262890008C02C /* S2CellUnion.swift */,
+				7750AE4D202262890008C02C /* S2Edge.swift */,
+				7750AE48202262890008C02C /* S2EdgeIndex.swift */,
+				7750AE4F202262890008C02C /* S2EdgeUtil.swift */,
+				7750AE50202262890008C02C /* S2LatLng.swift */,
+				7750AE42202262880008C02C /* S2LatLngRect.swift */,
+				7750AE51202262890008C02C /* S2Loop.swift */,
+				7750AE52202262890008C02C /* S2Point.swift */,
+				7750AE44202262880008C02C /* S2Polygon.swift */,
+				7750AE41202262880008C02C /* S2PolygonBuilder.swift */,
+				7750AE40202262880008C02C /* S2Polyline.swift */,
+				7750AE54202262890008C02C /* S2Projections.swift */,
+				7750AE45202262890008C02C /* S2Region.swift */,
+				7750AE55202262890008C02C /* S2RegionCoverer.swift */,
 			);
 			name = S2Geometry;
 			path = Sources;
@@ -236,6 +235,11 @@
 			isa = PBXProject;
 			attributes = {
 				LastUpgradeCheck = 9999;
+				TargetAttributes = {
+					OBJ_46 = {
+						LastSwiftMigration = 0920;
+					};
+				};
 			};
 			buildConfigurationList = OBJ_2 /* Build configuration list for PBXProject "S2Geometry" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -244,7 +248,7 @@
 			knownRegions = (
 				en,
 			);
-			mainGroup = OBJ_5 /*  */;
+			mainGroup = OBJ_5;
 			productRefGroup = OBJ_43 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -260,29 +264,29 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 0;
 			files = (
-				OBJ_51 /* R1Interval.swift in Sources */,
-				OBJ_52 /* R2Vector.swift in Sources */,
-				OBJ_53 /* S1Angle.swift in Sources */,
-				OBJ_54 /* S1Interval.swift in Sources */,
-				OBJ_55 /* S2.swift in Sources */,
-				OBJ_56 /* S2AreaCentroid.swift in Sources */,
-				OBJ_57 /* S2Cap.swift in Sources */,
-				OBJ_58 /* S2Cell.swift in Sources */,
-				OBJ_59 /* S2CellId.swift in Sources */,
-				OBJ_60 /* S2CellUnion.swift in Sources */,
-				OBJ_61 /* S2Edge.swift in Sources */,
-				OBJ_62 /* S2EdgeIndex.swift in Sources */,
-				OBJ_63 /* S2EdgeUtil.swift in Sources */,
-				OBJ_64 /* S2LatLng.swift in Sources */,
-				OBJ_65 /* S2LatLngRect.swift in Sources */,
-				OBJ_66 /* S2Loop.swift in Sources */,
-				OBJ_67 /* S2Point.swift in Sources */,
-				OBJ_68 /* S2Polygon.swift in Sources */,
-				OBJ_69 /* S2PolygonBuilder.swift in Sources */,
-				OBJ_70 /* S2Polyline.swift in Sources */,
-				OBJ_71 /* S2Projections.swift in Sources */,
-				OBJ_72 /* S2Region.swift in Sources */,
-				OBJ_73 /* S2RegionCoverer.swift in Sources */,
+				7750AE632022628A0008C02C /* S2CellUnion.swift in Sources */,
+				7750AE6C2022628A0008C02C /* S2RegionCoverer.swift in Sources */,
+				7750AE682022628A0008C02C /* S2Loop.swift in Sources */,
+				7750AE582022628A0008C02C /* S2PolygonBuilder.swift in Sources */,
+				7750AE672022628A0008C02C /* S2LatLng.swift in Sources */,
+				7750AE572022628A0008C02C /* S2Polyline.swift in Sources */,
+				7750AE5F2022628A0008C02C /* S2EdgeIndex.swift in Sources */,
+				7750AE612022628A0008C02C /* S2CellId.swift in Sources */,
+				7750AE5A2022628A0008C02C /* S1Angle.swift in Sources */,
+				7750AE5C2022628A0008C02C /* S2Region.swift in Sources */,
+				7750AE642022628A0008C02C /* S2Edge.swift in Sources */,
+				7750AE5D2022628A0008C02C /* S2Cell.swift in Sources */,
+				7750AE692022628A0008C02C /* S2Point.swift in Sources */,
+				7750AE662022628A0008C02C /* S2EdgeUtil.swift in Sources */,
+				7750AE592022628A0008C02C /* S2LatLngRect.swift in Sources */,
+				7750AE562022628A0008C02C /* R2Vector.swift in Sources */,
+				7750AE6B2022628A0008C02C /* S2Projections.swift in Sources */,
+				7750AE602022628A0008C02C /* S2AreaCentroid.swift in Sources */,
+				7750AE6A2022628A0008C02C /* S1Interval.swift in Sources */,
+				7750AE5B2022628A0008C02C /* S2Polygon.swift in Sources */,
+				7750AE622022628A0008C02C /* S2.swift in Sources */,
+				7750AE5E2022628A0008C02C /* R1Interval.swift in Sources */,
+				7750AE652022628A0008C02C /* S2Cap.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -358,6 +362,8 @@
 		OBJ_48 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				DEFINES_MODULE = YES;
 				ENABLE_TESTABILITY = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -371,6 +377,8 @@
 				PRODUCT_BUNDLE_IDENTIFIER = S2Geometry;
 				PRODUCT_MODULE_NAME = "$(TARGET_NAME:c99extidentifier)";
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 3.0;
 				TARGET_NAME = S2Geometry;
 			};
 			name = Debug;
@@ -378,6 +386,8 @@
 		OBJ_49 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				DEFINES_MODULE = YES;
 				ENABLE_TESTABILITY = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -391,6 +401,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = S2Geometry;
 				PRODUCT_MODULE_NAME = "$(TARGET_NAME:c99extidentifier)";
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SWIFT_VERSION = 3.0;
 				TARGET_NAME = S2Geometry;
 			};
 			name = Release;
@@ -398,6 +409,7 @@
 		OBJ_77 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -415,6 +427,7 @@
 		OBJ_78 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",

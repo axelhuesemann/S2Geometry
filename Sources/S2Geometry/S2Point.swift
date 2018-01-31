@@ -102,7 +102,7 @@ public struct S2Point: Comparable, Hashable {
 		value = UInt64.addWithOverflow(value, UInt64.multiplyWithOverflow(37, UInt64.addWithOverflow(value, abs(y).bitPattern).0).0).0
 		value = UInt64.addWithOverflow(value, UInt64.multiplyWithOverflow(37, UInt64.addWithOverflow(value, abs(z).bitPattern).0).0).0
 		value ^= (value >> 32)
-		return unsafeBitCast(value, to: Int.self)
+    return Int(Int64(bitPattern: value))
 	}
 	
 	// ---

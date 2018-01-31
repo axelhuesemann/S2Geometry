@@ -435,7 +435,7 @@ public struct S2CellUnion: S2Region {
 		var numLeaves: Int64 = 0
 		for cellId in cellIds {
 			let invertedLevel = S2CellId.maxLevel - cellId.level
-			numLeaves += (1 << (invertedLevel << 1))
+			numLeaves += (1 << Int64(invertedLevel << 1))
 		}
 		return numLeaves
 	}

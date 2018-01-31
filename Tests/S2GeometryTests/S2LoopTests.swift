@@ -83,12 +83,12 @@ class S2LoopTests: XCTestCase {
 		XCTAssertEqualWithAccuracy(invertedArctic80.rectBound.latHi.radians, S2LatLng(point: mid).lat.radians, accuracy: 1e-9)
 		
 		XCTAssert(southHemi.rectBound.lng.isFull);
-		XCTAssertEqual(southHemi.rectBound.lat, R1Interval(lo: -M_PI_2, hi: 0))
+		XCTAssertEqual(southHemi.rectBound.lat, R1Interval(lo: -0.5 * .pi, hi: 0))
 	}
 	
 	/*public func testAreaCentroid() {
-		XCTAssertEqualWithAccuracy(northHemi.area, 2 * M_PI, accuracy: 1e-9)
-		XCTAssertEqualWithAccuracy(eastHemi.area, 2 * M_PI, accuracy: 1e-9)
+		XCTAssertEqualWithAccuracy(northHemi.area, 2 * .pi, accuracy: 1e-9)
+		XCTAssertEqualWithAccuracy(eastHemi.area, 2 * .pi, accuracy: 1e-9)
 		
 		// Construct spherical caps of random height, and approximate their boundary
 		// with closely spaces vertices. Then check that the area and centroid are

@@ -411,17 +411,14 @@ public struct S2CellId: Comparable, Hashable {
 		fewer characters. The maximum token length is 16.
 	*/
 	public init(token: String) throws {
-		let chars = Array(token.characters)
-
-		guard chars.count > 0 else {
+		guard token.count > 0 else {
 			throw NumberFormatException("Empty string in S2CellId.fromToken")
 		}
-	
-		guard chars.count <= 16 && token != "X" else {
+		guard token.count <= 16 && token != "X" else {
 			self = .none
 			return
 		}
-		
+    let chars = Array(token)
 		var value: UInt64 = 0
 		for pos in 0 ..< 16 {
 			var digit: Int = 0
@@ -452,16 +449,15 @@ public struct S2CellId: Comparable, Hashable {
 	var token: String {
 		guard id != 0 else { return "X" }
 		var hex = String(uid, radix: 16).lowercased()
-		for _ in 0 ..< max(0, 16 - hex.characters.count) {
+		for _ in 0 ..< max(0, 16 - hex.count) {
 			hex.insert("0", at: hex.startIndex)
 		}
-		let chars = hex.characters
-		var len = chars.count
-		for char in chars.reversed() {
+		var len = hex.count
+		for char in hex.reversed() {
 			guard char == "0" else { break }
 			len -= 1
 		}
-		return String(chars.prefix(len))
+		return String(hex.prefix(len))
 	}
 
 	/**

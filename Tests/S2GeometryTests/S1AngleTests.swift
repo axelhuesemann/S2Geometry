@@ -19,16 +19,16 @@ class S1AngleTests: XCTestCase {
 	
 	func testBasic() {
 		// Check that the conversion between Pi radians and 180 degrees is exact.
-		XCTAssertEqual(S1Angle(radians: M_PI).radians, M_PI)
-		XCTAssertEqual(S1Angle(radians: M_PI).degrees, 180.0)
-		XCTAssertEqual(S1Angle(degrees: 180).radians, M_PI)
+		XCTAssertEqual(S1Angle(radians: .pi).radians, .pi)
+		XCTAssertEqual(S1Angle(radians: .pi).degrees, 180.0)
+		XCTAssertEqual(S1Angle(degrees: 180).radians, .pi)
 		XCTAssertEqual(S1Angle(degrees: 180).degrees, 180.0)
 		
-		XCTAssertEqual(S1Angle(radians: M_PI / 2).degrees, 90.0)
+		XCTAssertEqual(S1Angle(radians: .pi / 2).degrees, 90.0)
 		
 		// Check negative angles.
-		XCTAssertEqual(S1Angle(radians: -M_PI / 2).degrees, -90.0)
-		XCTAssertEqual(S1Angle(degrees: -45).radians, -M_PI / 4)
+		XCTAssertEqual(S1Angle(radians: -.pi / 2).degrees, -90.0)
+		XCTAssertEqual(S1Angle(degrees: -45).radians, -.pi / 4)
 		
 		// Check that E5/E6/E7 representations work as expected.
 		XCTAssertEqual(S1Angle(e5: 2000000), S1Angle(degrees: 20))

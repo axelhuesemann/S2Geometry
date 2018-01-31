@@ -87,7 +87,7 @@ class S2CellTests: XCTestCase {
 			maxEdge = max(edge, maxEdge)
 			avgEdge += 0.25 * edge
 			let mid = cell.getRawVertex(i) + cell.getRawVertex((i + 1) & 3)
-			let width = M_PI_2 - mid.angle(to: cell.getRawEdge(i ^ 2))
+			let width = 0.5 * .pi - mid.angle(to: cell.getRawEdge(i ^ 2))
 			minWidth = min(width, minWidth)
 			maxWidth = max(width, maxWidth)
 			if i < 2 {
@@ -213,7 +213,7 @@ class S2CellTests: XCTestCase {
 						}
 					}
 					XCTAssert(capCount <= 2)
-					if (childRect.latLo.radians > -M_PI_2 && childRect.latHi.radians < M_PI_2) {
+					if (childRect.latLo.radians > -0.5 * .pi && childRect.latHi.radians < 0.5 * .pi) {
 						// Bounding rectangles may be too large at the poles because the
 						// pole itself has an arbitrary fixed longitude.
 						XCTAssert(rectCount <= 2)
