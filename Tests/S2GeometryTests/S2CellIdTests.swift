@@ -68,7 +68,7 @@ class S2CellIdTests: XCTestCase {
 		XCTAssertEqual(S2CellId.end(level: S2CellId.maxLevel).prev().nextWrap(), S2CellId(face: 0, pos: 0, level: S2CellId.maxLevel))
 		
 		// Check that cells are represented by the position of their center along the Hilbert curve.
-		XCTAssertEqual(Int64.addWithOverflow(id.rangeMin.id, id.rangeMax.id).0, Int64.multiplyWithOverflow(2, id.id).0)
+    XCTAssertEqual(id.rangeMin.id.addingReportingOverflow(id.rangeMax.id).0, id.id.multipliedReportingOverflow(by: 2).0)
 	}
 	
 	func testInverses() {
@@ -97,7 +97,7 @@ class S2CellIdTests: XCTestCase {
 				continue;
 			}
 			let token = id.token
-			XCTAssert(token.characters.count <= 16)
+			XCTAssert(token.count <= 16)
 			XCTAssertEqual(try S2CellId(token: token), id)
 		}
 		// Check that invalid cell ids can be encoded.
@@ -181,8 +181,8 @@ class S2CellIdTests: XCTestCase {
 			let p = id.rawPoint
 			let face = S2Projections.xyzToFace(point: p)
 			let uv = S2Projections.validFaceXyzToUv(face: face, point: p)
-			XCTAssertEqualWithAccuracy(remainder(S2Projections.uvToST(u: uv.x), 1.0 / Double(1 << S2CellIdTests.maxWalkLevel)), 0, accuracy: 1e-9)
-			XCTAssertEqualWithAccuracy(remainder(S2Projections.uvToST(u: uv.y), 1.0 / Double(1 << S2CellIdTests.maxWalkLevel)), 0, accuracy: 1e-9)
+			XCTAssertEqual(remainder(S2Projections.uvToST(u: uv.x), 1.0 / Double(1 << S2CellIdTests.maxWalkLevel)), 0, accuracy: 1e-9)
+			XCTAssertEqual(remainder(S2Projections.uvToST(u: uv.y), 1.0 / Double(1 << S2CellIdTests.maxWalkLevel)), 0, accuracy: 1e-9)
 			id = id.next()
 		}
 	}

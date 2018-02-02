@@ -33,14 +33,14 @@ class S2LatLngTests: XCTestCase {
 		var better = bad.normalized
 		XCTAssert(better.isValid)
 		XCTAssertEqual(better.lat, S1Angle(degrees: 90))
-		XCTAssertEqualWithAccuracy(better.lng.radians, S1Angle(degrees: -160).radians, accuracy: 1e-9)
+		XCTAssertEqual(better.lng.radians, S1Angle(degrees: -160).radians, accuracy: 1e-9)
 		
 		bad = S2LatLng.fromDegrees(lat: -100, lng: -360)
 		XCTAssert(!bad.isValid)
 		better = bad.normalized
 		XCTAssert(better.isValid)
 		XCTAssertEqual(better.lat, S1Angle(degrees: -90))
-		XCTAssertEqualWithAccuracy(better.lng.radians, 0, accuracy: 1e-9)
+		XCTAssertEqual(better.lng.radians, 0, accuracy: 1e-9)
 		
 		XCTAssert((S2LatLng.fromDegrees(lat: 10, lng: 20) + S2LatLng.fromDegrees(lat: 20, lng: 30)).approxEquals(to: S2LatLng.fromDegrees(lat: 30, lng: 50)))
 		XCTAssert((S2LatLng.fromDegrees(lat: 10, lng: 20) - S2LatLng.fromDegrees(lat: 20, lng: 30)).approxEquals(to: S2LatLng.fromDegrees(lat: -10, lng: -10)))
@@ -49,9 +49,9 @@ class S2LatLngTests: XCTestCase {
 	
 	func testConversion() {
 		// Test special cases: poles, "date line"
-		XCTAssertEqualWithAccuracy(S2LatLng(point: S2LatLng.fromDegrees(lat: 90.0, lng: 65.0).point).lat.degrees, 90.0, accuracy: 1e-9)
+		XCTAssertEqual(S2LatLng(point: S2LatLng.fromDegrees(lat: 90.0, lng: 65.0).point).lat.degrees, 90.0, accuracy: 1e-9)
 		XCTAssertEqual(S2LatLng(point: S2LatLng.fromRadians(lat: -0.5 * .pi, lng: 1).point).lat.radians, -0.5 * .pi)
-		XCTAssertEqualWithAccuracy(abs(S2LatLng(point: S2LatLng.fromDegrees(lat: 12.2, lng: 180.0).point).lng.degrees), 180.0, accuracy: 1e-9)
+		XCTAssertEqual(abs(S2LatLng(point: S2LatLng.fromDegrees(lat: 12.2, lng: 180.0).point).lng.degrees), 180.0, accuracy: 1e-9)
 		XCTAssertEqual(abs(S2LatLng(point: S2LatLng.fromRadians(lat: 0.1, lng: -.pi).point).lng.radians), .pi)
 		
 		// Test a bunch of random points.
@@ -62,15 +62,15 @@ class S2LatLngTests: XCTestCase {
 		
 		// Test generation from E5
 		let test = S2LatLng.fromE5(lat: 123456, lng: 98765)
-		XCTAssertEqualWithAccuracy(test.lat.degrees, 1.23456, accuracy: 1e-9)
-		XCTAssertEqualWithAccuracy(test.lng.degrees, 0.98765, accuracy: 1e-9)
+		XCTAssertEqual(test.lat.degrees, 1.23456, accuracy: 1e-9)
+		XCTAssertEqual(test.lng.degrees, 0.98765, accuracy: 1e-9)
 	}
 
 	func testDistance() {
 		XCTAssertEqual(S2LatLng.fromDegrees(lat: 90, lng: 0).getDistance(to: S2LatLng.fromDegrees(lat: 90, lng: 0)).radians, 0.0)
-		XCTAssertEqualWithAccuracy(S2LatLng.fromDegrees(lat: -37, lng: 25).getDistance(to: S2LatLng.fromDegrees(lat: -66, lng: -155)).degrees, 77, accuracy: 1e-13)
-		XCTAssertEqualWithAccuracy(S2LatLng.fromDegrees(lat: 0, lng: 165).getDistance(to: S2LatLng.fromDegrees(lat: 0, lng: -80)).degrees, 115, accuracy: 1e-13)
-		XCTAssertEqualWithAccuracy(S2LatLng.fromDegrees(lat: 47, lng: -127).getDistance(to: S2LatLng.fromDegrees(lat: -47, lng: 53)).degrees, 180, accuracy: 2e-6)
+		XCTAssertEqual(S2LatLng.fromDegrees(lat: -37, lng: 25).getDistance(to: S2LatLng.fromDegrees(lat: -66, lng: -155)).degrees, 77, accuracy: 1e-13)
+		XCTAssertEqual(S2LatLng.fromDegrees(lat: 0, lng: 165).getDistance(to: S2LatLng.fromDegrees(lat: 0, lng: -80)).degrees, 115, accuracy: 1e-13)
+		XCTAssertEqual(S2LatLng.fromDegrees(lat: 47, lng: -127).getDistance(to: S2LatLng.fromDegrees(lat: -47, lng: 53)).degrees, 180, accuracy: 2e-6)
 	}
 	
 }

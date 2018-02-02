@@ -12,19 +12,16 @@
 	import Darwin.C
 #endif
 
-/**
-	This class represents a spherical cap, i.e. a portion of a sphere cut off by
-	a plane. The cap is defined by its axis and height. This representation has
-	good numerical accuracy for very small caps (unlike the (axis,
-	min-distance-from-origin) representation), and is also efficient for
-	containment tests (unlike the (axis, angle) representation).
-
-	Here are some useful relationships between the cap height (h), the cap
-	opening angle (theta), the maximum chord length from the cap's center (d),
-	and the radius of cap's base (a). All formulas assume a unit radius.
-
-	h = 1 - cos(theta) = 2 sin^2(theta/2) d^2 = 2 h = a^2 + h^2
-*/
+/// This class represents a spherical cap, i.e. a portion of a sphere cut off by
+/// a plane. The cap is defined by its axis and height. This representation has
+/// good numerical accuracy for very small caps (unlike the (axis,
+/// min-distance-from-origin) representation), and is also efficient for
+/// containment tests (unlike the (axis, angle) representation).
+///
+/// Here are some useful relationships between the cap height (h), the cap
+/// opening angle (theta), the maximum chord length from the cap's center (d),
+/// and the radius of cap's base (a). All formulas assume a unit radius.
+///   h = 1 - cos(theta) = 2 sin^2(theta/2) d^2 = 2 h = a^2 + h^2
 public struct S2Cap: S2Region {
 	
 	/**

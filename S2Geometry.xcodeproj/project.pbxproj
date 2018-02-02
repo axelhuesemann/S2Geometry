@@ -8,16 +8,12 @@
 
 /* Begin PBXBuildFile section */
 		7750AE562022628A0008C02C /* R2Vector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7750AE3F202262880008C02C /* R2Vector.swift */; };
-		7750AE572022628A0008C02C /* S2Polyline.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7750AE40202262880008C02C /* S2Polyline.swift */; };
-		7750AE582022628A0008C02C /* S2PolygonBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7750AE41202262880008C02C /* S2PolygonBuilder.swift */; };
 		7750AE592022628A0008C02C /* S2LatLngRect.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7750AE42202262880008C02C /* S2LatLngRect.swift */; };
 		7750AE5A2022628A0008C02C /* S1Angle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7750AE43202262880008C02C /* S1Angle.swift */; };
-		7750AE5B2022628A0008C02C /* S2Polygon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7750AE44202262880008C02C /* S2Polygon.swift */; };
 		7750AE5C2022628A0008C02C /* S2Region.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7750AE45202262890008C02C /* S2Region.swift */; };
 		7750AE5D2022628A0008C02C /* S2Cell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7750AE46202262890008C02C /* S2Cell.swift */; };
 		7750AE5E2022628A0008C02C /* R1Interval.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7750AE47202262890008C02C /* R1Interval.swift */; };
 		7750AE5F2022628A0008C02C /* S2EdgeIndex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7750AE48202262890008C02C /* S2EdgeIndex.swift */; };
-		7750AE602022628A0008C02C /* S2AreaCentroid.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7750AE49202262890008C02C /* S2AreaCentroid.swift */; };
 		7750AE612022628A0008C02C /* S2CellId.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7750AE4A202262890008C02C /* S2CellId.swift */; };
 		7750AE622022628A0008C02C /* S2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7750AE4B202262890008C02C /* S2.swift */; };
 		7750AE632022628A0008C02C /* S2CellUnion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7750AE4C202262890008C02C /* S2CellUnion.swift */; };
@@ -54,16 +50,12 @@
 
 /* Begin PBXFileReference section */
 		7750AE3F202262880008C02C /* R2Vector.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = R2Vector.swift; path = S2Geometry/R2Vector.swift; sourceTree = "<group>"; };
-		7750AE40202262880008C02C /* S2Polyline.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = S2Polyline.swift; path = S2Geometry/S2Polyline.swift; sourceTree = "<group>"; };
-		7750AE41202262880008C02C /* S2PolygonBuilder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = S2PolygonBuilder.swift; path = S2Geometry/S2PolygonBuilder.swift; sourceTree = "<group>"; };
 		7750AE42202262880008C02C /* S2LatLngRect.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = S2LatLngRect.swift; path = S2Geometry/S2LatLngRect.swift; sourceTree = "<group>"; };
 		7750AE43202262880008C02C /* S1Angle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = S1Angle.swift; path = S2Geometry/S1Angle.swift; sourceTree = "<group>"; };
-		7750AE44202262880008C02C /* S2Polygon.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = S2Polygon.swift; path = S2Geometry/S2Polygon.swift; sourceTree = "<group>"; };
 		7750AE45202262890008C02C /* S2Region.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = S2Region.swift; path = S2Geometry/S2Region.swift; sourceTree = "<group>"; };
 		7750AE46202262890008C02C /* S2Cell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = S2Cell.swift; path = S2Geometry/S2Cell.swift; sourceTree = "<group>"; };
 		7750AE47202262890008C02C /* R1Interval.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = R1Interval.swift; path = S2Geometry/R1Interval.swift; sourceTree = "<group>"; };
 		7750AE48202262890008C02C /* S2EdgeIndex.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = S2EdgeIndex.swift; path = S2Geometry/S2EdgeIndex.swift; sourceTree = "<group>"; };
-		7750AE49202262890008C02C /* S2AreaCentroid.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = S2AreaCentroid.swift; path = S2Geometry/S2AreaCentroid.swift; sourceTree = "<group>"; };
 		7750AE4A202262890008C02C /* S2CellId.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = S2CellId.swift; path = S2Geometry/S2CellId.swift; sourceTree = "<group>"; };
 		7750AE4B202262890008C02C /* S2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = S2.swift; path = S2Geometry/S2.swift; sourceTree = "<group>"; };
 		7750AE4C202262890008C02C /* S2CellUnion.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = S2CellUnion.swift; path = S2Geometry/S2CellUnion.swift; sourceTree = "<group>"; };
@@ -169,22 +161,18 @@
 				7750AE43202262880008C02C /* S1Angle.swift */,
 				7750AE53202262890008C02C /* S1Interval.swift */,
 				7750AE4B202262890008C02C /* S2.swift */,
-				7750AE49202262890008C02C /* S2AreaCentroid.swift */,
+				7750AE50202262890008C02C /* S2LatLng.swift */,
+				7750AE42202262880008C02C /* S2LatLngRect.swift */,
+				7750AE52202262890008C02C /* S2Point.swift */,
 				7750AE4E202262890008C02C /* S2Cap.swift */,
+				7750AE54202262890008C02C /* S2Projections.swift */,
 				7750AE46202262890008C02C /* S2Cell.swift */,
 				7750AE4A202262890008C02C /* S2CellId.swift */,
 				7750AE4C202262890008C02C /* S2CellUnion.swift */,
+				7750AE51202262890008C02C /* S2Loop.swift */,
 				7750AE4D202262890008C02C /* S2Edge.swift */,
 				7750AE48202262890008C02C /* S2EdgeIndex.swift */,
 				7750AE4F202262890008C02C /* S2EdgeUtil.swift */,
-				7750AE50202262890008C02C /* S2LatLng.swift */,
-				7750AE42202262880008C02C /* S2LatLngRect.swift */,
-				7750AE51202262890008C02C /* S2Loop.swift */,
-				7750AE52202262890008C02C /* S2Point.swift */,
-				7750AE44202262880008C02C /* S2Polygon.swift */,
-				7750AE41202262880008C02C /* S2PolygonBuilder.swift */,
-				7750AE40202262880008C02C /* S2Polyline.swift */,
-				7750AE54202262890008C02C /* S2Projections.swift */,
 				7750AE45202262890008C02C /* S2Region.swift */,
 				7750AE55202262890008C02C /* S2RegionCoverer.swift */,
 			);
@@ -239,6 +227,9 @@
 					OBJ_46 = {
 						LastSwiftMigration = 0920;
 					};
+					OBJ_75 = {
+						LastSwiftMigration = 0920;
+					};
 				};
 			};
 			buildConfigurationList = OBJ_2 /* Build configuration list for PBXProject "S2Geometry" */;
@@ -267,9 +258,7 @@
 				7750AE632022628A0008C02C /* S2CellUnion.swift in Sources */,
 				7750AE6C2022628A0008C02C /* S2RegionCoverer.swift in Sources */,
 				7750AE682022628A0008C02C /* S2Loop.swift in Sources */,
-				7750AE582022628A0008C02C /* S2PolygonBuilder.swift in Sources */,
 				7750AE672022628A0008C02C /* S2LatLng.swift in Sources */,
-				7750AE572022628A0008C02C /* S2Polyline.swift in Sources */,
 				7750AE5F2022628A0008C02C /* S2EdgeIndex.swift in Sources */,
 				7750AE612022628A0008C02C /* S2CellId.swift in Sources */,
 				7750AE5A2022628A0008C02C /* S1Angle.swift in Sources */,
@@ -281,9 +270,7 @@
 				7750AE592022628A0008C02C /* S2LatLngRect.swift in Sources */,
 				7750AE562022628A0008C02C /* R2Vector.swift in Sources */,
 				7750AE6B2022628A0008C02C /* S2Projections.swift in Sources */,
-				7750AE602022628A0008C02C /* S2AreaCentroid.swift in Sources */,
 				7750AE6A2022628A0008C02C /* S1Interval.swift in Sources */,
-				7750AE5B2022628A0008C02C /* S2Polygon.swift in Sources */,
 				7750AE622022628A0008C02C /* S2.swift in Sources */,
 				7750AE5E2022628A0008C02C /* R1Interval.swift in Sources */,
 				7750AE652022628A0008C02C /* S2Cap.swift in Sources */,
@@ -378,7 +365,8 @@
 				PRODUCT_MODULE_NAME = "$(TARGET_NAME:c99extidentifier)";
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_VERSION = 3.0;
+				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
+				SWIFT_VERSION = 4.0;
 				TARGET_NAME = S2Geometry;
 			};
 			name = Debug;
@@ -401,7 +389,8 @@
 				PRODUCT_BUNDLE_IDENTIFIER = S2Geometry;
 				PRODUCT_MODULE_NAME = "$(TARGET_NAME:c99extidentifier)";
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
-				SWIFT_VERSION = 3.0;
+				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
+				SWIFT_VERSION = 4.0;
 				TARGET_NAME = S2Geometry;
 			};
 			name = Release;
@@ -420,6 +409,8 @@
 				LD_RUNPATH_SEARCH_PATHS = "@loader_path/../Frameworks";
 				OTHER_LDFLAGS = "$(inherited)";
 				OTHER_SWIFT_FLAGS = "$(inherited)";
+				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
+				SWIFT_VERSION = 4.0;
 				TARGET_NAME = S2GeometryTests;
 			};
 			name = Debug;
@@ -438,6 +429,8 @@
 				LD_RUNPATH_SEARCH_PATHS = "@loader_path/../Frameworks";
 				OTHER_LDFLAGS = "$(inherited)";
 				OTHER_SWIFT_FLAGS = "$(inherited)";
+				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
+				SWIFT_VERSION = 4.0;
 				TARGET_NAME = S2GeometryTests;
 			};
 			name = Release;

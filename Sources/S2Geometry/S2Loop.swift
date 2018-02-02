@@ -30,7 +30,7 @@
 	S2LatLngRect represents a latitude-longitude rectangle. It is capable of
 	representing the empty and full rectangles as well as single points.
 */
-public struct S2Loop: S2Region, Comparable {
+public struct S2Loop: S2Region {
 	
 	private class S2LoopEdgeIndex: S2EdgeIndex {
 
@@ -207,11 +207,11 @@ public struct S2Loop: S2Region, Comparable {
 	}
 	
 	/// Helper method to get area and optionally centroid.
-	private func getAreaCentroid(doCentroid: Bool = true) -> S2AreaCentroid {
+  private func getAreaCentroid(doCentroid: Bool = true) -> (area: Double, centroid: S2Point) {
 		var centroid = S2Point()
 		// Don't crash even if loop is not well-defined.
 		if numVertices < 3 {
-			return S2AreaCentroid(area: 0, centroid: centroid)
+			return (area: 0, centroid: centroid)
 		}
 
 		// The triangle area calculation becomes numerically unstable as the length
@@ -265,7 +265,7 @@ public struct S2Loop: S2Region, Comparable {
 		if doCentroid {
 			centroid = centroidSum
 		}
-		return S2AreaCentroid(area: areaSum, centroid: centroid)
+		return (area: areaSum, centroid: centroid)
 	}
 
 	/**
@@ -274,7 +274,7 @@ public struct S2Loop: S2Region, Comparable {
 		the loop multiplied by the area of the loop (see S2.java for details on
 		centroids). Note that the centroid may not be contained by the loop.
 	*/
-	public var areaAndCentroid: S2AreaCentroid {
+	public var areaAndCentroid: (area: Double, centroid: S2Point) {
 		return getAreaCentroid()
 	}
 	
@@ -499,7 +499,7 @@ public struct S2Loop: S2Region, Comparable {
 		// angle of PI radians. This is an upper bound on the angle.
 		var minDistance = S1Angle(radians: .pi)
 		for i in 0 ..< numVertices {
-			minDistance = min(minDistance, S2EdgeUtil.getDistance(x: normalized, a: vertex(i), b: vertex(i + 1)))
+			minDistance = min(minDistance, EdgeUtil.getDistance(x: normalized, a: vertex(i), b: vertex(i + 1)))
 		}
 		return minDistance
 	}
@@ -747,38 +747,42 @@ public struct S2Loop: S2Region, Comparable {
 	
 }
 
-public func ==(lhs: S2Loop, rhs: S2Loop) -> Bool {
-	guard lhs.numVertices == rhs.numVertices else { return false }
-	// Compare the two loops' vertices, starting with each loop's
-	// firstLogicalVertex. This allows us to always catch cases where logically
-	// identical loops have different vertex orderings (e.g. ABCD and BCDA).
-	let maxVertices = lhs.numVertices
-	var iThis = lhs.firstLogicalVertex
-	var iOther = rhs.firstLogicalVertex
-	for _ in 0 ..< maxVertices {
-		if lhs.vertex(iThis) != rhs.vertex(iOther) { return false }
-		iThis += 1
-		iOther += 1
-	}
-	return true
-}
+extension S2Loop: Equatable, Comparable {
 
-public func <(lhs: S2Loop, rhs: S2Loop) -> Bool {
-	if lhs.numVertices != rhs.numVertices {
-		return lhs.numVertices < rhs.numVertices
-	}
-	// Compare the two loops' vertices, starting with each loop's
-	// firstLogicalVertex. This allows us to always catch cases where logically
-	// identical loops have different vertex orderings (e.g. ABCD and BCDA).
-	let maxVertices = lhs.numVertices
-	var iThis = lhs.firstLogicalVertex
-	var iOther = rhs.firstLogicalVertex
-	for _ in 0 ..< maxVertices {
-		if lhs.vertex(iThis) != rhs.vertex(iOther) {
-			return lhs.vertex(iThis) < rhs.vertex(iOther)
-		}
-		iThis += 1
-		iOther += 1
-	}
-	return false
+  public static func ==(lhs: S2Loop, rhs: S2Loop) -> Bool {
+    guard lhs.numVertices == rhs.numVertices else { return false }
+    // Compare the two loops' vertices, starting with each loop's
+    // firstLogicalVertex. This allows us to always catch cases where logically
+    // identical loops have different vertex orderings (e.g. ABCD and BCDA).
+    let maxVertices = lhs.numVertices
+    var iThis = lhs.firstLogicalVertex
+    var iOther = rhs.firstLogicalVertex
+    for _ in 0 ..< maxVertices {
+      if lhs.vertex(iThis) != rhs.vertex(iOther) { return false }
+      iThis += 1
+      iOther += 1
+    }
+    return true
+  }
+  
+  public static func <(lhs: S2Loop, rhs: S2Loop) -> Bool {
+    if lhs.numVertices != rhs.numVertices {
+      return lhs.numVertices < rhs.numVertices
+    }
+    // Compare the two loops' vertices, starting with each loop's
+    // firstLogicalVertex. This allows us to always catch cases where logically
+    // identical loops have different vertex orderings (e.g. ABCD and BCDA).
+    let maxVertices = lhs.numVertices
+    var iThis = lhs.firstLogicalVertex
+    var iOther = rhs.firstLogicalVertex
+    for _ in 0 ..< maxVertices {
+      if lhs.vertex(iThis) != rhs.vertex(iOther) {
+        return lhs.vertex(iThis) < rhs.vertex(iOther)
+      }
+      iThis += 1
+      iOther += 1
+    }
+    return false
+  }
+
 }

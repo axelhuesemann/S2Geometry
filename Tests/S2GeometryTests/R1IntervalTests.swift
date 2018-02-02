@@ -24,7 +24,7 @@ class R1IntervalTests: XCTestCase {
 		and InteriorIntersects() respectively.
 	*/
 	func testIntervalOps(_ x: R1Interval, _ y: R1Interval, _ expectedRelation: String) {
-		let chars = Array(expectedRelation.characters)
+		let chars = Array(expectedRelation)
 		
 		XCTAssertEqual(x.contains(interval: y), chars[0] == "T")
 		XCTAssertEqual(x.interiorContains(interval: y), chars[1] == "T")

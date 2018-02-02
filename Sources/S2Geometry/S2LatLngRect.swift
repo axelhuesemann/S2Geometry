@@ -12,11 +12,9 @@
 	import Darwin.C
 #endif
 
-/**
-	An S2LatLngRect represents a latitude-longitude rectangle. It is capable of
-	representing the empty and full rectangles as well as single points.
-*/
-public struct S2LatLngRect: S2Region, Equatable {
+/// An S2LatLngRect represents a latitude-longitude rectangle. It is capable of
+/// representing the empty and full rectangles as well as single points.
+public struct S2LatLngRect: S2Region {
 	
 	public let lat: R1Interval
 	public let lng: S1Interval
@@ -153,7 +151,7 @@ public struct S2LatLngRect: S2Region, Equatable {
 		let lo = S2LatLng.fromRadians(lat: a.lat.lo, lng: aLng).point
 		let hi = S2LatLng.fromRadians(lat: a.lat.hi, lng: aLng).point
 		let loCrossHi = S2LatLng.fromRadians(lat: 0, lng: aLng - 0.5 * .pi).normalized.point
-		return S2EdgeUtil.getDistance(x: p.point, a: lo, b: hi, aCrossB: loCrossHi)
+		return EdgeUtil.getDistance(x: p.point, a: lo, b: hi, aCrossB: loCrossHi)
 	}
 	
 	/**
@@ -214,10 +212,10 @@ public struct S2LatLngRect: S2Region, Equatable {
 		let bHi = S2LatLng.fromRadians(lat: b.lat.hi, lng: bLng).point
 		let bLoCrossHi = S2LatLng.fromRadians(lat: 0, lng: bLng - 0.5 * .pi).normalized.point
 		
-		return min(S2EdgeUtil.getDistance(x: aLo, a: bLo, b: bHi, aCrossB: bLoCrossHi),
-			min(S2EdgeUtil.getDistance(x: aHi, a: bLo, b: bHi, aCrossB: bLoCrossHi),
-			min(S2EdgeUtil.getDistance(x: bLo, a: aLo, b: aHi, aCrossB: aLoCrossHi),
-			S2EdgeUtil.getDistance(x: bHi, a: aLo, b: aHi, aCrossB: aLoCrossHi))))
+		return min(EdgeUtil.getDistance(x: aLo, a: bLo, b: bHi, aCrossB: bLoCrossHi),
+			min(EdgeUtil.getDistance(x: aHi, a: bLo, b: bHi, aCrossB: bLoCrossHi),
+			min(EdgeUtil.getDistance(x: bLo, a: aLo, b: aHi, aCrossB: aLoCrossHi),
+			EdgeUtil.getDistance(x: bHi, a: aLo, b: aHi, aCrossB: aLoCrossHi))))
 	}
 	
 	/**
@@ -528,6 +526,10 @@ public struct S2LatLngRect: S2Region, Equatable {
 		// This test is cheap but is NOT exact (see s2latlngrect.h).
 		return intersects(with: cell.rectBound)
 	}
+
+}
+
+extension S2LatLngRect: Equatable {
 
 	public static func == (lhs: S2LatLngRect, rhs: S2LatLngRect) -> Bool {
 		return lhs.lat == rhs.lat && lhs.lng == rhs.lng

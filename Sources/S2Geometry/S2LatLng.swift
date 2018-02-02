@@ -12,7 +12,7 @@
 	import Darwin.C
 #endif
 
-public struct S2LatLng: Equatable {
+public struct S2LatLng {
 	
 	/// Approximate "effective" radius of the Earth in meters.
 	public static let earthRadiusMeters: Double = 6367000
@@ -135,18 +135,22 @@ public struct S2LatLng: Equatable {
 	
 }
 
-public func ==(lhs: S2LatLng, rhs: S2LatLng) -> Bool {
-	return lhs.lat == rhs.lat && lhs.lng == rhs.lng
-}
+extension S2LatLng: Equatable {
+  
+  public static func ==(lhs: S2LatLng, rhs: S2LatLng) -> Bool {
+    return lhs.lat == rhs.lat && lhs.lng == rhs.lng
+  }
+  
+  public static func +(lhs: S2LatLng, rhs: S2LatLng) -> S2LatLng {
+    return S2LatLng(lat: lhs.lat + rhs.lat, lng: lhs.lng + rhs.lng)
+  }
+  
+  public static func -(lhs: S2LatLng, rhs: S2LatLng) -> S2LatLng {
+    return S2LatLng(lat: lhs.lat - rhs.lat, lng: lhs.lng - rhs.lng)
+  }
+  
+  public static func *(lhs: S2LatLng, m: Double) -> S2LatLng {
+    return S2LatLng(lat: lhs.lat * m, lng: lhs.lng * m)
+  }
 
-public func +(lhs: S2LatLng, rhs: S2LatLng) -> S2LatLng {
-	return S2LatLng(lat: lhs.lat + rhs.lat, lng: lhs.lng + rhs.lng)
-}
-
-public func -(lhs: S2LatLng, rhs: S2LatLng) -> S2LatLng {
-	return S2LatLng(lat: lhs.lat - rhs.lat, lng: lhs.lng - rhs.lng)
-}
-
-public func *(lhs: S2LatLng, m: Double) -> S2LatLng {
-	return S2LatLng(lat: lhs.lat * m, lng: lhs.lng * m)
 }

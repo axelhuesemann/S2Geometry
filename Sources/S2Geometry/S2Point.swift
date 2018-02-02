@@ -12,11 +12,9 @@
 	import Darwin.C
 #endif
 
-/**
-	An S2Point represents a point on the unit sphere as a 3D vector. Usually
-	points are normalized to be unit length, but some methods do not require this.
-*/
-public struct S2Point: Comparable, Hashable {
+/// An S2Point represents a point on the unit sphere as a 3D vector. Usually
+/// points are normalized to be unit length, but some methods do not require this.
+public struct S2Point {
 
 	public let x: Double
 	public let y: Double
@@ -52,7 +50,7 @@ public struct S2Point: Comparable, Hashable {
 	
 	/// Return the index of the largest component fabs
 	public var largestAbsComponent: Int {
-		let temp = S2Point.fabs(point: self)
+		let temp = S2Point.abs(self)
 		if temp.x > temp.y {
 			if temp.x > temp.z {
 				return 0
@@ -68,10 +66,10 @@ public struct S2Point: Comparable, Hashable {
 		}
 	}
 	
-	public static func fabs(point p: S2Point) -> S2Point {
-		return S2Point(x: abs(p.x), y: abs(p.y), z: abs(p.z))
-	}
-	
+  public static func abs(_ p: S2Point) -> S2Point {
+    return S2Point(x: Swift.abs(p.x), y: Swift.abs(p.y), z: Swift.abs(p.z))
+  }
+  
 	public static func normalize(point p: S2Point) -> S2Point {
 		var norm = p.norm
 		if norm != 0 {
@@ -84,28 +82,17 @@ public struct S2Point: Comparable, Hashable {
 		return (axis == 0) ? x : (axis == 1) ? y : z
 	}
 	
-	/** Return the angle between two vectors in radians */
+	/// Return the angle between two vectors in radians
 	public func angle(to x: S2Point) -> Double {
 		return atan2((self × x).norm, self ⋅ x)
 	}
 	
-	/** Compare two vectors, return true if all their components are within a difference of margin. */
-	public func aequal(that: S2Point, margin: Double) -> Bool {
-		return (abs(x - that.x) < margin) && (abs(y - that.y) < margin) && (abs(z - that.z) < margin)
+	/// Compare two vectors, return true if all their components are within a difference of margin.
+  public func approxEqual(point that: S2Point, accuracy margin: Double) -> Bool {
+    return (Swift.abs(x - that.x) < margin) && (Swift.abs(y - that.y) < margin) && (Swift.abs(z - that.z) < margin)
 	}
 	
-	// MARK: Hashable
-	
-	public var hashValue: Int {
-		var value: UInt64 = 17
-		value = UInt64.addWithOverflow(value, UInt64.multiplyWithOverflow(37, UInt64.addWithOverflow(value, abs(x).bitPattern).0).0).0
-		value = UInt64.addWithOverflow(value, UInt64.multiplyWithOverflow(37, UInt64.addWithOverflow(value, abs(y).bitPattern).0).0).0
-		value = UInt64.addWithOverflow(value, UInt64.multiplyWithOverflow(37, UInt64.addWithOverflow(value, abs(z).bitPattern).0).0).0
-		value ^= (value >> 32)
-    return Int(Int64(bitPattern: value))
-	}
-	
-	// ---
+  // MARK:
 	
 	public func dotProd(_ b: S2Point) -> Double {
 		return x * b.x + y * b.y + z * b.z
@@ -117,57 +104,69 @@ public struct S2Point: Comparable, Hashable {
 	
 }
 
-public func ==(lhs: S2Point, rhs: S2Point) -> Bool {
-	return lhs.x == rhs.x && lhs.y == rhs.y && lhs.z == rhs.z
-}
+extension S2Point: Equatable, Comparable, Hashable {
+  
+  public static func ==(lhs: S2Point, rhs: S2Point) -> Bool {
+    return lhs.x == rhs.x && lhs.y == rhs.y && lhs.z == rhs.z
+  }
+  
+  public static func <(lhs: S2Point, rhs: S2Point) -> Bool {
+    if lhs.x < rhs.x {
+      return true
+    }
+    if rhs.x < lhs.x {
+      return false
+    }
+    if lhs.y < rhs.y {
+      return true
+    }
+    if rhs.y < lhs.y {
+      return false
+    }
+    if lhs.z < rhs.z {
+      return true
+    }
+    return false
+  }
+  
+  public var hashValue: Int {
+    var value: UInt64 = 17
+    let vx = value.addingReportingOverflow(Swift.abs(x).bitPattern).0
+    let vy = value.addingReportingOverflow(Swift.abs(y).bitPattern).0
+    let vz = value.addingReportingOverflow(Swift.abs(z).bitPattern).0
+    value = value.addingReportingOverflow(vx.multipliedReportingOverflow(by: 37).0).0
+    value = value.addingReportingOverflow(vy.multipliedReportingOverflow(by: 37).0).0
+    value = value.addingReportingOverflow(vz.multipliedReportingOverflow(by: 37).0).0
+    value ^= (value >> 32)
+    return Int(Int64(bitPattern: value))
+  }
+  
+  public prefix static func -(x: S2Point) -> S2Point {
+    return S2Point(x: -x.x, y: -x.y, z: -x.z)
+  }
+  
+  public static func +(lhs: S2Point, rhs: S2Point) -> S2Point {
+    return S2Point(x: lhs.x + rhs.x, y: lhs.y + rhs.y, z: lhs.z + rhs.z)
+  }
+  
+  public static func -(lhs: S2Point, rhs: S2Point) -> S2Point {
+    return S2Point(x: lhs.x - rhs.x, y: lhs.y - rhs.y, z: lhs.z - rhs.z)
+  }
+  
+  public static func *(lhs: S2Point, rhs: Double) -> S2Point {
+    return S2Point(x: lhs.x * rhs, y: lhs.y * rhs, z: lhs.z * rhs)
+  }
+  
+  public static func /(lhs: S2Point, rhs: Double) -> S2Point {
+    return S2Point(x: lhs.x / rhs, y: lhs.y / rhs, z: lhs.z / rhs)
+  }
+  
+  public static func ⋅(lhs: S2Point, rhs: S2Point) -> Double {
+    return lhs.dotProd(rhs)
+  }
+  
+  public static func ×(lhs: S2Point, rhs: S2Point) -> S2Point {
+    return lhs.crossProd(rhs)
+  }
 
-public func <(lhs: S2Point, rhs: S2Point) -> Bool {
-	if lhs.x < rhs.x {
-		return true
-	}
-	if rhs.x < lhs.x {
-		return false
-	}
-	if lhs.y < rhs.y {
-		return true
-	}
-	if rhs.y < lhs.y {
-		return false
-	}
-	if lhs.z < rhs.z {
-		return true
-	}
-	return false
-}
-
-public func abs(x: S2Point) -> S2Point {
-	return S2Point(x: abs(x.x), y: abs(x.y), z: abs(x.z))
-}
-
-public prefix func -(x: S2Point) -> S2Point {
-	return S2Point(x: -x.x, y: -x.y, z: -x.z)
-}
-
-public func +(lhs: S2Point, rhs: S2Point) -> S2Point {
-	return S2Point(x: lhs.x + rhs.x, y: lhs.y + rhs.y, z: lhs.z + rhs.z)
-}
-
-public func -(lhs: S2Point, rhs: S2Point) -> S2Point {
-	return S2Point(x: lhs.x - rhs.x, y: lhs.y - rhs.y, z: lhs.z - rhs.z)
-}
-
-public func *(lhs: S2Point, rhs: Double) -> S2Point {
-	return S2Point(x: lhs.x * rhs, y: lhs.y * rhs, z: lhs.z * rhs)
-}
-
-public func /(lhs: S2Point, rhs: Double) -> S2Point {
-	return S2Point(x: lhs.x / rhs, y: lhs.y / rhs, z: lhs.z / rhs)
-}
-
-public func ⋅(lhs: S2Point, rhs: S2Point) -> Double {
-	return lhs.dotProd(rhs)
-}
-
-public func ×(lhs: S2Point, rhs: S2Point) -> S2Point {
-	return lhs.crossProd(rhs)
 }

@@ -30,7 +30,7 @@ class S2CapTests: XCTestCase {
 		XCTAssert(full.isFull)
 		XCTAssert(full.complement.isEmpty)
 		XCTAssertEqual(full.height, 2.0)
-		XCTAssertEqualWithAccuracy(full.angle.degrees, 180, accuracy: 1e-9)
+		XCTAssertEqual(full.angle.degrees, 180, accuracy: 1e-9)
 		
 		// Containment and intersection of empty and full caps.
 		XCTAssert(empty.contains(other: empty))
@@ -118,38 +118,38 @@ class S2CapTests: XCTestCase {
 
 		// Cap that includes the south pole.
 		var rect = S2Cap(axis: S2Point(latDegrees: -45, lngDegrees: 57), angle: S1Angle(degrees: 50)).rectBound
-		XCTAssertEqualWithAccuracy(rect.latLo.degrees, -90, accuracy: degreeEps)
-		XCTAssertEqualWithAccuracy(rect.latHi.degrees, 5, accuracy: degreeEps)
+		XCTAssertEqual(rect.latLo.degrees, -90, accuracy: degreeEps)
+		XCTAssertEqual(rect.latHi.degrees, 5, accuracy: degreeEps)
 		XCTAssert(rect.lng.isFull)
 		
 		// Cap that is tangent to the north pole.
 		rect = S2Cap(axis: S2Point.normalize(point: S2Point(x: 1, y: 0, z: 1)), angle: S1Angle(radians: 0.25 * .pi)).rectBound
-		XCTAssertEqualWithAccuracy(rect.lat.lo, 0, accuracy: 1e-9);
-		XCTAssertEqualWithAccuracy(rect.lat.hi, 0.5 * .pi, accuracy: 1e-9);
+		XCTAssertEqual(rect.lat.lo, 0, accuracy: 1e-9);
+		XCTAssertEqual(rect.lat.hi, 0.5 * .pi, accuracy: 1e-9);
 		XCTAssert(rect.lng.isFull)
 
 		rect = S2Cap(axis: S2Point.normalize(point: S2Point(x: 1, y: 0, z: 1)), angle: S1Angle(degrees: 45)).rectBound
-		XCTAssertEqualWithAccuracy(rect.latLo.degrees, 0, accuracy: degreeEps)
-		XCTAssertEqualWithAccuracy(rect.latHi.degrees, 90, accuracy: degreeEps)
+		XCTAssertEqual(rect.latLo.degrees, 0, accuracy: degreeEps)
+		XCTAssertEqual(rect.latHi.degrees, 90, accuracy: degreeEps)
 		XCTAssert(rect.lng.isFull)
 
 		// The eastern hemisphere.
 		rect = S2Cap(axis: S2Point(x: 0, y: 1, z: 0), angle: S1Angle(radians: 0.5 * .pi + 5e-16)).rectBound
-		XCTAssertEqualWithAccuracy(rect.latLo.degrees, -90, accuracy: degreeEps)
-		XCTAssertEqualWithAccuracy(rect.latHi.degrees, 90, accuracy: degreeEps)
+		XCTAssertEqual(rect.latLo.degrees, -90, accuracy: degreeEps)
+		XCTAssertEqual(rect.latHi.degrees, 90, accuracy: degreeEps)
 		XCTAssert(rect.lng.isFull)
 		
 		// A cap centered on the equator.
 		rect = S2Cap(axis: S2Point(latDegrees: 0, lngDegrees: 50), angle: S1Angle(degrees: 20)).rectBound
-		XCTAssertEqualWithAccuracy(rect.latLo.degrees, -20, accuracy: degreeEps)
-		XCTAssertEqualWithAccuracy(rect.latHi.degrees, 20, accuracy: degreeEps)
-		XCTAssertEqualWithAccuracy(rect.lngLo.degrees, 30, accuracy: degreeEps)
-		XCTAssertEqualWithAccuracy(rect.lngHi.degrees, 70, accuracy: degreeEps)
+		XCTAssertEqual(rect.latLo.degrees, -20, accuracy: degreeEps)
+		XCTAssertEqual(rect.latHi.degrees, 20, accuracy: degreeEps)
+		XCTAssertEqual(rect.lngLo.degrees, 30, accuracy: degreeEps)
+		XCTAssertEqual(rect.lngHi.degrees, 70, accuracy: degreeEps)
 		
 		// A cap centered on the north pole.
 		rect = S2Cap(axis: S2Point(latDegrees: 90, lngDegrees: 123), angle: S1Angle(degrees: 10)).rectBound
-		XCTAssertEqualWithAccuracy(rect.latLo.degrees, 80, accuracy: degreeEps)
-		XCTAssertEqualWithAccuracy(rect.latHi.degrees, 90, accuracy: degreeEps)
+		XCTAssertEqual(rect.latLo.degrees, 80, accuracy: degreeEps)
+		XCTAssertEqual(rect.latHi.degrees, 90, accuracy: degreeEps)
 		XCTAssert(rect.lng.isFull)
 	}
 	

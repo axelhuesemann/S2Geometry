@@ -12,7 +12,7 @@
 	import Darwin.C
 #endif
 
-public struct S1Angle: Equatable, Comparable {
+public struct S1Angle {
 	
 	public let radians: Double
 	
@@ -50,22 +50,26 @@ public struct S1Angle: Equatable, Comparable {
 	
 }
 
-public func ==(lhs: S1Angle, rhs: S1Angle) -> Bool {
-	return lhs.radians == rhs.radians
-}
+extension S1Angle: Equatable, Comparable {
 
-public func <(lhs: S1Angle, rhs: S1Angle) -> Bool {
-	return lhs.radians < rhs.radians
-}
+  public static func ==(lhs: S1Angle, rhs: S1Angle) -> Bool {
+    return lhs.radians == rhs.radians
+  }
 
-public func +(lhs: S1Angle, rhs: S1Angle) -> S1Angle {
-	return S1Angle(radians: lhs.radians + rhs.radians)
-}
+  public static func <(lhs: S1Angle, rhs: S1Angle) -> Bool {
+    return lhs.radians < rhs.radians
+  }
 
-public func -(lhs: S1Angle, rhs: S1Angle) -> S1Angle {
-	return S1Angle(radians: lhs.radians - rhs.radians)
-}
+  public static func +(lhs: S1Angle, rhs: S1Angle) -> S1Angle {
+    return S1Angle(radians: lhs.radians + rhs.radians)
+  }
 
-public func *(lhs: S1Angle, rhs: Double) -> S1Angle {
-	return S1Angle(radians: lhs.radians * rhs)
+  public static func -(lhs: S1Angle, rhs: S1Angle) -> S1Angle {
+    return S1Angle(radians: lhs.radians - rhs.radians)
+  }
+
+  public static func *(lhs: S1Angle, rhs: Double) -> S1Angle {
+    return S1Angle(radians: lhs.radians * rhs)
+  }
+
 }

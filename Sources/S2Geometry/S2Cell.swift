@@ -12,12 +12,10 @@
 	import Darwin.C
 #endif
 
-/**
-	An S2Cell is an S2Region object that represents a cell. Unlike S2CellIds, it
-	supports efficient containment and intersection tests. However, it is also a
-	more expensive representation.
-*/
-public struct S2Cell: S2Region, Equatable {
+/// An S2Cell is an S2Region object that represents a cell. Unlike S2CellIds, it
+/// supports efficient containment and intersection tests. However, it is also a
+/// more expensive representation.
+public struct S2Cell: S2Region {
 	
 	private static let maxCellSize = 1 << S2CellId.maxLevel
 	
@@ -352,6 +350,10 @@ public struct S2Cell: S2Region, Equatable {
 	
 }
 
-public func ==(lhs: S2Cell, rhs: S2Cell) -> Bool {
-	return lhs.face == rhs.face && lhs.level == rhs.level && lhs.orientation == rhs.orientation && lhs.cellId == rhs.cellId
+extension S2Cell: Equatable {
+
+  public static func ==(lhs: S2Cell, rhs: S2Cell) -> Bool {
+    return lhs.face == rhs.face && lhs.level == rhs.level && lhs.orientation == rhs.orientation && lhs.cellId == rhs.cellId
+  }
+
 }

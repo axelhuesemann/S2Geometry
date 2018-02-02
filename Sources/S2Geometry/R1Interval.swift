@@ -6,12 +6,10 @@
 //  Copyright © 2016 Alex Studnicka. MIT License.
 //
 
-/**
-	An R1Interval represents a closed, bounded interval on the real line. It is
-	capable of representing the empty interval (containing no points) and
-	zero-length intervals (containing a single point).
-*/
-public struct R1Interval: Equatable { //, Hashable {
+/// An R1Interval represents a closed, bounded interval on the real line. It is
+/// capable of representing the empty interval (containing no points) and
+/// zero-length intervals (containing a single point).
+public struct R1Interval {
 	
 	public let lo: Double
 	public let hi: Double
@@ -30,11 +28,9 @@ public struct R1Interval: Equatable { //, Hashable {
 		self.init(lo: p, hi: p)
 	}
 	
-	/**
-		Convenience method to construct the minimal interval containing the two
-		given points. This is equivalent to starting with an empty interval and
-		calling AddPoint() twice, but it is more efficient.
-	*/
+	/// Convenience method to construct the minimal interval containing the two
+  /// given points. This is equivalent to starting with an empty interval and
+  /// calling AddPoint() twice, but it is more efficient.
 	public init(p1: Double, p2: Double) {
 		if p1 <= p2 {
 			self.init(lo: p1, hi: p2)
@@ -105,10 +101,8 @@ public struct R1Interval: Equatable { //, Hashable {
 		}
 	}
 	
-	/**
-		Return an interval that contains all points with a distance "radius" of a
-		point in this interval. Note that the expansion of an empty interval is always empty.
-	*/
+	/// Return an interval that contains all points with a distance "radius" of a
+  /// point in this interval. Note that the expansion of an empty interval is always empty.
 	public func expanded(radius: Double) -> R1Interval {
 		guard !isEmpty else { return self }
 		return R1Interval(lo: lo - radius, hi: hi + radius)
@@ -126,15 +120,6 @@ public struct R1Interval: Equatable { //, Hashable {
 		return R1Interval(lo: max(lo, y.lo), hi: min(hi, y.hi))
 	}
 	
-//	public var hashValue: Int {
-//		guard !isEmpty else { return 17 }
-//		
-//		var value: Int64 = 17
-//		value = 37 * value + unsafeBitCast(lo, Int64.self)
-//		value = 37 * value + unsafeBitCast(hi, Int64.self)
-//		return Int(value ^ (value >> 32))
-//	}
-	
 	/// Return true if length of the symmetric difference between the two intervals is at most the given tolerance.
 	public func approxEquals(y: R1Interval, maxError: Double = 1e-15) -> Bool {
 		guard !isEmpty else { return y.length <= maxError }
@@ -144,6 +129,18 @@ public struct R1Interval: Equatable { //, Hashable {
 	
 }
 
-public func ==(lhs: R1Interval, rhs: R1Interval) -> Bool {
-	return (lhs.lo == rhs.lo && lhs.hi == rhs.hi) || (lhs.isEmpty && rhs.isEmpty)
+extension R1Interval: Equatable {
+
+  public static func ==(lhs: R1Interval, rhs: R1Interval) -> Bool {
+    return (lhs.lo == rhs.lo && lhs.hi == rhs.hi) || (lhs.isEmpty && rhs.isEmpty)
+  }
+
+  //  public var hashValue: Int {
+  //    guard !isEmpty else { return 17 }
+  //    var value: Int64 = 17
+  //    value = 37 * value + unsafeBitCast(lo, Int64.self)
+  //    value = 37 * value + unsafeBitCast(hi, Int64.self)
+  //    return Int(value ^ (value >> 32))
+  //  }
+  
 }

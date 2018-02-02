@@ -96,7 +96,7 @@ public struct EdgeCrosser {
 		if crossing < 0 { return false }
 		if crossing > 0 { return true }
 		
-		return S2EdgeUtil.vertexCrossing(a: a, b: b, c: c2, d: d)
+		return EdgeUtil.vertexCrossing(a: a, b: b, c: c2, d: d)
 	}
 	
 	/// This function handles the "slow path" of robustCrossing().
@@ -441,7 +441,7 @@ public struct WedgeContainsOrCrosses: WedgeRelation {
 	together common code that is needed to implement polygonal geometry such as
 	polylines, loops, and general polygons.
 */
-public struct S2EdgeUtil {
+public struct EdgeUtil {
 	
 	/**
 		IEEE floating-point operations have a maximum error of 0.5 ULPS (units in

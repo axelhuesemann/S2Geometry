@@ -70,15 +70,12 @@ extension S2CellId {
 
 func parseVertices(_ str: String) -> [S2Point] {
 	var vertices: [S2Point] = []
-	
 //	str.components(separatedBy: CharacterSet(charactersIn: ",").union(.whitespaces))
-	let tokens = str.characters.split(omittingEmptySubsequences: true, whereSeparator: { $0 == " " || $0 == "," }).map(String.init)
-	
+	let tokens = str.split(omittingEmptySubsequences: true, whereSeparator: { $0 == " " || $0 == "," }).map(String.init)
 	for token in tokens {
-		guard let colon = token.characters.index(of: ":"),
-			let lat = Double(token.substring(to: colon)),
-			let lng = Double(token.substring(from: token.index(after: colon)))
-		else { fatalError() }
+    let ll = token.components(separatedBy: ":")
+    guard ll.count == 2 else { fatalError() }
+    guard let lat = Double(ll.first!), let lng = Double(ll.last!) else { fatalError() }
 		vertices.append(S2LatLng.fromDegrees(lat: lat, lng: lng).point)
 	}
 	return vertices

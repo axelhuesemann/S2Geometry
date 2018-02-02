@@ -40,7 +40,7 @@
 	representations. For cells that represent 2D regions rather than discrete
 	point, it is better to use the S2Cell class.
 */
-public struct S2CellId: Comparable, Hashable {
+public struct S2CellId {
 	
 	// Although only 60 bits are needed to represent the index of a leaf
 	// cell, we need an extra bit in order to represent the position of
@@ -214,12 +214,12 @@ public struct S2CellId: Comparable, Hashable {
 	public var level: Int {
 		// Fast path for leaf cells.
 		guard !isLeaf else { return S2CellId.maxLevel }
-		var x = Int32(truncatingBitPattern: id)
+		var x = Int32(truncatingIfNeeded: id)
 		var level = -1
 		if x != 0 {
 			level += 16
 		} else {
-			x = Int32(truncatingBitPattern: id >> Int64(32))
+			x = Int32(truncatingIfNeeded: id >> Int64(32))
 		}
 		// We only need to look at even-numbered bits to determine the
 		// level of a valid cell id.
@@ -356,7 +356,7 @@ public struct S2CellId: Comparable, Hashable {
 		
 		
 		
-		return S2CellId(id: Int64.addWithOverflow(id, lowestOnBit << 1).0)
+		return S2CellId(id: id.addingReportingOverflow(lowestOnBit << 1).0)
 	}
 	
 	/**
@@ -365,7 +365,7 @@ public struct S2CellId: Comparable, Hashable {
 		around from the last face to the first or vice versa.
 	*/
 	public func prev() -> S2CellId {
-		return S2CellId(id: Int64.subtractWithOverflow(id, lowestOnBit << 1).0)
+		return S2CellId(id: id.subtractingReportingOverflow(lowestOnBit << 1).0)
 	}
 	
 	/**
@@ -764,13 +764,6 @@ public struct S2CellId: Comparable, Hashable {
 		return id & -id
 	}
 	
-	public var hashValue: Int {
-		
-//		UInt64
-		
-		return Int(truncatingBitPattern: (uid >> 32) + uid)
-	}
-	
 	/**
 		Return the lowest-numbered bit that is on for this cell id, which is equal
 		to (uint64(1) << (2 * (MAX_LEVEL - level))). So for example, a.lsb() <=
@@ -832,10 +825,18 @@ public struct S2CellId: Comparable, Hashable {
 
 }
 
-public func ==(lhs: S2CellId, rhs: S2CellId) -> Bool {
-	return lhs.id == rhs.id
-}
+extension S2CellId: Comparable, Hashable {
+  
+  public static func ==(lhs: S2CellId, rhs: S2CellId) -> Bool {
+    return lhs.id == rhs.id
+  }
 
-public func <(lhs: S2CellId, rhs: S2CellId) -> Bool {
-	return S2CellId.unsignedLongLessThan(lhs: lhs.id, rhs: rhs.id)
+  public static func <(lhs: S2CellId, rhs: S2CellId) -> Bool {
+    return S2CellId.unsignedLongLessThan(lhs: lhs.id, rhs: rhs.id)
+  }
+
+  public var hashValue: Int {
+    return Int(truncatingIfNeeded: (uid >> 32) + uid)
+  }
+  
 }

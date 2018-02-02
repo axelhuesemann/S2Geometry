@@ -12,41 +12,35 @@
 	import Darwin.C
 #endif
 
-/**
-	An S1Interval represents a closed interval on a unit circle (also known as a
-	1-dimensional sphere). It is capable of representing the empty interval
-	(containing no points), the full interval (containing all points), and
-	zero-length intervals (containing a single point).
-
-	Points are represented by the angle they make with the positive x-axis in
-	the range [-Pi, Pi]. An interval is represented by its lower and upper bounds
-	(both inclusive, since the interval is closed). The lower bound may be
-	greater than the upper bound, in which case the interval is "inverted" (i.e.
-	it passes through the point (-1, 0)).
-
-	Note that the point (-1, 0) has two valid representations, Pi and -Pi. The
-	normalized representation of this point internally is Pi, so that endpoints
-	of normal intervals are in the range (-Pi, Pi]. However, we take advantage of
-	the point -Pi to construct two special intervals: the Full() interval is
-	[-Pi, Pi], and the Empty() interval is [Pi, -Pi].
-*/
-public struct S1Interval: Equatable {
+/// An S1Interval represents a closed interval on a unit circle (also known as a
+/// 1-dimensional sphere). It is capable of representing the empty interval
+/// (containing no points), the full interval (containing all points), and
+/// zero-length intervals (containing a single point).
+///
+/// Points are represented by the angle they make with the positive x-axis in
+/// the range [-Pi, Pi]. An interval is represented by its lower and upper bounds
+/// (both inclusive, since the interval is closed). The lower bound may be
+/// greater than the upper bound, in which case the interval is "inverted" (i.e.
+/// it passes through the point (-1, 0)).
+///
+/// Note that the point (-1, 0) has two valid representations, Pi and -Pi. The
+/// normalized representation of this point internally is Pi, so that endpoints
+/// of normal intervals are in the range (-Pi, Pi]. However, we take advantage of
+/// the point -Pi to construct two special intervals: the Full() interval is
+/// [-Pi, Pi], and the Empty() interval is [Pi, -Pi].
+public struct S1Interval {
 	
 	public let lo: Double
 	public let hi: Double
 	
-	/**
-		Both endpoints must be in the range -Pi to Pi inclusive. The value -Pi is
-		converted internally to Pi except for the Full() and Empty() intervals.
-	*/
+	/// Both endpoints must be in the range -Pi to Pi inclusive. The value -Pi is
+  /// converted internally to Pi except for the Full() and Empty() intervals.
 	public init(lo: Double, hi: Double) {
 		self.init(lo: lo, hi: hi, checked: false)
 	}
 	
-	/**
-		Internal constructor that assumes that both arguments are in the correct
-		range, i.e. normalization from -Pi to Pi is already done.
-	*/
+	/// Internal constructor that assumes that both arguments are in the correct
+  /// range, i.e. normalization from -Pi to Pi is already done.
 	private init(lo: Double, hi: Double, checked: Bool) {
 		var newLo = lo
 		var newHi = hi
@@ -73,11 +67,9 @@ public struct S1Interval: Equatable {
 		self.init(lo: p, hi: p)
 	}
 	
-	/**
-		Convenience method to construct the minimal interval containing the two
-		given points. This is equivalent to starting with an empty interval and
-		calling AddPoint() twice, but it is more efficient.
-	*/
+  /// Convenience method to construct the minimal interval containing the two
+  /// given points. This is equivalent to starting with an empty interval and
+  /// calling AddPoint() twice, but it is more efficient.
 	public init(p1: Double, p2: Double) {
 		var p1 = p1, p2 = p2
 		if p1 == -.pi { p1 = .pi }
@@ -89,10 +81,8 @@ public struct S1Interval: Equatable {
 		}
 	}
 	
-	/**
-		An interval is valid if neither bound exceeds Pi in absolute value, and the
-		value -Pi appears only in the empty and full intervals.
-	*/
+	/// An interval is valid if neither bound exceeds Pi in absolute value, and the
+  /// value -Pi appears only in the empty and full intervals.
 	public var isValid: Bool {
 		return (abs(lo) <= .pi && abs(hi) <= .pi && !(lo == -.pi && hi != .pi) && !(hi == -.pi && lo != .pi))
 	}
@@ -129,13 +119,11 @@ public struct S1Interval: Equatable {
 		return (length > 0) ? length : -1
 	}
 	
-	/**
-		Return the complement of the interior of the interval. An interval and its
-		complement have the same boundary but do not share any interior values. The
-		complement operator is not a bijection, since the complement of a singleton
-		interval (containing a single value) is the same as the complement of an
-		empty interval.
-	*/
+	/// Return the complement of the interior of the interval. An interval and its
+  /// complement have the same boundary but do not share any interior values. The
+  /// complement operator is not a bijection, since the complement of a singleton
+  /// interval (containing a single value) is the same as the complement of an
+  /// empty interval.
 	public var complement: S1Interval {
 		if lo == hi {
 			return S1Interval.full // Singleton.
@@ -153,10 +141,8 @@ public struct S1Interval: Equatable {
 		return fastContains(point: p)
 	}
 	
-	/**
-		Return true if the interval (which is closed) contains the point 'p'. Skips
-		the normalization of 'p' from -Pi to Pi.
-	*/
+	/// Return true if the interval (which is closed) contains the point 'p'. Skips
+  /// the normalization of 'p' from -Pi to Pi.
 	public func fastContains(point p: Double) -> Bool {
 		if isInverted {
 			return (p >= lo || p <= hi) && !isEmpty
@@ -183,12 +169,10 @@ public struct S1Interval: Equatable {
 		}
 	}
 	
-	/**
-		Returns true if the interior of this interval contains the entire interval
-		'y'. Note that x.InteriorContains(x) is true only when x is the empty or
-		full interval, and x.InteriorContains(S1Interval(p,p)) is equivalent to
-		x.InteriorContains(p).
-	*/
+	/// Returns true if the interior of this interval contains the entire interval
+  /// 'y'. Note that x.InteriorContains(x) is true only when x is the empty or
+  /// full interval, and x.InteriorContains(S1Interval(p,p)) is equivalent to
+  /// x.InteriorContains(p).
 	public func interiorContains(interval y: S1Interval) -> Bool {
 		if isInverted {
 			if !y.isInverted {
@@ -217,11 +201,9 @@ public struct S1Interval: Equatable {
 		}
 	}
 	
-	/**
-		Return true if the two intervals contain any points in common. Note that
-		the point +/-Pi has two representations, so the intervals [-Pi,-3] and
-		[2,Pi] intersect, for example.
-	*/
+	/// Return true if the two intervals contain any points in common. Note that
+  /// the point +/-Pi has two representations, so the intervals [-Pi,-3] and
+  /// [2,Pi] intersect, for example.
 	public func intersects(with y: S1Interval) -> Bool {
 		if isEmpty || y.isEmpty {
 			return false
@@ -237,11 +219,9 @@ public struct S1Interval: Equatable {
 		}
 	}
 	
-	/**
-		Return true if the interior of this interval contains any point of the
-		interval 'y' (including its boundary). Works for empty, full, and singleton
-		intervals.
-	*/
+	/// Return true if the interior of this interval contains any point of the
+  /// interval 'y' (including its boundary). Works for empty, full, and singleton
+	/// intervals.
 	public func interiorIntersects(with y: S1Interval) -> Bool {
 		if isEmpty || y.isEmpty || lo == hi {
 			return false
@@ -256,11 +236,9 @@ public struct S1Interval: Equatable {
 		}
 	}
 	
-	/**
-		Expand the interval by the minimum amount necessary so that it contains the
-		given point "p" (an angle in the range [-Pi, Pi]).
-	*/
-	public func add(point p: Double) -> S1Interval {
+	/// Expand the interval by the minimum amount necessary so that it contains the
+  /// given point "p" (an angle in the range [-Pi, Pi]).
+  public func add(point p: Double) -> S1Interval {
 		// assert (Math.abs(p) <= S2..pi);
 		var p = p
 		if p == -.pi {
@@ -286,11 +264,9 @@ public struct S1Interval: Equatable {
 		}
 	}
 	
-	/**
-		Return an interval that contains all points within a distance "radius" of
-		a point in this interval. Note that the expansion of an empty interval is
-		always empty. The radius must be non-negative.
-	*/
+	/// Return an interval that contains all points within a distance "radius" of
+  /// a point in this interval. Note that the expansion of an empty interval is
+  /// always empty. The radius must be non-negative.
 	public func expanded(radius: Double) -> S1Interval {
 		// assert (radius >= 0)
 		guard !isEmpty else { return self }
@@ -350,12 +326,10 @@ public struct S1Interval: Equatable {
 		}
 	}
 	
-	/**
-		Compute the distance from "a" to "b" in the range [0, 2*Pi). This is
-		equivalent to (drem(b - a - S2..pi, 2 * S2..pi) + S2..pi), except that
-		it is more numerically stable (it does not lose precision for very small
-		positive distances).
-	*/
+	/// Compute the distance from "a" to "b" in the range [0, 2*Pi). This is
+  /// equivalent to (drem(b - a - S2..pi, 2 * S2..pi) + S2..pi), except that
+  /// it is more numerically stable (it does not lose precision for very small
+  /// positive distances).
 	public static func positiveDistance(_ a: Double, _ b: Double) -> Double {
 		let d = b - a
 		if d >= 0 { return d }
@@ -366,6 +340,10 @@ public struct S1Interval: Equatable {
 	
 }
 
-public func ==(lhs: S1Interval, rhs: S1Interval ) -> Bool {
-	return (lhs.lo == rhs.lo && lhs.hi == rhs.hi) || (lhs.isEmpty && rhs.isEmpty)
+extension S1Interval: Equatable {
+
+  public static func ==(lhs: S1Interval, rhs: S1Interval ) -> Bool {
+    return (lhs.lo == rhs.lo && lhs.hi == rhs.hi) || (lhs.isEmpty && rhs.isEmpty)
+  }
+
 }

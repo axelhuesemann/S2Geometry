@@ -18,7 +18,7 @@ import XCTest
 class S1IntervalTests: XCTestCase {
 
 	func testIntervalOps(_ x: S1Interval, _ y: S1Interval, _ expectedRelation: String, _ expectedUnion: S1Interval, _ expectedIntersection: S1Interval) {
-		let chars = Array(expectedRelation.characters)
+		let chars = Array(expectedRelation)
 
 		// Test all of the interval operations on the given pair of intervals.
 		// "expected_relation" is a sequence of "T" and "F" characters corresponding
@@ -85,9 +85,9 @@ class S1IntervalTests: XCTestCase {
 		// GetCenter(), GetLength()
 		XCTAssertEqual(quad12.center, 0.5 * .pi)
 		XCTAssertEqual(quad12.length, .pi)
-		XCTAssertEqualWithAccuracy(S1Interval(lo: 3.1, hi: 2.9).center, 3.0 - .pi, accuracy: 1e-9)
-		XCTAssertEqualWithAccuracy(S1Interval(lo: -2.9, hi: -3.1).center, .pi - 3.0, accuracy: 1e-9)
-		XCTAssertEqualWithAccuracy(S1Interval(lo: 2.1, hi: -2.1).center, .pi, accuracy: 1e-9)
+		XCTAssertEqual(S1Interval(lo: 3.1, hi: 2.9).center, 3.0 - .pi, accuracy: 1e-9)
+		XCTAssertEqual(S1Interval(lo: -2.9, hi: -3.1).center, .pi - 3.0, accuracy: 1e-9)
+		XCTAssertEqual(S1Interval(lo: 2.1, hi: -2.1).center, .pi, accuracy: 1e-9)
 		XCTAssertEqual(pi.center, .pi)
 		XCTAssertEqual(pi.length, 0.0)
 		XCTAssertEqual(mipi.center, .pi)
@@ -95,8 +95,8 @@ class S1IntervalTests: XCTestCase {
 		XCTAssertEqual(abs(quad23.center), .pi)
 		XCTAssertEqual(abs(quad23.length), .pi)
 		let quad123 = S1Interval(lo: 0, hi: -0.5 * .pi)
-		XCTAssertEqualWithAccuracy(quad123.center, 0.75 * .pi, accuracy: 1e-9)
-		XCTAssertEqualWithAccuracy(quad123.length, 1.5 * .pi, accuracy: 1e-9)
+		XCTAssertEqual(quad123.center, 0.75 * .pi, accuracy: 1e-9)
+		XCTAssertEqual(quad123.length, 1.5 * .pi, accuracy: 1e-9)
 		XCTAssert(empty.length < 0)
 		XCTAssertEqual(full.length, 2 * .pi)
 		

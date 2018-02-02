@@ -46,9 +46,9 @@ class S2CellTests: XCTestCase {
 					vertexCounts[rawVertex] = 1
 				}
 				
-				XCTAssertEqualWithAccuracy(rawVertex.dotProd(rawEdge), 0, accuracy: 1e-9)
-				XCTAssertEqualWithAccuracy(cell.getRawVertex((k + 1) & 3).dotProd(rawEdge), 0, accuracy: 1e-9)
-				XCTAssertEqualWithAccuracy(S2Point.normalize(point: rawVertex.crossProd(cell.getRawVertex((k + 1) & 3))).dotProd(cell.getEdge(k)), 1.0, accuracy: 1e-9)
+				XCTAssertEqual(rawVertex.dotProd(rawEdge), 0, accuracy: 1e-9)
+				XCTAssertEqual(cell.getRawVertex((k + 1) & 3).dotProd(rawEdge), 0, accuracy: 1e-9)
+				XCTAssertEqual(S2Point.normalize(point: rawVertex.crossProd(cell.getRawVertex((k + 1) & 3))).dotProd(cell.getEdge(k)), 1.0, accuracy: 1e-9)
 			}
 		}
 		// Check that edges have multiplicity 2 and vertices have multiplicity 3.
@@ -140,8 +140,8 @@ class S2CellTests: XCTestCase {
 
 			// Check that the child geometry is consistent with its cell id.
 			XCTAssertEqual(children[i].cellId, childId)
-			XCTAssert(children[i].center.aequal(that: childId.point, margin: 1e-15))
-			let direct = S2Cell(cellId: childId)
+      XCTAssert(children[i].center.approxEqual(point: childId.point, accuracy: 1e-15))
+			let direct = S2Cell(cellId: childId) 
 			XCTAssertEqual(children[i].face, direct.face)
 			XCTAssertEqual(children[i].level, direct.level)
 			XCTAssertEqual(children[i].orientation, direct.orientation)
@@ -293,7 +293,7 @@ class S2CellTests: XCTestCase {
 		print("Level: \(maxMetric.getValue(level: level)) max \((maxValue + tolerance))")
 //		XCTAssert(maxMetric.getValue(level: level) <= maxValue + tolerance)
 		XCTAssert(maxMetric.getValue(level: level) >= maxValue - absError)
-//		XCTAssertEqualWithAccuracy(avgMetric.getValue(level: level), avgValue, accuracy: 10 * tolerance)
+//		XCTAssertEqual(avgMetric.getValue(level: level), avgValue, accuracy: 10 * tolerance)
 	}
 
 	func testSubdivide() {

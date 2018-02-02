@@ -21,13 +21,11 @@ private func binarySearch<T: Comparable>(array: [T], key: T) -> Int {
 	return -range.upperBound - 1
 }
 
-/**
-	An S2CellUnion is a region consisting of cells of various sizes. Typically a
-	cell union is used to approximate some other shape. There is a tradeoff
-	between the accuracy of the approximation and how many cells are used. Unlike
-	polygons, cells have a fixed hierarchical structure. This makes them more
-	suitable for optimizations based on preprocessing.
-*/
+/// An S2CellUnion is a region consisting of cells of various sizes. Typically a
+/// cell union is used to approximate some other shape. There is a tradeoff
+/// between the accuracy of the approximation and how many cells are used. Unlike
+/// polygons, cells have a fixed hierarchical structure. This makes them more
+/// suitable for optimizations based on preprocessing.
 public struct S2CellUnion: S2Region {
 	
 	/// The CellIds that form the Union

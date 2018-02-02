@@ -80,15 +80,15 @@ class S2LoopTests: XCTestCase {
 		invertedArctic80.invert()
 		// The highest latitude of each edge is attained at its midpoint.
 		let mid = (invertedArctic80.vertex(0) + invertedArctic80.vertex(1)) * 0.5
-		XCTAssertEqualWithAccuracy(invertedArctic80.rectBound.latHi.radians, S2LatLng(point: mid).lat.radians, accuracy: 1e-9)
+		XCTAssertEqual(invertedArctic80.rectBound.latHi.radians, S2LatLng(point: mid).lat.radians, accuracy: 1e-9)
 		
 		XCTAssert(southHemi.rectBound.lng.isFull);
 		XCTAssertEqual(southHemi.rectBound.lat, R1Interval(lo: -0.5 * .pi, hi: 0))
 	}
 	
 	/*public func testAreaCentroid() {
-		XCTAssertEqualWithAccuracy(northHemi.area, 2 * .pi, accuracy: 1e-9)
-		XCTAssertEqualWithAccuracy(eastHemi.area, 2 * .pi, accuracy: 1e-9)
+		XCTAssertEqual(northHemi.area, 2 * .pi, accuracy: 1e-9)
+		XCTAssertEqual(eastHemi.area, 2 * .pi, accuracy: 1e-9)
 		
 		// Construct spherical caps of random height, and approximate their boundary
 		// with closely spaces vertices. Then check that the area and centroid are
