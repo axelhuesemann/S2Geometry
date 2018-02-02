@@ -15,17 +15,20 @@
 /// An S2Cell is an S2Region object that represents a cell. Unlike S2CellIds, it
 /// supports efficient containment and intersection tests. However, it is also a
 /// more expensive representation.
-public struct S2Cell: S2Region {
+public struct S2Cell {
 	
 	private static let maxCellSize = 1 << S2CellId.maxLevel
 	
+  // id representation
 	public let cellId: S2CellId
+  // alternative (expanded) representation)
 	public let face: UInt8
 	public let level: Int8
-	public let orientation: UInt8
 	public let uv: [[Double]]
-	
-	internal init(cellId: S2CellId = S2CellId(), face: UInt8 = 0, level: Int8 = 0, orientation: UInt8 = 0, uv: [[Double]] = [[0, 0], [0, 0]]) {
+  // useful for?
+  public let orientation: UInt8
+
+  internal init(cellId: S2CellId, face: UInt8, level: Int8, orientation: UInt8, uv: [[Double]]) {
 		self.cellId = cellId
 		self.face = face
 		self.level = level
@@ -33,36 +36,49 @@ public struct S2Cell: S2Region {
 		self.uv = uv
 	}
 	
-	/// An S2Cell always corresponds to a particular S2CellId. The other constructors are just convenience methods.
-	public init(cellId: S2CellId) {
-		self.cellId = cellId
-		
-		var i = 0
-		var j = 0
-		var mOrientation: Int? = 0
-		
-		face = UInt8(cellId.toFaceIJOrientation(i: &i, j: &j, orientation: &mOrientation))
-		orientation = UInt8(mOrientation!)
-		level = Int8(cellId.level)
-		
-		let cellSize = 1 << (S2CellId.maxLevel - Int(level))
-		var _uv: [[Double]] = [[0, 0], [0, 0]]
-		for (d, ij) in [i, j].enumerated() {
-			// Compute the cell bounds in scaled (i,j) coordinates.
-			let sijLo = (ij & -cellSize) * 2 - S2Cell.maxCellSize
-			let sijHi = sijLo + cellSize * 2
-			_uv[d][0] = S2Projections.stToUV(s: (1.0 / Double(S2Cell.maxCellSize)) * Double(sijLo))
-			_uv[d][1] = S2Projections.stToUV(s: (1.0 / Double(S2Cell.maxCellSize)) * Double(sijHi))
-		}
-		uv = _uv
-	}
-	
-	// This is a static method in order to provide named parameters.
-	public init(face: Int, pos: UInt8, level: Int) {
-		self.init(cellId: S2CellId(face: face, pos: Int64(pos), level: level))
-	}
-	
-	// Convenience methods.
+  /// An S2Cell always corresponds to a particular S2CellId. The other constructors are just convenience methods.
+  public init(cellId: S2CellId) {
+    self.cellId = cellId
+    let (mFace, i, j, mOrientation) = cellId.toFaceIJOrientation()
+    face = UInt8(mFace)
+    orientation = UInt8(mOrientation)
+    level = Int8(cellId.level)
+    let cellSize = 1 << (S2CellId.maxLevel - Int(level))
+    var _uv: [[Double]] = [[0, 0], [0, 0]]
+    for (d, ij) in [i, j].enumerated() {
+      // Compute the cell bounds in scaled (i,j) coordinates.
+      let sijLo = (ij & -cellSize) * 2 - S2Cell.maxCellSize
+      let sijHi = sijLo + cellSize * 2
+      _uv[d][0] = S2Projections.stToUV(s: (1.0 / Double(S2Cell.maxCellSize)) * Double(sijLo))
+      _uv[d][1] = S2Projections.stToUV(s: (1.0 / Double(S2Cell.maxCellSize)) * Double(sijHi))
+    }
+    uv = _uv
+  }
+
+  /// An S2Cell always corresponds to a particular S2CellId. The other constructors are just convenience methods.
+  public static func expand(cellId: S2CellId) -> (UInt8, Int8, [[Double]], UInt8) {
+    let (mFace, i, j, mOrientation) = cellId.toFaceIJOrientation()
+    let face = UInt8(mFace)
+    let orientation = UInt8(mOrientation)
+    let level = Int8(cellId.level)
+    let cellSize = 1 << (S2CellId.maxLevel - Int(level))
+    var uv: [[Double]] = [[0, 0], [0, 0]]
+    for (d, ij) in [i, j].enumerated() {
+      // Compute the cell bounds in scaled (i,j) coordinates.
+      let sijLo = (ij & -cellSize) * 2 - S2Cell.maxCellSize
+      let sijHi = sijLo + cellSize * 2
+      uv[d][0] = S2Projections.stToUV(s: (1.0 / Double(S2Cell.maxCellSize)) * Double(sijLo))
+      uv[d][1] = S2Projections.stToUV(s: (1.0 / Double(S2Cell.maxCellSize)) * Double(sijHi))
+    }
+  return (face, level, uv, orientation)
+  }
+
+	// Convenience initializers
+
+  public init(face: Int, pos: UInt8, level: Int) {
+    self.init(cellId: S2CellId(face: face, pos: Int64(pos), level: level))
+  }
+  
 	public init(point: S2Point) {
 		self.init(cellId: S2CellId(point: point))
 	}
@@ -70,7 +86,9 @@ public struct S2Cell: S2Region {
 	public init(latlng: S2LatLng) {
 		self.init(cellId: S2CellId(latlng: latlng))
 	}
-	
+
+  // MARK:
+  
 	public var isLeaf: Bool {
 		return Int(level) == S2CellId.maxLevel
 	}
@@ -122,20 +140,15 @@ public struct S2Cell: S2Region {
 	public func subdivide() -> [S2Cell] {
 		// This function is equivalent to just iterating over the child cell ids
 		// and calling the S2Cell constructor, but it is about 2.5 times faster.
-		
 		guard !cellId.isLeaf else { return [] }
-		
 		// Compute the cell midpoint in uv-space.
 		let uvMid = centerUV
-		
 		// Create four children with the appropriate bounds.
 		var children: [S2Cell] = []
 		var id = cellId.childBegin()
 		for pos in 0 ..< 4 {
-			
 			var _uv: [[Double]] = [[0, 0], [0, 0]]
 			let ij = S2.posToIJ(orientation: Int(orientation), position: pos)
-			
 			for d in 0 ..< 2 {
 				// The dimension 0 index (i/u) is in bit 1 of ij.
 				let m = 1 - ((ij >> (1 - d)) & 1)
@@ -144,7 +157,6 @@ public struct S2Cell: S2Region {
 			}
 			let child = S2Cell(cellId: id, face: face, level: level + 1, orientation: orientation ^ UInt8(S2.posToOrientation(position: pos)), uv: _uv)
 			children.append(child)
-			
 			id = id.next()
 		}
 		return children
@@ -164,26 +176,18 @@ public struct S2Cell: S2Region {
 		return cellId.rawPoint
 	}
 	
-	/**
-		Return the center of the cell in (u,v) coordinates (see `S2Projections`).
-		Note that the center of the cell is defined as the point
-		at which it is recursively subdivided into four children; in general, it is
-		not at the midpoint of the (u,v) rectangle covered by the cell
-	*/
+	/// Return the center of the cell in (u,v) coordinates (see `S2Projections`).
+  /// Note that the center of the cell is defined as the point
+  /// at which it is recursively subdivided into four children; in general, it is
+  /// not at the midpoint of the (u,v) rectangle covered by the cell
 	public var centerUV: R2Vector {
-		var i = 0
-		var j = 0
-		var orientation: Int? = nil
-		_ = cellId.toFaceIJOrientation(i: &i, j: &j, orientation: &orientation)
+		let (_, i, j) = cellId.toFaceIJ()
 		let cellSize = 1 << (S2CellId.maxLevel - Int(level))
-		
 		// TODO(dbeaumont): Figure out a better naming of the variables here (and elsewhere).
 		let si = (i & -cellSize) * 2 + cellSize - S2Cell.maxCellSize
 		let x = S2Projections.stToUV(s: (1.0 / Double(S2Cell.maxCellSize)) * Double(si))
-		
 		let sj = (j & -cellSize) * 2 + cellSize - S2Cell.maxCellSize
 		let y = S2Projections.stToUV(s: (1.0 / Double(S2Cell.maxCellSize)) * Double(sj))
-		
 		return R2Vector(x: x, y: y)
 	}
 	
@@ -246,10 +250,37 @@ public struct S2Cell: S2Region {
 		return S2.area(a: v0, b: v1, c: v2) + S2.area(a: v0, b: v2, c: v3)
 	}
 	
-	////////////////////////////////////////////////////////////////////////
+}
+
+extension S2Cell: S2Region {
+  
 	// MARK: S2Region
-	////////////////////////////////////////////////////////////////////////
 	
+  // We grow the bounds slightly to make sure that the bounding rectangle
+  // also contains the normalized versions of the vertices. Note that the
+  // maximum result magnitude is Pi, with a floating-point exponent of 1.
+  // Therefore adding or subtracting 2**-51 will always change the result.
+  private static let maxError = 1.0 / Double(1 << 51)
+  
+  // The 4 cells around the equator extend to +/-45 degrees latitude at the
+  // midpoints of their top and bottom edges. The two cells covering the
+  // poles extend down to +/-35.26 degrees at their vertices.
+  // adding kMaxError (as opposed to the C version) because of asin and atan2
+  // roundoff errors
+  private static let poleMinLat = asin(sqrt(1.0 / 3.0)) - maxError // 35.26 degrees
+  
+  // Return the latitude or longitude of the cell vertex given by (i,j),
+  // where "i" and "j" are either 0 or 1.
+  private func getLatitude(i: Int, j: Int) -> Double {
+    let p = S2Projections.faceUvToXyz(face: Int(face), u: uv[0][i], v: uv[1][j])
+    return atan2(p.z, sqrt(p.x * p.x + p.y * p.y))
+  }
+  
+  private func getLongitude(i: Int, j: Int) -> Double {
+    let p = S2Projections.faceUvToXyz(face: Int(face), u: uv[0][i], v: uv[1][j])
+    return atan2(p.y, p.x)
+  }
+  
 	public var capBound: S2Cap {
 		// Use the cell center in (u,v)-space as the cap axis. This vector is
 		// very close to GetCenter() and faster to compute. Neither one of these
@@ -269,19 +300,6 @@ public struct S2Cell: S2Region {
 		return cap
 	}
 	
-	// We grow the bounds slightly to make sure that the bounding rectangle
-	// also contains the normalized versions of the vertices. Note that the
-	// maximum result magnitude is Pi, with a floating-point exponent of 1.
-	// Therefore adding or subtracting 2**-51 will always change the result.
-	private static let maxError = 1.0 / Double(1 << 51)
-	
-	// The 4 cells around the equator extend to +/-45 degrees latitude at the
-	// midpoints of their top and bottom edges. The two cells covering the
-	// poles extend down to +/-35.26 degrees at their vertices.
-	// adding kMaxError (as opposed to the C version) because of asin and atan2
-	// roundoff errors
-	private static let poleMinLat = asin(sqrt(1.0 / 3.0)) - maxError // 35.26 degrees
-	
 	public var rectBound: S2LatLngRect {
 		if level > 0 {
 			// Except for cells at level 0, the latitude and longitude extremes are
@@ -299,7 +317,6 @@ public struct S2Cell: S2Region {
 			let v = uv[1][0] + uv[1][1]
 			let i = S2Projections.getUAxis(face: Int(face)).z == 0 ? (u < 0 ? 1 : 0) : (u > 0 ? 1 : 0)
 			let j = S2Projections.getVAxis(face: Int(face)).z == 0 ? (v < 0 ? 1 : 0) : (v > 0 ? 1 : 0)
-			
 			var lat = R1Interval(p1: getLatitude(i: i, j: j), p2: getLatitude(i: 1 - i, j: 1 - j))
 			lat = lat.expanded(radius: S2Cell.maxError).intersection(with: S2LatLngRect.fullLat)
 			if (lat.lo == -0.5 * .pi || lat.hi == 0.5 * .pi) {
@@ -308,7 +325,6 @@ public struct S2Cell: S2Region {
 			let lng = S1Interval(p1: getLongitude(i: i, j: 1 - j), p2: getLongitude(i: 1 - i, j: j))
 			return S2LatLngRect(lat: lat, lng: lng.expanded(radius: S2Cell.maxError))
 		}
-		
 		// The face centers are the +X, +Y, +Z, -X, -Y, -Z axes in that order.
 		// assert (S2Projections.getNorm(face).get(face % 3) == ((face < 3) ? 1 : -1))
 		switch face {
@@ -333,19 +349,6 @@ public struct S2Cell: S2Region {
 	
 	public func mayIntersect(cell: S2Cell) -> Bool {
 		return cellId.intersects(with: cell.cellId)
-	}
-	
-	// Return the latitude or longitude of the cell vertex given by (i,j),
-	// where "i" and "j" are either 0 or 1.
-	
-	private func getLatitude(i: Int, j: Int) -> Double {
-		let p = S2Projections.faceUvToXyz(face: Int(face), u: uv[0][i], v: uv[1][j])
-		return atan2(p.z, sqrt(p.x * p.x + p.y * p.y))
-	}
-	
-	private func getLongitude(i: Int, j: Int) -> Double {
-		let p = S2Projections.faceUvToXyz(face: Int(face), u: uv[0][i], v: uv[1][j])
-		return atan2(p.y, p.x)
 	}
 	
 }

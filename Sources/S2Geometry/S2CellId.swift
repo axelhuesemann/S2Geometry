@@ -178,11 +178,7 @@ public struct S2CellId {
 		// The following calculation converts (i,j) to the (si,ti) coordinates of
 		// the cell center. (We need to multiply the coordinates by a factor of 2
 		// so that the center of leaf cells can be represented exactly.)
-		
-		var i = 0
-		var j = 0
-		var orientation: Int? = nil
-		let face = toFaceIJOrientation(i: &i, j: &j, orientation: &orientation)
+		let (face, i, j) = toFaceIJ()
 		// System.out.println("i= " + i.intValue() + " j = " + j.intValue())
 		let delta = isLeaf ? 1 : (((i ^ (Int(id) >> 2)) & 1) != 0) ? 2 : 0
 		let si = (i << 1) + delta - S2CellId.maxSize
@@ -503,24 +499,19 @@ public struct S2CellId {
 		1, 0, 3, 0, 3, 1, 7, 6, 5, 4, 3, 2, 1, 0, 15, 0, 15, 16, 15, 15, // 2-21
 		15, 5, 15, 15, 15, 24, 15, 23, 15, 15, 31, 15, 17, 15, 15 ] // 22-36
 	
-	/**
-		Return the four cells that are adjacent across the cell's four edges.
-		Neighbors are returned in the order defined by S2Cell::GetEdge. All
-		neighbors are guaranteed to be distinct.
-	*/
+	/// Return the four cells that are adjacent across the cell's four edges.
+  /// Neighbors are returned in the order defined by S2Cell::GetEdge. All
+  /// neighbors are guaranteed to be distinct.
 	public func getEdgeNeighbors() -> [S2CellId] {
 		let level = self.level
 		let size = 1 << (S2CellId.maxLevel - level)
-		var i = 0, j = 0, orientation: Int? = nil
-		let face = toFaceIJOrientation(i: &i, j: &j, orientation: &orientation)
-		
+		let (face, i, j) = toFaceIJ()
 		// Edges 0, 1, 2, 3 are in the S, E, N, W directions.
 		return [
 			S2CellId(face: face, i: i, j: j - size, sameFace: j - size >= 0).parent(level: level),
 			S2CellId(face: face, i: i + size, j: j, sameFace: i + size < S2CellId.maxSize).parent(level: level),
 			S2CellId(face: face, i: i, j: j + size, sameFace: j + size < S2CellId.maxSize).parent(level: level),
-			S2CellId(face: face, i: i - size, j: j, sameFace: i - size >= 0).parent(level: level)
-		]
+			S2CellId(face: face, i: i - size, j: j, sameFace: i - size >= 0).parent(level: level)]
 	}
 
 	/**
@@ -536,9 +527,7 @@ public struct S2CellId {
 		// "level" must be strictly less than this cell's level so that we can
 		// determine which vertex this cell is closest to.
 		// assert (level < this.level());
-		var i = 0, j = 0, orientation: Int? = nil
-		let face = toFaceIJOrientation(i: &i, j: &j, orientation: &orientation)
-		
+		let (face, i, j) = toFaceIJ()
 		// Determine the i- and j-offsets to the closest neighboring cell in each
 		// direction. This involves looking at the next bit of "i" and "j" to
 		// determine which quadrant of this->parent(level) this cell lies in.
@@ -560,19 +549,15 @@ public struct S2CellId {
 			joffset = -size
 			jsame = (j - size) >= 0
 		}
-		
 		var output: [S2CellId] = []
-		
 		output.append(parent(level: level))
 		output.append(S2CellId(face: face, i: i + ioffset, j: j, sameFace: isame).parent(level: level))
 		output.append(S2CellId(face: face, i: i, j: j + joffset, sameFace: jsame).parent(level: level))
-		
 		// If i- and j- edge neighbors are *both* on a different face, then this
 		// vertex only has three neighbors (it is one of the 8 cube vertices).
 		if isame || jsame {
 			output.append(S2CellId(face: face, i: i + ioffset, j: j + joffset, sameFace: isame && jsame).parent(level: level))
 		}
-		
 		return output
 	}
 	
@@ -585,21 +570,16 @@ public struct S2CellId {
 		face vertex, the same neighbor may be appended more than once.
 	*/
 	public func getAllNeighbors(level nbrLevel: Int) -> [S2CellId] {
-		var i = 0, j = 0, orientation: Int? = nil
-		let face = toFaceIJOrientation(i: &i, j: &j, orientation: &orientation)
-
+		let (face, i0, j0) = toFaceIJ()
 		// Find the coordinates of the lower left-hand leaf cell. We need to
 		// normalize (i,j) to a known position within the cell because nbr_level
 		// may be larger than this cell's level.
 		let size = 1 << (S2CellId.maxLevel - level)
-		i = i & -size
-		j = j & -size
-
+		let i = i0 & -size
+		let j = j0 & -size
 		let nbrSize = 1 << (S2CellId.maxLevel - nbrLevel)
 		// assert (nbrSize <= size);
-		
 		var output: [S2CellId] = []
-
 		// We compute the N-S, E-W, and diagonal neighbors in one pass.
 		// The loop test is at the end of the loop to avoid 32-bit overflow.
 		var k = -nbrSize
@@ -621,12 +601,10 @@ public struct S2CellId {
 			if k >= size { break }
 			k += nbrSize
 		}
-		
 		return output
 	}
 	
-	// ///////////////////////////////////////////////////////////////////
-	// Low-level methods.
+  // MARK: Low-level methods.
 	
 	/// Return a leaf cell given its cube face (range 0..5) and i- and j-coordinates (see s2.h).
 	public init(face: Int, i: Int, j: Int, sameFace: Bool = true) {
@@ -634,7 +612,6 @@ public struct S2CellId {
 			// Optimization notes:
 			// - Non-overlapping bit fields can be combined with either "+" or "|".
 			// Generally "+" seems to produce better code, but not always.
-			
 			// gcc doesn't have very good code generation for 64-bit operations.
 			// We optimize this by computing the result as two 32-bit integers
 			// and combining them at the end. Declaring the result as an array
@@ -642,27 +619,22 @@ public struct S2CellId {
 			// of register allocation as well. Note that the two 32-bits halves
 			// get shifted one bit to the left when they are combined.
 			var n: [Int64] = [0, Int64(face << (S2CellId.posBits - 33))]
-			
 			// Alternating faces have opposite Hilbert curve orientations; this
 			// is necessary in order for all faces to have a right-handed
 			// coordinate system.
 			var bits = (face & S2CellId.swapMask)
-			
 			// Each iteration maps 4 bits of "i" and "j" into 8 bits of the Hilbert
 			// curve position. The lookup table transforms a 10-bit key of the form
 			// "iiiijjjjoo" to a 10-bit value of the form "ppppppppoo", where the
 			// letters [ijpo] denote bits of "i", "j", Hilbert curve position, and
 			// Hilbert curve orientation respectively.
-			
 			for k in (0 ..< 8).reversed() {
 				bits = S2CellId.getBits(n: &n, i: i, j: j, k: k, bits: bits)
 			}
-			
-			self.init(id: (((n[1] << 32) + n[0]) << 1) + 1)
+    	self.init(id: (((n[1] << 32) + n[0]) << 1) + 1)
 		} else {
 			// Given (i, j) coordinates that may be out of bounds, normalize them by
 			// returning the corresponding neighbor cell on an adjacent face.
-			
 			// Convert i and j to the coordinates of a leaf cell just beyond the
 			// boundary of this face. This prevents 32-bit overflow in the case
 			// of finding the neighbors of a face cell, and also means that we
@@ -670,13 +642,11 @@ public struct S2CellId {
 			var i = i, j = j, face = face
 			i = max(-1, min(S2CellId.maxSize, i))
 			j = max(-1, min(S2CellId.maxSize, j))
-			
 			// Find the (s,t) coordinates corresponding to (i,j). At least one
 			// of these coordinates will be just outside the range [0, 1].
 			let kScale = 1.0 / Double(S2CellId.maxSize)
 			let s = kScale * Double((i << 1) + 1 - S2CellId.maxSize)
 			let t = kScale * Double((j << 1) + 1 - S2CellId.maxSize)
-			
 			// Find the leaf cell coordinates on the adjacent face, and convert
 			// them to a cell id at the appropriate level.
 			let p = S2Projections.faceUvToXyz(face: face, u: s, v: t)
@@ -697,68 +667,64 @@ public struct S2CellId {
 		return bits
 	}
 	
-	/**
-	* Return the (face, i, j) coordinates for the leaf cell corresponding to this
-	* cell id. Since cells are represented by the Hilbert curve position at the
-	* center of the cell, the returned (i,j) for non-leaf cells will be a leaf
-	* cell adjacent to the cell center. If "orientation" is non-NULL, also return
-	* the Hilbert curve orientation for the current cell.
-	*/
-	public func toFaceIJOrientation(i: inout Int, j: inout Int, orientation: inout Int?) -> Int {
-		
-		// System.out.println("Entering toFaceIjorientation");
-		let face = self.face
-		var bits = face & S2CellId.swapMask
-		
-		// System.out.println("face = " + face + " bits = " + bits);
-		
-		// Each iteration maps 8 bits of the Hilbert curve position into
-		// 4 bits of "i" and "j". The lookup table transforms a key of the
-		// form "ppppppppoo" to a value of the form "iiiijjjjoo", where the
-		// letters [ijpo] represents bits of "i", "j", the Hilbert curve
-		// position, and the Hilbert curve orientation respectively.
-		//
-		// On the first iteration we need to be careful to clear out the bits
-		// representing the cube face.
-		for k in (0 ..< 8).reversed() {
-			bits = getBits1(i: &i, j: &j, k: k, bits: bits)
-			// System.out.println("pi = " + pi + " pj= " + pj + " bits = " + bits);
-		}
-		
-		if orientation != nil {
-			// The position of a non-leaf cell at level "n" consists of a prefix of
-			// 2*n bits that identifies the cell, followed by a suffix of
-			// 2*(MAX_LEVEL-n)+1 bits of the form 10*. If n==MAX_LEVEL, the suffix is
-			// just "1" and has no effect. Otherwise, it consists of "10", followed
-			// by (MAX_LEVEL-n-1) repetitions of "00", followed by "0". The "10" has
-			// no effect, while each occurrence of "00" has the effect of reversing
-			// the kSwapMask bit.
-			// assert (S2.POS_TO_ORIENTATION[2] == 0);
-			// assert (S2.POS_TO_ORIENTATION[0] == S2.SWAP_MASK);
-			if (lowestOnBit & 0x1111111111111110) != 0 {
-				bits ^= S2.swapMask
-			}
-			orientation = bits
-		}
-		
-		return face
-	}
-	
-	private func getBits1(i: inout Int, j: inout Int, k: Int, bits: Int) -> Int {
-		let nbits = (k == 7) ? (S2CellId.maxLevel - 7 * S2CellId.lookupBits) : S2CellId.lookupBits
-		
-		var bits = bits
-		bits += (Int((id >> Int64(k * 2 * S2CellId.lookupBits + 1))) & ((1 << (2 * nbits)) - 1)) << 2
-		
-		bits = S2CellId.lookupIj[bits]
-		i += ((bits >> (S2CellId.lookupBits + 2)) << (k * S2CellId.lookupBits))
-		
-		j += ((((bits >> 2) & ((1 << S2CellId.lookupBits) - 1))) << (k * S2CellId.lookupBits))
-		bits &= (S2CellId.swapMask | S2CellId.invertMask)
-		
-		return bits
-	}
-	
+  /// Return the (face, i, j) coordinates for the leaf cell corresponding to this
+  /// cell id. Since cells are represented by the Hilbert curve position at the
+  /// center of the cell, the returned (i,j) for non-leaf cells will be a leaf
+  /// cell adjacent to the cell center. If "orientation" is non-NULL, also return
+  /// the Hilbert curve orientation for the current cell.
+  public func toFaceIJOrientation() -> (face: Int, i: Int, j: Int, orientation: Int) {
+    let face = self.face
+    var bits = face & S2CellId.swapMask
+    // Each iteration maps 8 bits of the Hilbert curve position into
+    // 4 bits of "i" and "j". The lookup table transforms a key of the
+    // form "ppppppppoo" to a value of the form "iiiijjjjoo", where the
+    // letters [ijpo] represents bits of "i", "j", the Hilbert curve
+    // position, and the Hilbert curve orientation respectively.
+    // On the first iteration we need to be careful to clear out the bits
+    // representing the cube face.
+    var i = 0
+    var j = 0
+    for k in (0 ..< 8).reversed() {
+      let nbits = (k == 7) ? (S2CellId.maxLevel - 7 * S2CellId.lookupBits) : S2CellId.lookupBits
+      bits += (Int((id >> Int64(k * 2 * S2CellId.lookupBits + 1))) & ((1 << (2 * nbits)) - 1)) << 2
+      bits = S2CellId.lookupIj[bits]
+      i += ((bits >> (S2CellId.lookupBits + 2)) << (k * S2CellId.lookupBits))
+      j += ((((bits >> 2) & ((1 << S2CellId.lookupBits) - 1))) << (k * S2CellId.lookupBits))
+      bits &= (S2CellId.swapMask | S2CellId.invertMask)
+    }
+    var orientation = 0
+    // The position of a non-leaf cell at level "n" consists of a prefix of
+    // 2*n bits that identifies the cell, followed by a suffix of
+    // 2*(MAX_LEVEL-n)+1 bits of the form 10*. If n==MAX_LEVEL, the suffix is
+    // just "1" and has no effect. Otherwise, it consists of "10", followed
+    // by (MAX_LEVEL-n-1) repetitions of "00", followed by "0". The "10" has
+    // no effect, while each occurrence of "00" has the effect of reversing
+    // the kSwapMask bit.
+    if (lowestOnBit & 0x1111111111111110) != 0 {
+      bits ^= S2.swapMask
+    }
+    orientation = bits
+    return (face, i, j, orientation)
+  }
+  
+  public func toFaceIJ() -> (face: Int, i: Int, j: Int) {
+    // this is a short version of the above toFaceIJOrientation()
+    // not calculating the orientation
+    let face = self.face
+    var bits = face & S2CellId.swapMask
+    var i = 0
+    var j = 0
+    for k in (0 ..< 8).reversed() {
+      let nbits = (k == 7) ? (S2CellId.maxLevel - 7 * S2CellId.lookupBits) : S2CellId.lookupBits
+      bits += (Int((id >> Int64(k * 2 * S2CellId.lookupBits + 1))) & ((1 << (2 * nbits)) - 1)) << 2
+      bits = S2CellId.lookupIj[bits]
+      i += ((bits >> (S2CellId.lookupBits + 2)) << (k * S2CellId.lookupBits))
+      j += ((((bits >> 2) & ((1 << S2CellId.lookupBits) - 1))) << (k * S2CellId.lookupBits))
+      bits &= (S2CellId.swapMask | S2CellId.invertMask)
+    }
+    return (face, i, j)
+  }
+  
 	/// Return the lowest-numbered bit that is on for cells at the given level.
 	public var lowestOnBit: Int64 {
 		return id & -id
