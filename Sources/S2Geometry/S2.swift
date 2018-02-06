@@ -192,15 +192,7 @@ public struct S2 {
 		}
 		
 	}
-	
-	/**
-		Return a unique "origin" on the sphere for operations that need a fixed
-		reference point. It should *not* be a point that is commonly used in edge
-		tests in order to avoid triggering code to handle degenerate cases. (This
-		rules out the north and south poles.)
-	*/
-	public static let origin = S2Point(x: 0, y: 1, z: 0)
-	
+		
 	/// Return true if the given point is approximately unit length (this is mainly useful for assertions).
 	public static func isUnitLength(point p: S2Point) -> Bool {
 		return abs(p.norm2 - 1) <= 1e-15

@@ -60,13 +60,13 @@ class S2LoopTests: XCTestCase {
 	private let bMinusA = S2Loop("0:-179, -1:180, 0:-178, 1:-180")
 	
 	// A self-crossing loop with a duplicated vertex
-	private let bowtie = S2Loop("0:0, 2:0, 1:1, 0:2, 2:2, 1:1")
+//  private let bowtie = S2Loop("0:0, 2:0, 1:1, 0:2, 2:2, 1:1")
 	
-	private var southHemi: S2Loop = S2Loop("0:-180, 0:-90, 0:0, 0:90").inverted
+	private var southHemi: S2Loop = S2Loop("0:-180, 0:-90, 0:0, 0:90").inverted()
 	
-	private var eastHemi: S2Loop = S2Loop("0:-180, -90:0, 0:0, 90:0").inverted
+	private var eastHemi: S2Loop = S2Loop("0:-180, -90:0, 0:0, 90:0").inverted()
 	
-	private var farHemi: S2Loop = S2Loop("0:-90, -90:0, 0:90, 90:0").inverted
+	private var farHemi: S2Loop = S2Loop("0:-90, -90:0, 0:90, 90:0").inverted()
 	
 	func testBounds() {
 		XCTAssert(candyCane.rectBound.lng.isFull)
@@ -75,13 +75,10 @@ class S2LoopTests: XCTestCase {
 		XCTAssert(smallNeCw.rectBound.isFull)
 		XCTAssertEqual(arctic80.rectBound, S2LatLngRect(lo: S2LatLng.fromDegrees(lat: 80, lng: -180), hi: S2LatLng.fromDegrees(lat: 90, lng: 180)))
 		XCTAssertEqual(antarctic80.rectBound, S2LatLngRect(lo: S2LatLng.fromDegrees(lat: -90, lng: -180), hi: S2LatLng.fromDegrees(lat: -80, lng: 180)))
-		
-		var invertedArctic80 = arctic80
-		invertedArctic80.invert()
+		let invertedArctic80 = arctic80.inverted()
 		// The highest latitude of each edge is attained at its midpoint.
 		let mid = (invertedArctic80.vertex(0) + invertedArctic80.vertex(1)) * 0.5
 		XCTAssertEqual(invertedArctic80.rectBound.latHi.radians, S2LatLng(point: mid).lat.radians, accuracy: 1e-9)
-		
 		XCTAssert(southHemi.rectBound.lng.isFull);
 		XCTAssertEqual(southHemi.rectBound.lat, R1Interval(lo: -0.5 * .pi, hi: 0))
 	}
@@ -156,7 +153,7 @@ class S2LoopTests: XCTestCase {
 		for i in 1 ... loop.numVertices {
 			vertices.append(loop.vertex(i))
 		}
-		return S2Loop(vertices: vertices)
+		return S2Loop(points: vertices)!
 	}
 
 	public func testContains() {
@@ -192,7 +189,7 @@ class S2LoopTests: XCTestCase {
 					loopVertices.append(cell.getVertex(k))
 					points.insert(cell.getVertex(k))
 				}
-				loops.append(S2Loop(vertices: loopVertices))
+				loops.append(S2Loop(points: loopVertices)!)
 				loopVertices.removeAll()
 				id = id.next()
 			}

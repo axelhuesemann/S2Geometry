@@ -59,12 +59,10 @@ public struct EdgeCrosser {
 		// compute the orientation of BDA and check whether it matches ACB.
 		// This checks whether the points C and D are on opposite sides of the
 		// great circle through AB.
-		
 		// Recall that robustCCW is invariant with respect to rotating its
 		// arguments, i.e. ABC has the same orientation as BDA.
 		let bda = S2.robustCCW(a: a, b: b, c: d, aCrossB: aCrossB)
 		var result: Int
-		
 		if (bda == -acb && bda != 0) {
 			// Most common case -- triangles have opposite orientations.
 			result = -1;
@@ -88,14 +86,12 @@ public struct EdgeCrosser {
 	* two vertices are identical in a way that makes it easy to implement
 	* point-in-polygon containment tests.
 	*/
-	public mutating func edgeOrVertexCrossing(point d: S2Point) -> Bool {
+	public mutating func isEdgeOrVertexCrossing(point d: S2Point) -> Bool {
 		// We need to copy c since it is clobbered by robustCrossing().
 		let c2 = S2Point(x: c.x, y: c.y, z: c.z)
-		
 		let crossing = robustCrossing(point: d)
 		if crossing < 0 { return false }
 		if crossing > 0 { return true }
-		
 		return EdgeUtil.vertexCrossing(a: a, b: b, c: c2, d: d)
 	}
 	
@@ -111,41 +107,30 @@ public struct EdgeCrosser {
 	}
 }
 
-/**
-	This class computes a bounding rectangle that contains all edges defined by
-	a vertex chain v0, v1, v2, ... All vertices must be unit length. Note that
-	the bounding rectangle of an edge can be larger than the bounding rectangle
-	of its endpoints, e.g. consider an edge that passes through the north pole.
-*/
+/// This class computes a bounding rectangle that contains all edges defined by
+/// a vertex chain v0, v1, v2, ... All vertices must be unit length. Note that
+/// the bounding rectangle of an edge can be larger than the bounding rectangle
+/// of its endpoints, e.g. consider an edge that passes through the north pole.
 public struct RectBounder {
-	// The previous vertex in the chain.
+
+  // The previous vertex in the chain.
 	private var a: S2Point = S2Point()
-	
 	// The corresponding latitude-longitude.
 	private var aLatLng: S2LatLng = S2LatLng()
-	
 	// The current bounding rectangle.
 	/// The bounding rectangle of the edge chain that connects the vertices defined so far.
 	public private(set) var bound: S2LatLngRect = .empty
 	
-	public init() { }
-	
-	/**
-		This method is called to add each vertex to the chain. 'b' must point to
-		fixed storage that persists for the lifetime of the RectBounder.
-	*/
+	/// This method is called to add each vertex to the chain. 'b' must point to
+  /// fixed storage that persists for the lifetime of the RectBounder.
 	public mutating func add(point b: S2Point) {
-		// assert (S2.isUnitLength(b));
-		
 		let bLatLng = S2LatLng(point: b)
-		
 		if bound.isEmpty {
 			bound = bound.add(point: bLatLng)
 		} else {
 			// We can't just call bound.addPoint(bLatLng) here, since we need to
 			// ensure that all the longitudes between "a" and "b" are included.
 			bound = bound.union(with: S2LatLngRect(lo: aLatLng, hi: bLatLng))
-			
 			// Check whether the min/max latitude occurs in the edge interior.
 			// We find the normal to the plane containing AB, and then a vector
 			// "dir" in this plane that also passes through the equator. We use
@@ -155,7 +140,6 @@ public struct RectBounder {
 			let dir = aCrossB.crossProd(S2Point(x: 0, y: 0, z: 1))
 			let da = dir.dotProd(a)
 			let db = dir.dotProd(b)
-			
 			if da * db < 0 {
 				// Minimum/maximum latitude occurs in the edge interior. This affects
 				// the latitude bounds but not the longitude bounds.
@@ -585,7 +569,7 @@ public struct EdgeUtil {
 		that point-in-polygon containment tests can be implemented by simply
 		counting edge crossings.
 	*/
-	public static func edgeOrVertexCrossing(a: S2Point, b: S2Point, c: S2Point, d: S2Point) -> Bool {
+	public static func isEdgeOrVertexCrossing(a: S2Point, b: S2Point, c: S2Point, d: S2Point) -> Bool {
 		let crossing = robustCrossing(a: a, b: b, c: c, d: d)
 		if crossing < 0 { return false }
 		if crossing > 0 { return true }

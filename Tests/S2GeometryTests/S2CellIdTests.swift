@@ -112,22 +112,17 @@ class S2CellIdTests: XCTestCase {
 		if (parent.level == S2CellIdTests.maxExpandLevel) {
 			return
 		}
-		
-		var i = 0, j = 0, orientation: Int? = 0
-		let face = parent.toFaceIJOrientation(i: &i, j: &j, orientation: &orientation)
+		let (face, _, _, orientation) = parent.toFaceIJOrientation()
 		XCTAssertEqual(face, parent.face)
-
 		var pos = 0
-
 		var child = parent.childBegin()
 		while child != parent.childEnd() {
 			// Do some basic checks on the children
 			XCTAssertEqual(child.level, parent.level + 1)
 			XCTAssert(!child.isLeaf)
-			var childOrientation: Int? = 0
-			XCTAssertEqual(child.toFaceIJOrientation(i: &i, j: &j, orientation: &childOrientation), face)
-			XCTAssertEqual(childOrientation, (orientation ?? 0) ^ S2.posToOrientation(position: pos))
-			
+      let (childFace, _, _, childOrientation) = child.toFaceIJOrientation()
+			XCTAssertEqual(childFace, face)
+			XCTAssertEqual(childOrientation, orientation ^ S2.posToOrientation(position: pos))
 			parentMap[child] = parent
 			expandCell(child, &cells, &parentMap)
 			pos += 1

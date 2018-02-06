@@ -140,7 +140,7 @@ class S2CellTests: XCTestCase {
 
 			// Check that the child geometry is consistent with its cell id.
 			XCTAssertEqual(children[i].cellId, childId)
-      XCTAssert(children[i].center.approxEqual(point: childId.point, accuracy: 1e-15))
+      XCTAssert(children[i].center.approxEqual(childId.point, accuracy: 1e-15))
 			let direct = S2Cell(cellId: childId) 
 			XCTAssertEqual(children[i].face, direct.face)
 			XCTAssertEqual(children[i].level, direct.level)

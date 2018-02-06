@@ -91,6 +91,6 @@ extension S2Point {
 extension S2Loop {
 	init(_ str: String) {
 		let vertices = parseVertices(str)
-		self.init(vertices: vertices)
+		self.init(points: vertices)!
 	}
 }

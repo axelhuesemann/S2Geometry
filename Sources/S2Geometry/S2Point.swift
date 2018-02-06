@@ -20,12 +20,22 @@ public struct S2Point {
 	public let y: Double
 	public let z: Double
 	
+  // MARK: initialize
+  
 	public init(x: Double = 0, y: Double = 0, z: Double = 0) {
 		self.x = x
 		self.y = y
 		self.z = z
 	}
 	
+  /// Return a unique "origin" on the sphere for operations that need a fixed
+  /// reference point. It should *not* be a point that is commonly used in edge
+  /// tests in order to avoid triggering code to handle degenerate cases. (This
+  /// rules out the north and south poles.)
+  public static let origin = S2Point(x: 0, y: 1, z: 0)
+
+  // MARK: computed members
+  
 	public var norm2: Double {
 		return x * x + y * y + z * z
 	}
@@ -88,11 +98,11 @@ public struct S2Point {
 	}
 	
 	/// Compare two vectors, return true if all their components are within a difference of margin.
-  public func approxEqual(point that: S2Point, accuracy margin: Double) -> Bool {
-    return (Swift.abs(x - that.x) < margin) && (Swift.abs(y - that.y) < margin) && (Swift.abs(z - that.z) < margin)
+  public func approxEqual(_ point: S2Point, accuracy: Double) -> Bool {
+    return (Swift.abs(x - point.x) < accuracy) && (Swift.abs(y - point.y) < accuracy) && (Swift.abs(z - point.z) < accuracy)
 	}
 	
-  // MARK:
+  // MARK: arithmetic
 	
 	public func dotProd(_ b: S2Point) -> Double {
 		return x * b.x + y * b.y + z * b.z
@@ -105,6 +115,8 @@ public struct S2Point {
 }
 
 extension S2Point: Equatable, Comparable, Hashable {
+  
+  // MARK: Equatable, Comparable, Hashable
   
   public static func ==(lhs: S2Point, rhs: S2Point) -> Bool {
     return lhs.x == rhs.x && lhs.y == rhs.y && lhs.z == rhs.z
@@ -140,6 +152,8 @@ extension S2Point: Equatable, Comparable, Hashable {
     value ^= (value >> 32)
     return Int(Int64(bitPattern: value))
   }
+  
+  // MARK: arithmetic
   
   public prefix static func -(x: S2Point) -> S2Point {
     return S2Point(x: -x.x, y: -x.y, z: -x.z)
