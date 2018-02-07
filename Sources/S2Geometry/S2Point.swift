@@ -451,13 +451,10 @@ extension S2Point {
     return robustCCW(a: a, b: b, c: c, aCrossB: a.crossProd(b))
   }
   
-  /**
-   A more efficient version of RobustCCW that allows the precomputed
-   cross-product of A and B to be specified.
-   
-   Note: a, b and c are expected to be of unit length. Otherwise, the results
-   are undefined
-   */
+  /// A more efficient version of RobustCCW that allows the precomputed
+  /// cross-product of A and B to be specified.
+  /// Note: a, b and c are expected to be of unit length. Otherwise, the results
+  /// are undefined
   public static func robustCCW(a: S2Point, b: S2Point, c: S2Point, aCrossB: S2Point) -> Int {
     // assert (isUnitLength(a) && isUnitLength(b) && isUnitLength(c));
     // There are 14 multiplications and additions to compute the determinant

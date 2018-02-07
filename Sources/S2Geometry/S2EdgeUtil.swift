@@ -12,7 +12,8 @@
 	import Darwin.C
 #endif
 	
-/// This class allows a vertex chain v0, v1, v2, ... to be efficiently tested for intersection with a given fixed edge AB.
+/// This class allows a vertex chain v0, v1, v2, ... to be
+/// efficiently tested for intersection with a given fixed edge AB.
 public struct EdgeCrosser {
 	
 	private let a: S2Point
@@ -105,6 +106,7 @@ public struct EdgeCrosser {
 		let dac = S2Point.robustCCW(a: c, b: d, c: a, aCrossB: cCrossD)
 		return dac == acb ? 1 : -1
 	}
+  
 }
 
 /// This class computes a bounding rectangle that contains all edges defined by
