@@ -23,7 +23,7 @@ import PackageDescription
 
 let package = Package(
     dependencies: [
-        .Package(url: "https://github.com/alex-alex/S2Geometry.git", majorVersion: 0, minor: 2),
+        .Package(url: "https://github.com/ahuesemann/S2Geometry.git", majorVersion: 0, minor: 3),
     ]
 )
 ```
@@ -38,7 +38,7 @@ This project is released under the MIT license. See [LICENSE](LICENSE) for detai
 [platform-url]: https://swift.org
 [mit-badge]: https://img.shields.io/badge/License-MIT-blue.svg?style=flat
 [mit-url]: https://tldrlegal.com/license/mit-license
-[travis-badge]: https://travis-ci.org/alex-alex/S2Geometry.svg?branch=master
-[travis-url]: https://travis-ci.org/alex-alex/S2Geometry
+[travis-badge]: https://travis-ci.org/axelhuesemann/S2Geometry.svg?branch=master
+[travis-url]: https://travis-ci.org/axelhuesemann/S2Geometry
 [codebeat-badge]: https://codebeat.co/badges/e810900c-b5ff-4480-b66a-06068bff979d
 [codebeat-url]: https://codebeat.co/projects/github-com-alex-alex-s2geometry
