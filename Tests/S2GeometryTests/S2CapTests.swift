@@ -33,12 +33,12 @@ class S2CapTests: XCTestCase {
 		XCTAssertEqual(full.angle.degrees, 180, accuracy: 1e-9)
 		
 		// Containment and intersection of empty and full caps.
-		XCTAssert(empty.contains(other: empty))
-		XCTAssert(full.contains(other: empty))
-		XCTAssert(full.contains(other: full))
-		XCTAssert(!empty.interiorIntersects(with: empty))
-		XCTAssert(full.interiorIntersects(with: full))
-		XCTAssert(!full.interiorIntersects(with: empty))
+		XCTAssert(empty.contains(cap: empty))
+		XCTAssert(full.contains(cap: empty))
+		XCTAssert(full.contains(cap: full))
+		XCTAssert(!empty.interiorIntersects(cap: empty))
+		XCTAssert(full.interiorIntersects(cap: full))
+		XCTAssert(!full.interiorIntersects(cap: empty))
 		
 		// Singleton cap containing the x-axis.
 		let xaxis = S2Cap(axis: S2Point(x: 1, y: 0, z: 0), height: 0)
@@ -89,22 +89,22 @@ class S2CapTests: XCTestCase {
 //		XCTAssert(!concave.contains(point: S2Point(latDegrees: -50 * (1 + S2CapTests.eps), lngDegrees: -170)))
 		
 		// Cap containment tests.
-		XCTAssert(!empty.contains(other: xaxis))
-		XCTAssert(!empty.interiorIntersects(with: xaxis))
-		XCTAssert(full.contains(other: xaxis))
-		XCTAssert(full.interiorIntersects(with: xaxis))
-		XCTAssert(!xaxis.contains(other: full))
-		XCTAssert(!xaxis.interiorIntersects(with: full))
-		XCTAssert(xaxis.contains(other: xaxis))
-		XCTAssert(!xaxis.interiorIntersects(with: xaxis))
-		XCTAssert(xaxis.contains(other: empty))
-		XCTAssert(!xaxis.interiorIntersects(with: empty))
-		XCTAssert(hemi.contains(other: tiny))
-		XCTAssert(hemi.contains(other: S2Cap(axis: S2Point(x: 1, y: 0, z: 0), angle: S1Angle(radians: 0.25 * .pi - S2CapTests.eps))))
-		XCTAssert(!hemi.contains(other: S2Cap(axis: S2Point(x: 1, y: 0, z: 0), angle: S1Angle(radians: 0.25 * .pi + S2CapTests.eps))))
-		XCTAssert(concave.contains(other: hemi))
-		XCTAssert(concave.interiorIntersects(with: hemi.complement))
-		XCTAssert(!concave.contains(other: S2Cap(axis: -concave.axis, height: 0.1)))
+		XCTAssert(!empty.contains(cap: xaxis))
+		XCTAssert(!empty.interiorIntersects(cap: xaxis))
+		XCTAssert(full.contains(cap: xaxis))
+		XCTAssert(full.interiorIntersects(cap: xaxis))
+		XCTAssert(!xaxis.contains(cap: full))
+		XCTAssert(!xaxis.interiorIntersects(cap: full))
+		XCTAssert(xaxis.contains(cap: xaxis))
+		XCTAssert(!xaxis.interiorIntersects(cap: xaxis))
+		XCTAssert(xaxis.contains(cap: empty))
+		XCTAssert(!xaxis.interiorIntersects(cap: empty))
+		XCTAssert(hemi.contains(cap: tiny))
+		XCTAssert(hemi.contains(cap: S2Cap(axis: S2Point(x: 1, y: 0, z: 0), angle: S1Angle(radians: 0.25 * .pi - S2CapTests.eps))))
+		XCTAssert(!hemi.contains(cap: S2Cap(axis: S2Point(x: 1, y: 0, z: 0), angle: S1Angle(radians: 0.25 * .pi + S2CapTests.eps))))
+		XCTAssert(concave.contains(cap: hemi))
+		XCTAssert(concave.interiorIntersects(cap: hemi.complement))
+		XCTAssert(!concave.contains(cap: S2Cap(axis: -concave.axis, height: 0.1)))
 	}
 	
 	public func testRectBound() {
@@ -185,7 +185,7 @@ class S2CapTests: XCTestCase {
 				// FIXME: Wrong result
 //				let cell = S2Cell(cellId: id)
 //				XCTAssertEqual(cell.capBound.contains(cell: cornerCell), id == cornerCell.cellId)
-//				XCTAssertEqual(cell.capBound.mayIntersect(cell: cornerCell), id.parent.contains(other: cornerCell.cellId))
+//				XCTAssertEqual(cell.capBound.mayIntersect(cell: cornerCell), id.parent.contains(rect: cornerCell.cellId))
 				id = id.next()
 			}
 			

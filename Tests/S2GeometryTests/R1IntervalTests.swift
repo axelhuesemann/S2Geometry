@@ -28,11 +28,11 @@ class R1IntervalTests: XCTestCase {
 		
 		XCTAssertEqual(x.contains(interval: y), chars[0] == "T")
 		XCTAssertEqual(x.interiorContains(interval: y), chars[1] == "T")
-		XCTAssertEqual(x.intersects(with: y), chars[2] == "T")
-		XCTAssertEqual(x.interiorIntersects(with: y), chars[3] == "T")
+		XCTAssertEqual(x.intersects(interval: y), chars[2] == "T")
+		XCTAssertEqual(x.interiorIntersects(interval: y), chars[3] == "T")
 		
-		XCTAssertEqual(x.contains(interval: y), x.union(with: y) == x)
-		XCTAssertEqual(x.intersects(with: y), !x.intersection(with: y).isEmpty)
+		XCTAssertEqual(x.contains(interval: y), x.union(interval: y) == x)
+		XCTAssertEqual(x.intersects(interval: y), !x.intersection(interval: y).isEmpty)
 	}
 	
 	func testBasic() {
@@ -95,19 +95,19 @@ class R1IntervalTests: XCTestCase {
 		XCTAssertEqual(unit.expanded(radius: 0.5), R1Interval(lo: -0.5, hi: 1.5))
 		
 		// union(), intersection()
-		XCTAssert(R1Interval(lo: 99, hi: 100).union(with: empty) == R1Interval(lo: 99, hi: 100))
-		XCTAssert(empty.union(with: R1Interval(lo: 99, hi: 100)) == R1Interval(lo: 99, hi: 100))
-		XCTAssert(R1Interval(lo: 5, hi: 3).union(with: R1Interval(lo: 0, hi: -2)).isEmpty)
-		XCTAssert(R1Interval(lo: 0, hi: -2).union(with: R1Interval(lo: 5, hi: 3)).isEmpty)
-		XCTAssert(unit.union(with: unit) == unit)
-		XCTAssert(unit.union(with: negunit) == R1Interval(lo: -1, hi: 1))
-		XCTAssert(negunit.union(with: unit) == R1Interval(lo: -1, hi: 1))
-		XCTAssert(half.union(with: unit) == unit)
-		XCTAssert(unit.intersection(with: half) == half)
-		XCTAssert(unit.intersection(with: negunit) == R1Interval(lo: 0, hi: 0))
-		XCTAssert(negunit.intersection(with: half).isEmpty)
-		XCTAssert(unit.intersection(with: empty).isEmpty)
-		XCTAssert(empty.intersection(with: unit).isEmpty)
+		XCTAssert(R1Interval(lo: 99, hi: 100).union(interval: empty) == R1Interval(lo: 99, hi: 100))
+		XCTAssert(empty.union(interval: R1Interval(lo: 99, hi: 100)) == R1Interval(lo: 99, hi: 100))
+		XCTAssert(R1Interval(lo: 5, hi: 3).union(interval: R1Interval(lo: 0, hi: -2)).isEmpty)
+		XCTAssert(R1Interval(lo: 0, hi: -2).union(interval: R1Interval(lo: 5, hi: 3)).isEmpty)
+		XCTAssert(unit.union(interval: unit) == unit)
+		XCTAssert(unit.union(interval: negunit) == R1Interval(lo: -1, hi: 1))
+		XCTAssert(negunit.union(interval: unit) == R1Interval(lo: -1, hi: 1))
+		XCTAssert(half.union(interval: unit) == unit)
+		XCTAssert(unit.intersection(interval: half) == half)
+		XCTAssert(unit.intersection(interval: negunit) == R1Interval(lo: 0, hi: 0))
+		XCTAssert(negunit.intersection(interval: half).isEmpty)
+		XCTAssert(unit.intersection(interval: empty).isEmpty)
+		XCTAssert(empty.intersection(interval: unit).isEmpty)
 	}
 	
 }

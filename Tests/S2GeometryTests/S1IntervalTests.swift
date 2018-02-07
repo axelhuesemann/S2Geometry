@@ -27,16 +27,16 @@ class S1IntervalTests: XCTestCase {
 		
 		XCTAssertEqual(x.contains(interval: y), chars[0] == "T")
 		XCTAssertEqual(x.interiorContains(interval: y), chars[1] == "T")
-		XCTAssertEqual(x.intersects(with: y), chars[2] == "T")
-		XCTAssertEqual(x.interiorIntersects(with: y), chars[3] == "T")
+		XCTAssertEqual(x.intersects(interval: y), chars[2] == "T")
+		XCTAssertEqual(x.interiorIntersects(interval: y), chars[3] == "T")
 		
 		// bounds() returns a const reference to a member variable, so we need to
 		// make a copy when invoking it on a temporary object.
-		XCTAssertEqual(expectedUnion, x.union(with: y))
-//		XCTAssertEqual(expectedIntersection, x.intersection(with: y))
+		XCTAssertEqual(expectedUnion, x.union(interval: y))
+//		XCTAssertEqual(expectedIntersection, x.intersection(interval: y))
 		
-		XCTAssertEqual(x.contains(interval: y), x.union(with: y) == x)
-//		XCTAssertEqual(x.intersects(with: y), !x.intersection(with: y).isEmpty)
+		XCTAssertEqual(x.contains(interval: y), x.union(interval: y) == x)
+//		XCTAssertEqual(x.intersects(interval: y), !x.intersection(interval: y).isEmpty)
 		
 		if y.lo == y.hi {
 			let r = x.add(point: y.lo)

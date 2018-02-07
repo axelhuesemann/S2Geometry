@@ -277,15 +277,15 @@ public struct S2CellId {
 	}
 	
 	/// Return true if the given cell is contained within this one.
-	public func contains(other: S2CellId) -> Bool {
+	public func contains(cellId: S2CellId) -> Bool {
 		// assert (isValid() && other.isValid());
-		return other >= rangeMin && other <= rangeMax
+		return cellId >= rangeMin && cellId <= rangeMax
 	}
 	
 	/// Return true if the given cell intersects this one.
-	public func intersects(with other: S2CellId) -> Bool {
+	public func intersects(cellId: S2CellId) -> Bool {
 		// assert (isValid() && other.isValid());
-		return other.rangeMin <= rangeMax && other.rangeMax >= rangeMin
+		return cellId.rangeMin <= rangeMax && cellId.rangeMax >= rangeMin
 	}
 	
 	public var parent: S2CellId {

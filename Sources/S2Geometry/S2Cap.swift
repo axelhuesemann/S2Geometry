@@ -121,11 +121,11 @@ public struct S2Cap: S2Region {
 	* Return true if and only if this cap contains the given other cap (in a set
 	* containment sense, e.g. every cap contains the empty cap).
 	*/
-	public func contains(other: S2Cap) -> Bool {
-		if isFull || other.isEmpty {
+	public func contains(cap: S2Cap) -> Bool {
+		if isFull || cap.isEmpty {
 			return true
 		}
-		return angle.radians >= axis.angle(to: other.axis) + other.angle.radians
+		return angle.radians >= axis.angle(to: cap.axis) + cap.angle.radians
 	}
 	
 	/**
@@ -133,9 +133,9 @@ public struct S2Cap: S2Region {
 		other cap. (This relationship is not symmetric, since only the interior of
 		this cap is used.)
 	*/
-	public func interiorIntersects(with other: S2Cap) -> Bool {
+	public func interiorIntersects(cap: S2Cap) -> Bool {
 		// Interior(X) intersects Y if and only if Complement(Interior(X)) does not contain Y.
-		return !complement.contains(other: other)
+		return !complement.contains(cap: cap)
 	}
 	
 	/**
@@ -170,14 +170,14 @@ public struct S2Cap: S2Region {
 	
 	// Increase the cap height if necessary to include "other". If the current
 	// cap is empty it is set to the given other cap.
-	public func add(cap other: S2Cap) -> S2Cap {
+	public func add(cap: S2Cap) -> S2Cap {
 		if isEmpty {
-			return S2Cap(axis: other.axis, height: other.height)
+			return S2Cap(axis: cap.axis, height: cap.height)
 		} else {
 			// See comments for FromAxisAngle() and AddPoint(). This could be
 			// optimized by doing the calculation in terms of cap heights rather
 			// than cap opening angles.
-			let angle = axis.angle(to: other.axis) + other.angle.radians
+			let angle = axis.angle(to: cap.axis) + cap.angle.radians
 			if angle >= .pi {
 				return S2Cap(axis: axis, height: 2) //Full cap
 			} else {
@@ -189,32 +189,27 @@ public struct S2Cap: S2Region {
 	}
 	
 	/// Return true if the cap intersects 'cell', given that the cap vertices have alrady been checked.
-	public func intersects(with cell: S2Cell, vertices: [S2Point]) -> Bool {
+	public func intersects(cell: S2Cell, vertices: [S2Point]) -> Bool {
 		// Return true if this cap intersects any point of 'cell' excluding its
 		// vertices (which are assumed to already have been checked).
-		
 		// If the cap is a hemisphere or larger, the cell and the complement of the
 		// cap are both convex. Therefore since no vertex of the cell is contained,
 		// no other interior point of the cell is contained either.
 		if height >= 1 {
 			return false
 		}
-		
 		// We need to check for empty caps due to the axis check just below.
 		if isEmpty {
 			return false
 		}
-		
 		// Optimization: return true if the cell contains the cap axis. (This
 		// allows half of the edge checks below to be skipped.)
 		if cell.contains(point: axis) {
 			return true
 		}
-		
 		// At this point we know that the cell does not contain the cap axis,
 		// and the cap does not contain any cell vertex. The only way that they
 		// can intersect is if the cap intersects the interior of some edge.
-		
 		let sin2Angle = height * (2 - height) // sin^2(capAngle)
 		for k in 0 ..< 4 {
 			let edge = cell.getRawEdge(k)
@@ -319,7 +314,7 @@ public struct S2Cap: S2Region {
 		// Otherwise, return true if the complement of the cap does not intersect
 		// the cell. (This test is slightly conservative, because technically we
 		// want Complement().InteriorIntersects() here.)
-		return !complement.intersects(with: cell, vertices: vertices)
+		return !complement.intersects(cell: cell, vertices: vertices)
 	}
 	
 	public func mayIntersect(cell: S2Cell) -> Bool {
@@ -332,7 +327,7 @@ public struct S2Cap: S2Region {
 			}
 			vertices.append(vertex)
 		}
-		return intersects(with: cell, vertices: vertices)
+		return intersects(cell: cell, vertices: vertices)
 	}
 	
 }

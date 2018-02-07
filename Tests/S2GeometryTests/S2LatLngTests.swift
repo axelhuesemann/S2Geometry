@@ -42,9 +42,9 @@ class S2LatLngTests: XCTestCase {
 		XCTAssertEqual(better.lat, S1Angle(degrees: -90))
 		XCTAssertEqual(better.lng.radians, 0, accuracy: 1e-9)
 		
-		XCTAssert((S2LatLng.fromDegrees(lat: 10, lng: 20) + S2LatLng.fromDegrees(lat: 20, lng: 30)).approxEquals(to: S2LatLng.fromDegrees(lat: 30, lng: 50)))
-		XCTAssert((S2LatLng.fromDegrees(lat: 10, lng: 20) - S2LatLng.fromDegrees(lat: 20, lng: 30)).approxEquals(to: S2LatLng.fromDegrees(lat: -10, lng: -10)))
-		XCTAssert((S2LatLng.fromDegrees(lat: 10, lng: 20) * 0.5).approxEquals(to: S2LatLng.fromDegrees(lat: 5, lng: 10)))
+		XCTAssert((S2LatLng.fromDegrees(lat: 10, lng: 20) + S2LatLng.fromDegrees(lat: 20, lng: 30)).approxEquals(S2LatLng.fromDegrees(lat: 30, lng: 50)))
+		XCTAssert((S2LatLng.fromDegrees(lat: 10, lng: 20) - S2LatLng.fromDegrees(lat: 20, lng: 30)).approxEquals(S2LatLng.fromDegrees(lat: -10, lng: -10)))
+		XCTAssert((S2LatLng.fromDegrees(lat: 10, lng: 20) * 0.5).approxEquals(S2LatLng.fromDegrees(lat: 5, lng: 10)))
 	}
 	
 	func testConversion() {

@@ -28,6 +28,8 @@ public struct S1Angle {
 	public var e6: Int64 { return getInteger(multipliedBy: 1e6) }
 	public var e7: Int64 { return getInteger(multipliedBy: 1e7) }
 	
+  // MARK: init
+  
 	public init(radians: Double = 0) {
 		self.radians = radians
 	}

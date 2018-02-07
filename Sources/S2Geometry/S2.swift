@@ -53,9 +53,7 @@ public struct S2 {
 		the child cell.
 	
 		- Parameter position: The position of the subcell in the Hilbert traversal, in the range [0,3].
-		
 		- Throws: `IllegalArgumentException` if position is out of bounds.
-		
 		- Returns: A bit mask containing some combination of {@link #SWAP_MASK} and {@link #INVERT_MASK}.
 	*/
 	public static func posToOrientation(position: Int) -> Int {
@@ -78,9 +76,7 @@ public struct S2 {
 	
 		- Parameter orientation: The subcell orientation, in the range [0,3].
 		- Parameter position: The position of the subcell in the Hilbert traversal, in the range [0,3].
-		
 		- Throws: `IllegalArgumentException` if either parameter is out of bounds.
-		
 		- Returns: The IJ-index where `0->(0,0), 1->(0,1), 2->(1,0), 3->(1,1)`.
 	*/
 	public static func posToIJ(orientation: Int, position: Int) -> Int {
@@ -101,12 +97,9 @@ public struct S2 {
 	/**
 		Returns the order in which a specified subcell is visited by the Hilbert
 		curve. This is the inverse of `posToIJ`
-	
 		- Parameter orientation: The subcell orientation, in the range [0,3].
 		- Parameter ijIndex: The subcell index where `0->(0,0), 1->(0,1), 2->(1,0), 3->(1,1)`.
-	
 		- Throws: `IllegalArgumentException` if either parameter is out of bounds.
-		
 		- Returns: The position of the subcell in the Hilbert traversal, in the range [0,3].
 	*/
 	public static func toPos(orientation: Int, ijIndex: Int) -> Int {
@@ -117,7 +110,7 @@ public struct S2 {
 	
 	/// Defines an area or a length cell metric.
 	public struct Metric {
-		
+    
 		/// The "deriv" value of a metric is a derivative, and must be multiplied by a length or area in (s,t)-space to get a useful value.
 		public let deriv: Double
 		public let dim: Int
@@ -152,16 +145,13 @@ public struct S2 {
 		*/
 		public func getMinLevel(value: Double) -> Int {
 			guard value > 0 else { return S2CellId.maxLevel }
-			
-			// This code is equivalent to computing a floating-point "level" value and rounding up.
-			
-			#if os(Linux)
+				// This code is equivalent to computing a floating-point "level" value and rounding up.
+				#if os(Linux)
 				let exponent = Glibc.exp(value / (Double(1 << dim) * deriv))
 			#else
 				let exponent = Darwin.exp(value / (Double(1 << dim) * deriv))
 			#endif
-			
-			let level = max(0, min(S2CellId.maxLevel, -((Int(exponent.bitPattern) - 1) >> (dim - 1))))
+				let level = max(0, min(S2CellId.maxLevel, -((Int(exponent.bitPattern) - 1) >> (dim - 1))))
 			// assert (level == S2CellId.MAX_LEVEL || getValue(level) <= value);
 			// assert (level == 0 || getValue(level - 1) > value);
 			return level
@@ -176,16 +166,13 @@ public struct S2 {
 		*/
 		public func getMaxLevel(value: Double) -> Int {
 			guard value > 0 else { return S2CellId.maxLevel }
-			
-			// This code is equivalent to computing a floating-point "level" value and rounding down.
-			
-			#if os(Linux)
+				// This code is equivalent to computing a floating-point "level" value and rounding down.
+				#if os(Linux)
 				let exponent = Glibc.exp(Double(1 << dim) * deriv / value)
 			#else
 				let exponent = Darwin.exp(Double(1 << dim) * deriv / value)
 			#endif
-			
-			let level = max(0, min(S2CellId.maxLevel, (Int(exponent.bitPattern - 1) >> (dim - 1))))
+				let level = max(0, min(S2CellId.maxLevel, (Int(exponent.bitPattern - 1) >> (dim - 1))))
 			// assert (level == 0 || getValue(level) >= value);
 			// assert (level == S2CellId.MAX_LEVEL || getValue(level + 1) < value);
 			return level
@@ -212,14 +199,12 @@ public struct S2 {
 		// restrictive than the corresponding definition for planar edges,
 		// since we need to exclude pairs of line segments that would
 		// otherwise "intersect" by crossing two antipodal points.
-		
 		let ab = a.crossProd(b)
 		let cd = c.crossProd(d)
 		let acb = -ab.dotProd(c)
 		let cbd = -cd.dotProd(b)
 		let bda = ab.dotProd(d)
 		let dac = cd.dotProd(a)
-		
 		return (acb * cbd > 0) && (cbd * bda > 0) && (bda * dac > 0)
 	}
 	
@@ -245,13 +230,11 @@ public struct S2 {
 		// The easiest fix is to just compute the cross product of (b+a) and (b-a).
 		// Given that "a" and "b" are unit-length, this has good orthogonality to
 		// "a" and "b" even if they differ only in the lowest bit of one component.
-		
 		// assert (isUnitLength(a) && isUnitLength(b));
 		let x = (b + a).crossProd(b - a)
 		if x != S2Point() {
 			return x
 		}
-		
 		// The only result that makes sense mathematically is to return zero, but
 		// we find it more convenient to return an arbitrary orthogonal vector.
 		return a.ortho
@@ -296,7 +279,6 @@ public struct S2 {
 		// k3 is about 0.1. Since the best case error using Girard's formula
 		// is about 1e-15, this means that we shouldn't even consider it unless
 		// s >= 3e-4 or so.
-		
 		// We use volatile doubles to force the compiler to truncate all of these
 		// quantities to 64 bits. Otherwise it may compute a value of dmin > 0
 		// simply because it chose to spill one of the intermediate values to
@@ -330,7 +312,6 @@ public struct S2 {
 		// This is equivalent to the usual Girard's formula but is slightly
 		// more accurate, faster to compute, and handles a == b == c without
 		// a special case.
-		
 		let ab = a.crossProd(b)
 		let bc = b.crossProd(c)
 		let ac = a.crossProd(c)
@@ -396,7 +377,6 @@ public struct S2 {
 		// I couldn't find any references for computing the true centroid of a
 		// spherical triangle... I have a truly marvellous demonstration of this
 		// formula which this margin is too narrow to contain :)
-		
 		// assert (isUnitLength(a) && isUnitLength(b) && isUnitLength(c));
 		let sina = b.crossProd(c).norm
 		let sinb = c.crossProd(a).norm
@@ -404,7 +384,6 @@ public struct S2 {
 		let ra = (sina == 0) ? 1 : (asin(sina) / sina)
 		let rb = (sinb == 0) ? 1 : (asin(sinb) / sinb)
 		let rc = (sinc == 0) ? 1 : (asin(sinc) / sinc)
-		
 		// Now compute a point M such that M.X = rX * det(ABC) / 2 for X in A,B,C.
 		let x = S2Point(x: a.x, y: b.x, z: c.x)
 		let y = S2Point(x: a.y, y: b.y, z: c.y)
@@ -435,7 +414,6 @@ public struct S2 {
 		//
 		// (1) x.CrossProd(y) == -(y.CrossProd(x))
 		// (2) (-x).DotProd(y) == -(x.DotProd(y))
-		
 		return c.crossProd(a).dotProd(b) > 0
 	}
 	
@@ -478,7 +456,6 @@ public struct S2 {
 	*/
 	public static func robustCCW(a: S2Point, b: S2Point, c: S2Point, aCrossB: S2Point) -> Int {
 		// assert (isUnitLength(a) && isUnitLength(b) && isUnitLength(c));
-		
 		// There are 14 multiplications and additions to compute the determinant
 		// below. Since all three points are normalized, it is possible to show
 		// that the average rounding error per operation does not exceed 2**-54,
@@ -488,21 +465,16 @@ public struct S2 {
 		// even if the arguments are rotated (which produces a mathematically
 		// equivalent result but with potentially different rounding errors).
 		let kMinAbsValue = 1.6e-15 // 2 * 14 * 2**-54
-		
 		let det = aCrossB.dotProd(c)
-		
 		// Double-check borderline cases in debug mode.
 		// assert ((Math.abs(det) < kMinAbsValue) || (Math.abs(det) > 1000 * kMinAbsValue)
 		//    || (det * expensiveCCW(a, b, c) > 0));
-		
 		if (det > kMinAbsValue) {
 			return 1
 		}
-		
 		if (det < -kMinAbsValue) {
 			return -1
 		}
-		
 		return expensiveCCW(a: a, b: b, c: c)
 	}
 	
@@ -512,7 +484,6 @@ public struct S2 {
 		if a == b || b == c || c == a {
 			return 0
 		}
-		
 		// Now compute the determinant in a stable way. Since all three points are
 		// unit length and we know that the determinant is very close to zero, this
 		// means that points are very nearly colinear. Furthermore, the most common
@@ -538,7 +509,6 @@ public struct S2 {
 		// needed to store the intermediate results) and seems like overkill for
 		// this problem. The MP library is apparently also quite particular about
 		// compilers and compilation options and would be a pain to maintain.
-		
 		// We want to handle the case of nearby points and nearly antipodal points
 		// accurately, so determine whether A+B or A-B is smaller in each case.
 		let sab: Double = (a.dotProd(b) > 0) ? -1 : 1
@@ -550,7 +520,6 @@ public struct S2 {
 		let dab = vab.norm2
 		let dbc = vbc.norm2
 		let dca = vca.norm2
-		
 		// Sort the difference vectors to find the longest edge, and use the
 		// opposite vertex as the origin. If two difference vectors are the same
 		// length, we break ties deterministically to ensure that the symmetry
@@ -576,7 +545,6 @@ public struct S2 {
 		if sign < 0 {
 			return -1
 		}
-		
 		// The points A, B, and C are numerically indistinguishable from coplanar.
 		// This may be due to roundoff error, or the points may in fact be exactly
 		// coplanar. We handle this situation by perturbing all of the points by a
@@ -586,7 +554,6 @@ public struct S2 {
 		// perturbed by this amount. It turns out that this is equivalent to
 		// checking whether the points are ordered CCW around the origin first in
 		// the Y-Z plane, then in the Z-X plane, and then in the X-Y plane.
-		
 		var ccw = planarOrderedCCW(a: R2Vector(x: a.y, y: a.z), b: R2Vector(x: b.y, y: b.z), c: R2Vector(x: c.y, y: c.z))
 		if (ccw == 0) {
 			ccw = planarOrderedCCW(a: R2Vector(x: a.z, y: a.x), b: R2Vector(x: b.z, y: b.x), c: R2Vector(x: c.z, y: c.x))
@@ -649,7 +616,6 @@ public struct S2 {
 		// The last inequality below is ">" rather than ">=" so that we return true
 		// if A == B or B == C, and otherwise false if A == C. Recall that
 		// RobustCCW(x,y,z) == -RobustCCW(z,y,x) for all x,y,z.
-		
 		var sum = 0
 		if robustCCW(a: b, b: o, c: a) >= 0 {
 			sum += 1

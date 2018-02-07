@@ -141,7 +141,6 @@ class S2CellIdTests: XCTestCase {
 		for i in 0 ..< cells.count {
 			for j in 0 ..< cells.count {
 				var contained = true
-
 				var id = cells[j]
 				while id != cells[i] {
 					if !parentMap.keys.contains(id) {
@@ -151,9 +150,9 @@ class S2CellIdTests: XCTestCase {
 					guard let _id = parentMap[id] else { XCTAssert(false); break }
 					id = _id
 				}
-				XCTAssertEqual(cells[i].contains(other: cells[j]), contained)
+				XCTAssertEqual(cells[i].contains(cellId: cells[j]), contained)
 				XCTAssertEqual(cells[j] >= cells[i].rangeMin && cells[j] <= cells[i].rangeMax, contained)
-				XCTAssertEqual(cells[i].intersects(with: cells[j]), cells[i].contains(other: cells[j]) || cells[j].contains(other: cells[i]))
+				XCTAssertEqual(cells[i].intersects(cellId: cells[j]), cells[i].contains(cellId: cells[j]) || cells[j].contains(cellId: cells[i]))
 			}
 		}
 	}

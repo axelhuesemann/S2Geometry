@@ -365,7 +365,7 @@ public struct S2Loop {
 	// A == B or A == Complement(B).
 	
   /// Return true if the region contained by this loop is a superset of the region contained by the given other loop.
-  public func contains(other b: S2Loop) -> Bool {
+  public func contains(loop b: S2Loop) -> Bool {
     // For this loop A to contains the given loop B, all of the following must
     // be true:
     // (1) There are no edge crossings between A and B except at vertices.
@@ -377,7 +377,7 @@ public struct S2Loop {
     // The second part of (3) is necessary to detect the case of two loops whose
     // union is the entire sphere, i.e. two loops that contains each other's
     // boundaries but not each other's interiors.
-    if (!bound.contains(other: b.rectBound)) { return false }
+    if (!bound.contains(rect: b.rectBound)) { return false }
     // Unless there are shared vertices, we need to check whether A contains a
     // vertex of B. Since shared vertices are rare, it is more efficient to do
     // this test up front as a quick rejection test.
@@ -389,22 +389,22 @@ public struct S2Loop {
     // and that A contains a vertex of B. However we still need to check for
     // the case mentioned above, where (A union B) is the entire sphere.
     // Normally this check is very cheap due to the bounding box precondition.
-    if bound.union(with: b.rectBound).isFull {
+    if bound.union(rect: b.rectBound).isFull {
       if b.contains(point: vertex(0)) && !b.index.contains(vertex: vertex(0)) { return false }
     }
     return true
   }
   
 	/// Return true if the region contained by this loop intersects the region contained by the given other loop.
-	public func intersects(with b: S2Loop) -> Bool {
+	public func intersects(loop b: S2Loop) -> Bool {
 		// a->Intersects(b) if and only if !a->Complement()->Contains(b).
 		// This code is similar to Contains(), but is optimized for the case
 		// where both loops enclose less than half of the sphere.
-		if !bound.intersects(with: b.rectBound) { return false }
+		if !bound.intersects(rect: b.rectBound) { return false }
 		// Normalize the arguments so that B has a smaller longitude span than A.
 		// This makes intersection tests much more efficient in the case where
 		// longitude pruning is used (see CheckEdgeCrossings).
-		if b.rectBound.lng.length > bound.lng.length { return b.intersects(with: self) }
+		if b.rectBound.lng.length > bound.lng.length { return b.intersects(loop: self) }
 		// Unless there are shared vertices, we need to check whether A contains a
 		// vertex of B. Since shared vertices are rare, it is more efficient to do
 		// this test up front as a quick acceptance test.
@@ -418,7 +418,7 @@ public struct S2Loop {
 		// arbitrary non-shared vertex of A. Note that this check is cheap because
 		// of the bounding box precondition and the fact that we normalized the
 		// arguments so that A's longitude span is at least as long as B's.
-		if b.rectBound.contains(other: bound) {
+		if b.rectBound.contains(rect: bound) {
       if b.contains(point: vertex(0)) && !b.index.contains(vertex: vertex(0)) { return true }
 		}
 		return false
@@ -426,8 +426,8 @@ public struct S2Loop {
 	
 	/// Given two loops of a polygon, return true if A contains B. This version of
 	/// contains() is much cheaper since it does not need to check whether the boundaries of the two loops cross.
-	public func containsNested(other b: S2Loop) -> Bool {
-		if !bound.contains(other: b.rectBound) { return false }
+	public func containsNested(loop b: S2Loop) -> Bool {
+		if !bound.contains(rect: b.rectBound) { return false }
 		// We are given that A and B do not share any edges, and that either one
 		// loop contains the other or they do not intersect.
 		guard let m = index.find(vertex: b.vertex(1)) else {
@@ -444,9 +444,9 @@ public struct S2Loop {
   /// Requires that A does not properly contain the complement of B, i.e. A and B
   /// do not contain each other's boundaries. This method is used for testing
   /// whether multi-loop polygons contain each other.
-	public func containsOrCrosses(other b: S2Loop) -> Int {
+	public func containsOrCrosses(loop b: S2Loop) -> Int {
 		// There can be containment or crossing only if the bounds intersect.
-		if !bound.intersects(with: b.rectBound) { return 0 }
+		if !bound.intersects(rect: b.rectBound) { return 0 }
 		// Now check whether there are any edge crossings, and also check the loop
 		// relationship at any shared vertices. Note that unlike Contains() or
 		// Intersects(), we can't do a point containment test as a shortcut because
@@ -462,7 +462,7 @@ public struct S2Loop {
 		// either A contains B, or there are no shared vertices (due to the check
 		// above). So now we just need to distinguish the case where A contains B
 		// from the case where B contains A or the two loops are disjoint.
-		if !bound.contains(other: b.rectBound) { return 0 }
+		if !bound.contains(rect: b.rectBound) { return 0 }
 		if !contains(point: b.vertex(0)) && !index.contains(vertex: b.vertex(0)) { return 0 }
 		return 1
 	}
@@ -668,11 +668,11 @@ extension S2Loop: S2Region {
 		// a general polygon. A future optimization could also take advantage of
 		// the fact than an S2Cell is convex.
 		let cellBound = cell.rectBound
-		if !bound.contains(other: cellBound) {
+		if !bound.contains(rect: cellBound) {
 			return false
 		}
 		let cellLoop = S2Loop(cell: cell, bound: cellBound)
-		return contains(other: cellLoop)
+		return contains(loop: cellLoop)
 	}
 	
 	/// If this method returns false, the region does not intersect the given cell.
@@ -683,11 +683,11 @@ extension S2Loop: S2Region {
 		// a general polygon. A future optimization could also take advantage of
 		// the fact than an S2Cell is convex.
 		let cellBound = cell.rectBound
-		if !bound.intersects(with: cellBound) {
+		if !bound.intersects(rect: cellBound) {
 			return false
 		}
 		let cellLoop = S2Loop(cell: cell, bound: cellBound)
-		return cellLoop.intersects(with: self)
+		return cellLoop.intersects(loop: self)
 	}
 	
 }

@@ -13,11 +13,15 @@ public struct R2Vector {
 	public let x: Double
 	public let y: Double
 	
+  // MARK: init
+  
 	public init(x: Double = 0, y: Double = 0) {
 		self.x = x
 		self.y = y
 	}
 	
+  // MARK: computed members
+  
 	public func get(index: Int) -> Double {
 		return index == 0 ? x : y
 	}
@@ -26,7 +30,7 @@ public struct R2Vector {
 		return (x * x) + (y * y)
 	}
 	
-  // MARK:
+  // MARK: arithmetic
 	
 	public func dotProd(_ b: R2Vector) -> Double {
 		return x * b.x + y * b.y

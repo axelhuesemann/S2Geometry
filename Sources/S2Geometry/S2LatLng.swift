@@ -129,7 +129,7 @@ public struct S2LatLng {
 	}
 	
 	/// Returns true if both the latitude and longitude of the given point are within {@code maxError} radians of this point.
-	public func approxEquals(to other: S2LatLng, maxError: Double = 1e-9) -> Bool {
+	public func approxEquals(_ other: S2LatLng, maxError: Double = 1e-9) -> Bool {
 		return (abs(lat.radians - other.lat.radians) < maxError) && (abs(lng.radians - other.lng.radians) < maxError)
 	}
 	

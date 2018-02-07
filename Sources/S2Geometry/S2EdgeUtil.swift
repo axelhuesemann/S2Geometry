@@ -130,7 +130,7 @@ public struct RectBounder {
 		} else {
 			// We can't just call bound.addPoint(bLatLng) here, since we need to
 			// ensure that all the longitudes between "a" and "b" are included.
-			bound = bound.union(with: S2LatLngRect(lo: aLatLng, hi: bLatLng))
+			bound = bound.union(rect: S2LatLngRect(lo: aLatLng, hi: bLatLng))
 			// Check whether the min/max latitude occurs in the edge interior.
 			// We find the normal to the plane containing AB, and then a vector
 			// "dir" in this plane that also passes through the equator. We use
@@ -295,7 +295,7 @@ public struct LongitudePruner {
 	*/
 	public mutating func intersects(with v1: S2Point) -> Bool {
 		let lng1 = S2LatLng.longitude(point: v1).radians
-		let result = interval.intersects(with: S1Interval(p1: lng0, p2: lng1))
+		let result = interval.intersects(interval: S1Interval(p1: lng0, p2: lng1))
 		self.lng0 = lng1
 		return result
 	}

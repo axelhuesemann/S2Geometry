@@ -149,12 +149,12 @@ public struct S2CellUnion: S2Region {
 		for var id in cellIds {
 			var size = output.count
 			// Check whether this cell is contained by the previous cell.
-			if (!output.isEmpty && output[size - 1].contains(other: id)) {
+			if (!output.isEmpty && output[size - 1].contains(cellId: id)) {
 				continue
 			}
 		
 			// Discard any previous cells contained by this cell.
-			while (!output.isEmpty && id.contains(other: output[output.count - 1])) {
+			while (!output.isEmpty && id.contains(cellId: output[output.count - 1])) {
 				output.remove(at: output.count - 1)
 			}
 		
@@ -203,7 +203,7 @@ public struct S2CellUnion: S2Region {
 		defined with respect to regions, e.g. a cell contains its 4 children. This
 		is a fast operation (logarithmic in the size of the cell union).
 	*/
-	public func contains(id: S2CellId) -> Bool {
+	public func contains(cellId: S2CellId) -> Bool {
 		// This function requires that Normalize has been called first.
 		//
 		// This is an exact test. Each cell occupies a linear span of the S2
@@ -212,17 +212,17 @@ public struct S2CellUnion: S2Region {
 		// the space-filling curve. So we simply find the pair of cell ids that
 		// surround the given cell id (using binary search). There is containment
 		// if and only if one of these two cell ids contains this cell.
-		var pos = binarySearch(array: cellIds, key: id)
+		var pos = binarySearch(array: cellIds, key: cellId)
 		if pos < 0 { pos = -pos - 1 }
-		if pos < cellIds.count && cellIds[pos].rangeMin <= id { return true }
-		return pos != 0 && cellIds[pos - 1].rangeMax >= id
+		if pos < cellIds.count && cellIds[pos].rangeMin <= cellId { return true }
+		return pos != 0 && cellIds[pos - 1].rangeMax >= cellId
 	}
 	
 	/**
 		Return true if the cell union intersects the given cell id. This is a fast
 		operation (logarithmic in the size of the cell union).
 	*/
-	public func intersects(with id: S2CellId) -> Bool {
+	public func intersects(cellId id: S2CellId) -> Bool {
 		// This function requires that Normalize has been called first.
 		// This is an exact test; see the comments for Contains() above.
 		var pos = binarySearch(array: cellIds, key: id)
@@ -231,21 +231,21 @@ public struct S2CellUnion: S2Region {
 		return pos != 0 && cellIds[pos - 1].rangeMax >= id.rangeMin
 	}
 	
-	public func contains(other: S2CellUnion) -> Bool {
+	public func contains(cellUnion: S2CellUnion) -> Bool {
 		// TODO(kirilll?): A divide-and-conquer or alternating-skip-search approach
 		// may be significantly faster in both the average and worst case.
-		for id in other.cellIds {
-			if !contains(id: id) { return false }
+		for id in cellUnion.cellIds {
+			if !contains(cellId: id) { return false }
 		}
-		return true;
+		return true
 	}
 	
 	/// Return true if this cell union contain/intersects the given other cell union.
-	public func intersects(union: S2CellUnion) -> Bool {
+	public func intersects(cellUnion: S2CellUnion) -> Bool {
 		// TODO(kirilll?): A divide-and-conquer or alternating-skip-search approach
 		// may be significantly faster in both the average and worst case.
-		for id in union.cellIds {
-			if intersects(with: id) {
+		for id in cellUnion.cellIds {
+			if intersects(cellId: id) {
 				return true
 			}
 		}
@@ -510,17 +510,17 @@ public struct S2CellUnion: S2Region {
 	public var rectBound: S2LatLngRect {
 		var bound: S2LatLngRect = .empty
 		for id in cellIds {
-			bound = bound.union(with: S2Cell(cellId: id).rectBound)
+			bound = bound.union(rect: S2Cell(cellId: id).rectBound)
 		}
 		return bound
 	}
 	
 	public func contains(cell: S2Cell) -> Bool {
-		return contains(id: cell.cellId)
+		return contains(cellId: cell.cellId)
 	}
 	
 	public func mayIntersect(cell: S2Cell) -> Bool {
-		return intersects(with: cell.cellId)
+		return intersects(cellId: cell.cellId)
 	}
 	
 }

@@ -33,6 +33,8 @@ public struct S1Interval {
 	public let lo: Double
 	public let hi: Double
 	
+  // MARK: init
+  
 	/// Both endpoints must be in the range -Pi to Pi inclusive. The value -Pi is
   /// converted internally to Pi except for the Full() and Empty() intervals.
 	public init(lo: Double, hi: Double) {
@@ -81,6 +83,8 @@ public struct S1Interval {
 		}
 	}
 	
+  // MARK: tests
+  
 	/// An interval is valid if neither bound exceeds Pi in absolute value, and the
   /// value -Pi appears only in the empty and full intervals.
 	public var isValid: Bool {
@@ -102,6 +106,8 @@ public struct S1Interval {
 		return lo > hi
 	}
 	
+  // MARK: computed members
+  
 	/// Return the midpoint of the interval. For full and empty intervals, the result is arbitrary.
 	public var center: Double {
 		let center = 0.5 * (lo + hi)
@@ -132,6 +138,20 @@ public struct S1Interval {
 		}
 	}
 	
+  /// Compute the distance from "a" to "b" in the range [0, 2*Pi). This is
+  /// equivalent to (drem(b - a - S2..pi, 2 * S2..pi) + S2..pi), except that
+  /// it is more numerically stable (it does not lose precision for very small
+  /// positive distances).
+  public static func positiveDistance(_ a: Double, _ b: Double) -> Double {
+    let d = b - a
+    if d >= 0 { return d }
+    // We want to ensure that if b == Pi and a == (-Pi + eps),
+    // the return result is approximately 2*Pi and not zero.
+    return (b + .pi) - (a - .pi)
+  }
+  
+  // MARK: contains / intersects
+  
 	/// Return true if the interval (which is closed) contains the point 'p'.
 	public func contains(point p: Double) -> Bool {
 		// Works for empty, full, and singleton intervals.
@@ -155,7 +175,6 @@ public struct S1Interval {
 	public func contains(interval y: S1Interval) -> Bool {
 		// It might be helpful to compare the structure of these tests to
 		// the simpler Contains(double) method above.
-		
 		if isInverted {
 			if y.isInverted {
 				return y.lo >= lo && y.hi <= hi
@@ -193,7 +212,6 @@ public struct S1Interval {
 		// assert (Math.abs(p) <= S2..pi);
 		var p = p
 		if (p == -.pi) { p = .pi }
-		
 		if isInverted {
 			return p > lo || p < hi
 		} else {
@@ -204,7 +222,7 @@ public struct S1Interval {
 	/// Return true if the two intervals contain any points in common. Note that
   /// the point +/-Pi has two representations, so the intervals [-Pi,-3] and
   /// [2,Pi] intersect, for example.
-	public func intersects(with y: S1Interval) -> Bool {
+	public func intersects(interval y: S1Interval) -> Bool {
 		if isEmpty || y.isEmpty {
 			return false
 		}
@@ -222,7 +240,7 @@ public struct S1Interval {
 	/// Return true if the interior of this interval contains any point of the
   /// interval 'y' (including its boundary). Works for empty, full, and singleton
 	/// intervals.
-	public func interiorIntersects(with y: S1Interval) -> Bool {
+	public func interiorIntersects(interval y: S1Interval) -> Bool {
 		if isEmpty || y.isEmpty || lo == hi {
 			return false
 		}
@@ -236,6 +254,8 @@ public struct S1Interval {
 		}
 	}
 	
+  // MARK: arithmetic
+  
 	/// Expand the interval by the minimum amount necessary so that it contains the
   /// given point "p" (an angle in the range [-Pi, Pi]).
   public func add(point p: Double) -> S1Interval {
@@ -244,11 +264,9 @@ public struct S1Interval {
 		if p == -.pi {
 			p = .pi
 		}
-		
 		if fastContains(point: p) {
 			return self
 		}
-		
 		if isEmpty {
 			return S1Interval(point: p)
 		} else {
@@ -270,13 +288,11 @@ public struct S1Interval {
 	public func expanded(radius: Double) -> S1Interval {
 		// assert (radius >= 0)
 		guard !isEmpty else { return self }
-		
 		// Check whether this interval will be full after expansion, allowing
 		// for a 1-bit rounding error when computing each endpoint.
 		if length + 2 * radius >= 2 * .pi - 1e-15 {
 			return .full
 		}
-		
 		// NOTE(dbeaumont): Should this remainder be 2 * .pi or just .pi ??
 		var lo = remainder(self.lo - radius, 2 * .pi)
 		let hi = remainder(self.hi + radius, 2 * .pi)
@@ -287,11 +303,10 @@ public struct S1Interval {
 	}
 	
 	/// Return the smallest interval that contains this interval and the given interval "y".
-	public func union(with y: S1Interval) -> S1Interval {
+	public func union(interval y: S1Interval) -> S1Interval {
 		// The y.is_full() case is handled correctly in all cases by the code
 		// below, but can follow three separate code paths depending on whether
 		// this interval is inverted, is non-inverted but contains Pi, or neither.
-		
 		if y.isEmpty {
 			return self
 		}
@@ -309,13 +324,11 @@ public struct S1Interval {
 		if (fastContains(point: y.hi)) {
 			return S1Interval(lo: y.lo, hi: hi, checked: true)
 		}
-		
 		// This interval contains neither endpoint of y. This means that either y
 		// contains all of this interval, or the two intervals are disjoint.
 		if isEmpty || y.fastContains(point: lo) {
 			return y
 		}
-		
 		// Check which pair of endpoints are closer together.
 		let dlo = S1Interval.positiveDistance(y.hi, lo)
 		let dhi = S1Interval.positiveDistance(hi, y.lo)
@@ -324,18 +337,6 @@ public struct S1Interval {
 		} else {
 			return S1Interval(lo: lo, hi: y.hi, checked: true)
 		}
-	}
-	
-	/// Compute the distance from "a" to "b" in the range [0, 2*Pi). This is
-  /// equivalent to (drem(b - a - S2..pi, 2 * S2..pi) + S2..pi), except that
-  /// it is more numerically stable (it does not lose precision for very small
-  /// positive distances).
-	public static func positiveDistance(_ a: Double, _ b: Double) -> Double {
-		let d = b - a
-		if d >= 0 { return d }
-		// We want to ensure that if b == Pi and a == (-Pi + eps),
-		// the return result is approximately 2*Pi and not zero.
-		return (b + .pi) - (a - .pi)
 	}
 	
 }

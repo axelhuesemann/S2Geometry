@@ -213,13 +213,13 @@ class S2LoopTests: XCTestCase {
 	}
 	
 	private func assertRelation(_ a: S2Loop, _ b: S2Loop, _ containsOrCrosses: Int, _ intersects: Bool, _ nestable: Bool) {
-		XCTAssertEqual(a.contains(other: b), containsOrCrosses == 1)
-		XCTAssertEqual(a.intersects(with: b), intersects)
+		XCTAssertEqual(a.contains(loop: b), containsOrCrosses == 1)
+		XCTAssertEqual(a.intersects(loop: b), intersects)
 		if nestable {
-			XCTAssertEqual(a.containsNested(other: b), a.contains(other: b))
+			XCTAssertEqual(a.containsNested(loop: b), a.contains(loop: b))
 		}
 		if containsOrCrosses >= -1 {
-			XCTAssertEqual(a.containsOrCrosses(other: b), containsOrCrosses)
+			XCTAssertEqual(a.containsOrCrosses(loop: b), containsOrCrosses)
 		}
 	}
 	

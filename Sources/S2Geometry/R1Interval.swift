@@ -14,14 +14,13 @@ public struct R1Interval {
 	public let lo: Double
 	public let hi: Double
 	
+  // MARK: init / factory
+  
 	/// Interval constructor. If lo > hi, the interval is empty.
 	public init(lo: Double, hi: Double) {
 		self.lo = lo
 		self.hi = hi
 	}
-	
-	/// Returns an empty interval. (Any interval where lo > hi is considered empty.)
-	public static let empty = R1Interval(lo: 1, hi: 0)
 	
 	/// Convenience method to construct an interval containing a single point.
 	public init(point p: Double) {
@@ -39,11 +38,18 @@ public struct R1Interval {
 		}
 	}
 	
+  /// Returns an empty interval. (Any interval where lo > hi is considered empty.)
+  public static let empty = R1Interval(lo: 1, hi: 0)
+  
+  // MARK: tests
+  
 	/// Return true if the interval is empty, i.e. it contains no points.
 	public var isEmpty: Bool {
 		return lo > hi
 	}
 	
+  // MARK: computed members
+  
 	/// Return the center of the interval. For empty intervals, the result is arbitrary.
 	public var center: Double {
 		return 0.5 * (lo + hi)
@@ -53,7 +59,9 @@ public struct R1Interval {
 	public var length: Double {
 		return hi - lo
 	}
-	
+
+  // MARK: contains / intersects
+  
 	public func contains(point p: Double) -> Bool {
 		return p >= lo && p <= hi
 	}
@@ -75,7 +83,7 @@ public struct R1Interval {
 	}
 	
 	/// Return true if this interval intersects the given interval, i.e. if they have any points in common.
-	public func intersects(with y: R1Interval) -> Bool {
+	public func intersects(interval y: R1Interval) -> Bool {
 		if lo <= y.lo {
 			return y.lo <= hi && y.lo <= y.hi
 		} else {
@@ -84,10 +92,12 @@ public struct R1Interval {
 	}
 	
 	/// Return true if the interior of this interval intersects any point of the given interval (including its boundary).
-	public func interiorIntersects(with y: R1Interval) -> Bool {
+	public func interiorIntersects(interval y: R1Interval) -> Bool {
 		return y.lo < hi && lo < y.hi && lo < hi && y.lo <= y.hi
 	}
 	
+  // MARK: arithmetic
+  
 	/// Expand the interval so that it contains the given point "p".
 	public func add(point p: Double) -> R1Interval {
 		if isEmpty {
@@ -109,19 +119,21 @@ public struct R1Interval {
 	}
 	
 	/// Return the smallest interval that contains this interval and the given interval "y".
-	public func union(with y: R1Interval) -> R1Interval {
+	public func union(interval y: R1Interval) -> R1Interval {
 		guard !isEmpty else { return y }
 		guard !y.isEmpty else { return self }
 		return R1Interval(lo: min(lo, y.lo), hi: max(hi, y.hi))
 	}
 	
 	/// Return the intersection of this interval with the given interval. Empty intervals do not need to be special-cased.
-	public func intersection(with y: R1Interval) -> R1Interval {
+	public func intersection(interval y: R1Interval) -> R1Interval {
 		return R1Interval(lo: max(lo, y.lo), hi: min(hi, y.hi))
 	}
 	
+  // MARK: compare
+  
 	/// Return true if length of the symmetric difference between the two intervals is at most the given tolerance.
-	public func approxEquals(y: R1Interval, maxError: Double = 1e-15) -> Bool {
+	public func approxEquals(_ y: R1Interval, maxError: Double = 1e-15) -> Bool {
 		guard !isEmpty else { return y.length <= maxError }
 		guard !y.isEmpty else { return length <= maxError }
 		return abs(y.lo - lo) + abs(y.hi - hi) <= maxError
@@ -129,18 +141,18 @@ public struct R1Interval {
 	
 }
 
-extension R1Interval: Equatable {
+extension R1Interval: Equatable, Hashable {
 
   public static func ==(lhs: R1Interval, rhs: R1Interval) -> Bool {
     return (lhs.lo == rhs.lo && lhs.hi == rhs.hi) || (lhs.isEmpty && rhs.isEmpty)
   }
 
-  //  public var hashValue: Int {
-  //    guard !isEmpty else { return 17 }
-  //    var value: Int64 = 17
-  //    value = 37 * value + unsafeBitCast(lo, Int64.self)
-  //    value = 37 * value + unsafeBitCast(hi, Int64.self)
-  //    return Int(value ^ (value >> 32))
-  //  }
+  public var hashValue: Int {
+    guard !isEmpty else { return 17 }
+    var value: Int64 = 17
+    value = 37 * value + Int64(bitPattern: lo.bitPattern)
+    value = 37 * value + Int64(bitPattern: hi.bitPattern)
+    return Int(value ^ (value >> 32))
+  }
   
 }

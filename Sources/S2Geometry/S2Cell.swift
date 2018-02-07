@@ -318,7 +318,7 @@ extension S2Cell: S2Region {
 			let i = S2Projections.getUAxis(face: Int(face)).z == 0 ? (u < 0 ? 1 : 0) : (u > 0 ? 1 : 0)
 			let j = S2Projections.getVAxis(face: Int(face)).z == 0 ? (v < 0 ? 1 : 0) : (v > 0 ? 1 : 0)
 			var lat = R1Interval(p1: getLatitude(i: i, j: j), p2: getLatitude(i: 1 - i, j: 1 - j))
-			lat = lat.expanded(radius: S2Cell.maxError).intersection(with: S2LatLngRect.fullLat)
+			lat = lat.expanded(radius: S2Cell.maxError).intersection(interval: S2LatLngRect.fullLat)
 			if (lat.lo == -0.5 * .pi || lat.hi == 0.5 * .pi) {
 				return S2LatLngRect(lat: lat, lng: S1Interval.full)
 			}
@@ -344,11 +344,11 @@ extension S2Cell: S2Region {
 	}
 	
 	public func contains(cell: S2Cell) -> Bool {
-		return cellId.contains(other: cell.cellId)
+		return cellId.contains(cellId: cell.cellId)
 	}
 	
 	public func mayIntersect(cell: S2Cell) -> Bool {
-		return cellId.intersects(with: cell.cellId)
+		return cellId.intersects(cellId: cell.cellId)
 	}
 	
 }
