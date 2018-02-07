@@ -83,7 +83,7 @@ public struct S2Loop {
 	
 	public let vertices: [S2Point]
   let originInside: Bool
-  let bound: S2LatLngRect
+  let bound: S2Rect
 
 	/// Edge index used for performance-critical operations. For example,
   /// contains() can determine whether a point is inside a loop in nearly
@@ -99,7 +99,7 @@ public struct S2Loop {
 	
   // MARK: inits / factory
   
-  init?(vertices: [S2Point], originInside: Bool, bound: S2LatLngRect) {
+  init?(vertices: [S2Point], originInside: Bool, bound: S2Rect) {
     self.vertices = vertices
     self.originInside = originInside
     self.bound = bound
@@ -147,12 +147,12 @@ public struct S2Loop {
       // if A = R but not if C = R. This convention is required for compatibility
       // with VertexCrossing. (Note that we can't use OriginPoint
       // as the fixed vector because of the possibility that B == OriginPoint.)
-      let v1Inside = S2.orderedCCW(a: vertices[1].ortho, b: vertices[0], c: vertices[2], o: vertices[1])
+      let v1Inside = S2Point.orderedCCW(a: vertices[1].ortho, b: vertices[0], c: vertices[2], o: vertices[1])
       return v1Inside != S2Loop.contains(point: vertices[1], vertices: vertices, originInside: false)
     }
   }
 
-  static func computeBound(vertices: [S2Point], originInside: Bool) -> S2LatLngRect {
+  static func computeBound(vertices: [S2Point], originInside: Bool) -> S2Rect {
     //
     switch vertices.count {
     case 1:
@@ -180,7 +180,7 @@ public struct S2Loop {
     bounder.add(point: vertices[0])
     var b = bounder.bound
     if S2Loop.contains(point: S2Point(x: 0, y: 0, z: 1), vertices: vertices, originInside: originInside) {
-      b = S2LatLngRect(lat: R1Interval(lo: b.lat.lo, hi: .pi / 2.0), lng: S1Interval.full)
+      b = S2Rect(lat: R1Interval(lo: b.lat.lo, hi: .pi / 2.0), lng: S1Interval.full)
     }
     // If a loop contains the south pole, then either it wraps entirely
     // around the sphere (full longitude range), or it also contains the
@@ -188,7 +188,7 @@ public struct S2Loop {
     // Either way, we only need to do the south pole containment test if
     // b.Lng.isFull.
     if b.lng.isFull && S2Loop.contains(point: S2Point(x: 0, y: 0, z: -1), vertices: vertices, originInside: originInside) {
-      b = S2LatLngRect(lat: R1Interval(lo: -.pi / 2.0, hi: b.lat.hi), lng: S1Interval.full)
+      b = S2Rect(lat: R1Interval(lo: -.pi / 2.0, hi: b.lat.hi), lng: S1Interval.full)
     }
     return b
   }
@@ -211,9 +211,9 @@ public struct S2Loop {
   /// coverings of cell and LoopFromCell(cell) will be different, because the
   /// loop contains points on its boundary that actually belong to other cells
   /// (i.e., the covering will include a layer of neighboring cells).
-  public init(cell: S2Cell, bound: S2LatLngRect? = nil) {
+  public init(cell: S2Cell, bound: S2Rect? = nil) {
     let bound = bound ?? cell.rectBound
-    let vertices = (0..<4).map { cell.getVertex($0) }
+    let vertices = (0..<4).map { cell.vertex($0) }
     let originInside = S2Loop.computeOrigin(vertices: vertices)
     self.init(vertices: vertices, originInside: originInside, bound: bound)!
   }
@@ -260,7 +260,7 @@ public struct S2Loop {
 	public func inverted() -> S2Loop {
     let newVertices = Array(vertices.reversed())
 		let newOriginInside = !originInside
-    let newBound: S2LatLngRect
+    let newBound: S2Rect
 		if bound.lat.lo > -0.5 * .pi && bound.lat.hi < 0.5 * .pi {
 			// The complement of this loop contains both poles.
 			newBound = .full
@@ -300,10 +300,10 @@ public struct S2Loop {
 		var areaSum: Double = 0
 		var centroidSum = S2Point()
 		for i in 1 ... numVertices {
-			areaSum += S2.signedArea(a: origin, b: vertex(i - 1), c: vertex(i));
+			areaSum += S2Point.signedArea(a: origin, b: vertex(i - 1), c: vertex(i));
 			if doCentroid {
 				// The true centroid is already premultiplied by the triangle area.
-				let trueCentroid = S2.trueCentroid(a: origin, b: vertex(i - 1), c: vertex(i))
+				let trueCentroid = S2Point.trueCentroid(a: origin, b: vertex(i - 1), c: vertex(i))
 				centroidSum = centroidSum + trueCentroid
 			}
 		}
@@ -478,7 +478,7 @@ public struct S2Loop {
 		var iThis = index.firstLogicalVertex
 		var iOther = b.index.firstLogicalVertex
 		for _ in 0 ..< maxVertices {
-			if !S2.approxEquals(vertex(iThis), b.vertex(iOther), maxError: maxError) { return false }
+			if !S2Point.approxEquals(vertex(iThis), b.vertex(iOther), maxError: maxError) { return false }
 			iThis += 1
 			iOther += 1
 		}
@@ -545,7 +545,7 @@ public struct S2Loop {
 		}
 		// All vertices must be unit length.
 		for i in 0 ..< numVertices {
-			if !S2.isUnitLength(point: vertex(i)) {
+			if !vertex(i).isUnitLength {
 				return false
 			}
 		}
@@ -581,10 +581,10 @@ public struct S2Loop {
 					// to determine edge intersections. The workaround is to ignore
 					// intersections between edge pairs where all four points are
 					// nearly colinear.
-					let abc = S2.angle(a: vertex(a1), b: vertex(a2), c: vertex(b1))
-					let abcNearlyLinear = S2.approxEquals(abc, 0, maxError: S2Loop.maxIntersectionError) || S2.approxEquals(abc, .pi, maxError: S2Loop.maxIntersectionError)
-					let abd = S2.angle(a: vertex(a1), b: vertex(a2), c: vertex(b2));
-					let abdNearlyLinear = S2.approxEquals(abd, 0, maxError: S2Loop.maxIntersectionError) || S2.approxEquals(abd, .pi, maxError: S2Loop.maxIntersectionError)
+					let abc = S2Point.angle(a: vertex(a1), b: vertex(a2), c: vertex(b1))
+					let abcNearlyLinear = S2Point.approxEquals(abc, 0, maxError: S2Loop.maxIntersectionError) || S2Point.approxEquals(abc, .pi, maxError: S2Loop.maxIntersectionError)
+					let abd = S2Point.angle(a: vertex(a1), b: vertex(a2), c: vertex(b2));
+					let abdNearlyLinear = S2Point.approxEquals(abd, 0, maxError: S2Loop.maxIntersectionError) || S2Point.approxEquals(abd, .pi, maxError: S2Loop.maxIntersectionError)
 					if abcNearlyLinear && abdNearlyLinear { continue }
 					if previousIndex != b1 {
 						crosser.restartAt(point: vertex(b1))
@@ -656,7 +656,7 @@ extension S2Loop: S2Region {
 	}
 	
 	/// Return a bounding latitude-longitude rectangle.
-	public var rectBound: S2LatLngRect {
+	public var rectBound: S2Rect {
 		return bound
 	}
 	

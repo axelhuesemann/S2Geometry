@@ -31,7 +31,7 @@ public struct S2LatLng {
 		return S1Angle(radians: atan2(p.y, p.x))
 	}
 	
-	public init(lat: S1Angle = S1Angle(), lng: S1Angle = S1Angle()) {
+	public init(lat: S1Angle, lng: S1Angle) {
 		self.lat = lat
 		self.lng = lng
 	}
@@ -57,28 +57,25 @@ public struct S2LatLng {
 	}
 	
 	/// Convert a point (not necessarily normalized) to an S2LatLng.
-	public init(point p: S2Point) {
+	public init(point: S2Point) {
 		// The latitude and longitude are already normalized. We use atan2 to
 		// compute the latitude because the input vector is not necessarily unit
 		// length, and atan2 is much more accurate than asin near the poles.
 		// Note that atan2(0, 0) is defined to be zero.
-		self.init(lat: S2LatLng.latitude(point: p), lng: S2LatLng.longitude(point: p))
+		self.init(lat: S2LatLng.latitude(point: point), lng: S2LatLng.longitude(point: point))
 	}
 	
-	/**
-		Return true if the latitude is between -90 and 90 degrees inclusive and the
-		longitude is between -180 and 180 degrees inclusive.
-	*/
+	/// Return true if the latitude is between -90 and 90 degrees inclusive and the
+  /// longitude is between -180 and 180 degrees inclusive.
 	public var isValid: Bool {
 		return abs(lat.radians) <= 0.5 * .pi && abs(lng.radians) <= .pi
 	}
 	
-	/**
-		Returns a new S2LatLng based on this instance for which `isValid` will be `true`.
-		- Latitude is clipped to the range `[-90, 90]`
-		- Longitude is normalized to be in the range `[-180, 180]`
-		If the current point is valid then the returned point will have the same coordinates.
-	*/
+  /// Returns a new S2LatLng based on this instance for which `isValid` will be `true`.
+  /// - Latitude is clipped to the range `[-90, 90]`
+  /// - Longitude is normalized to be in the range `[-180, 180]`
+  ///
+  /// If the current point is valid then the returned point will have the same coordinates.
 	public var normalized: S2LatLng {
 		// drem(x, 2 * S2..pi) reduces its argument to the range
 		// [-S2..pi, S2..pi] inclusive, which is what we want here.

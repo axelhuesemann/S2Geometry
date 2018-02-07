@@ -93,7 +93,7 @@ public struct S2Cell {
 		return Int(level) == S2CellId.maxLevel
 	}
 	
-	public func getVertex(_ k: Int) -> S2Point {
+	public func vertex(_ k: Int) -> S2Point {
 		return S2Point.normalize(point: getRawVertex(k))
 	}
 	
@@ -148,14 +148,15 @@ public struct S2Cell {
 		var id = cellId.childBegin()
 		for pos in 0 ..< 4 {
 			var _uv: [[Double]] = [[0, 0], [0, 0]]
-			let ij = S2.posToIJ(orientation: Int(orientation), position: pos)
+			let ij = S2Lookup.posToIJ(orientation: Int(orientation), position: pos)
 			for d in 0 ..< 2 {
 				// The dimension 0 index (i/u) is in bit 1 of ij.
 				let m = 1 - ((ij >> (1 - d)) & 1)
 				_uv[d][m] = uvMid.get(index: d)
 				_uv[d][1 - m] = uv[d][1 - m]
 			}
-			let child = S2Cell(cellId: id, face: face, level: level + 1, orientation: orientation ^ UInt8(S2.posToOrientation(position: pos)), uv: _uv)
+      let childOrientation = orientation ^ UInt8(S2Lookup.posToOrientation(position: pos))
+			let child = S2Cell(cellId: id, face: face, level: level + 1, orientation: childOrientation, uv: _uv)
 			children.append(child)
 			id = id.next()
 		}
@@ -222,12 +223,10 @@ public struct S2Cell {
 	public var approxArea: Double {
 		// All cells at the first two levels have the same area.
 		if level < 2 { return averageArea }
-		
 		// First, compute the approximate area of the cell when projected
 		// perpendicular to its normal. The cross product of its diagonals gives
 		// the normal, and the length of the normal is twice the projected area.
-		let flatArea = 0.5 * (getVertex(2) - getVertex(0)).crossProd((getVertex(3) - getVertex(1))).norm
-		
+		let flatArea = 0.5 * (vertex(2) - vertex(0)).crossProd((vertex(3) - vertex(1))).norm
 		// Now, compensate for the curvature of the cell surface by pretending
 		// that the cell is shaped like a spherical cap. The ratio of the
 		// area of a spherical cap to the area of its projected disc turns out
@@ -237,17 +236,15 @@ public struct S2Cell {
 		return flatArea * 2 / (1 + sqrt(1 - min(M_1_PI * flatArea, 1.0)))
 	}
 	
-	/**
-		Return the area of this cell as accurately as possible. This method is more
-		expensive but it is accurate to 6 digits of precision even for leaf cells
-		(whose area is approximately 1e-18).
-	*/
+  /// Return the area of this cell as accurately as possible. This method is more
+  /// expensive but it is accurate to 6 digits of precision even for leaf cells
+  /// (whose area is approximately 1e-18).
 	public var exactArea: Double {
-		let v0 = getVertex(0)
-		let v1 = getVertex(1)
-		let v2 = getVertex(2)
-		let v3 = getVertex(3)
-		return S2.area(a: v0, b: v1, c: v2) + S2.area(a: v0, b: v2, c: v3)
+		let v0 = vertex(0)
+		let v1 = vertex(1)
+		let v2 = vertex(2)
+		let v3 = vertex(3)
+		return S2Point.area(a: v0, b: v1, c: v2) + S2Point.area(a: v0, b: v2, c: v3)
 	}
 	
 }
@@ -295,12 +292,12 @@ extension S2Cell: S2Region {
 		let v = 0.5 * (uv[1][0] + uv[1][1])
 		var cap = S2Cap(axis: S2Point.normalize(point: S2Projections.faceUvToXyz(face: Int(face), u: u, v: v)), height: 0)
 		for k in 0 ..< 4 {
-			cap = cap.add(point: getVertex(k))
+			cap = cap.add(point: vertex(k))
 		}
 		return cap
 	}
 	
-	public var rectBound: S2LatLngRect {
+	public var rectBound: S2Rect {
 		if level > 0 {
 			// Except for cells at level 0, the latitude and longitude extremes are
 			// attained at the vertices. Furthermore, the latitude range is
@@ -318,28 +315,28 @@ extension S2Cell: S2Region {
 			let i = S2Projections.getUAxis(face: Int(face)).z == 0 ? (u < 0 ? 1 : 0) : (u > 0 ? 1 : 0)
 			let j = S2Projections.getVAxis(face: Int(face)).z == 0 ? (v < 0 ? 1 : 0) : (v > 0 ? 1 : 0)
 			var lat = R1Interval(p1: getLatitude(i: i, j: j), p2: getLatitude(i: 1 - i, j: 1 - j))
-			lat = lat.expanded(radius: S2Cell.maxError).intersection(interval: S2LatLngRect.fullLat)
+			lat = lat.expanded(radius: S2Cell.maxError).intersection(interval: S2Rect.fullLat)
 			if (lat.lo == -0.5 * .pi || lat.hi == 0.5 * .pi) {
-				return S2LatLngRect(lat: lat, lng: S1Interval.full)
+				return S2Rect(lat: lat, lng: S1Interval.full)
 			}
 			let lng = S1Interval(p1: getLongitude(i: i, j: 1 - j), p2: getLongitude(i: 1 - i, j: j))
-			return S2LatLngRect(lat: lat, lng: lng.expanded(radius: S2Cell.maxError))
+			return S2Rect(lat: lat, lng: lng.expanded(radius: S2Cell.maxError))
 		}
 		// The face centers are the +X, +Y, +Z, -X, -Y, -Z axes in that order.
 		// assert (S2Projections.getNorm(face).get(face % 3) == ((face < 3) ? 1 : -1))
 		switch face {
 		case 0:
-			return S2LatLngRect(lat: R1Interval(lo: -0.25 * .pi, hi: 0.25 * .pi), lng: S1Interval(lo: -0.25 * .pi, hi: 0.25 * .pi))
+			return S2Rect(lat: R1Interval(lo: -0.25 * .pi, hi: 0.25 * .pi), lng: S1Interval(lo: -0.25 * .pi, hi: 0.25 * .pi))
 		case 1:
-			return S2LatLngRect(lat: R1Interval(lo: -0.25 * .pi, hi: 0.25 * .pi), lng: S1Interval(lo: 0.25 * .pi, hi: 3 * 0.25 * .pi))
+			return S2Rect(lat: R1Interval(lo: -0.25 * .pi, hi: 0.25 * .pi), lng: S1Interval(lo: 0.25 * .pi, hi: 3 * 0.25 * .pi))
 		case 2:
-			return S2LatLngRect(lat: R1Interval(lo: S2Cell.poleMinLat, hi: 0.5 * .pi), lng: S1Interval(lo: -.pi, hi: .pi))
+			return S2Rect(lat: R1Interval(lo: S2Cell.poleMinLat, hi: 0.5 * .pi), lng: S1Interval(lo: -.pi, hi: .pi))
 		case 3:
-			return S2LatLngRect(lat: R1Interval(lo: -0.25 * .pi, hi: 0.25 * .pi), lng: S1Interval(lo: 3 * 0.25 * .pi, hi: -3 * 0.25 * .pi))
+			return S2Rect(lat: R1Interval(lo: -0.25 * .pi, hi: 0.25 * .pi), lng: S1Interval(lo: 3 * 0.25 * .pi, hi: -3 * 0.25 * .pi))
 		case 4:
-			return S2LatLngRect(lat: R1Interval(lo: -0.25 * .pi, hi: 0.25 * .pi), lng: S1Interval(lo: -3 * 0.25 * .pi, hi: -0.25 * .pi))
+			return S2Rect(lat: R1Interval(lo: -0.25 * .pi, hi: 0.25 * .pi), lng: S1Interval(lo: -3 * 0.25 * .pi, hi: -0.25 * .pi))
 		default:
-			return S2LatLngRect(lat: R1Interval(lo: -0.5 * .pi, hi: -S2Cell.poleMinLat), lng: S1Interval(lo: -.pi, hi: .pi))
+			return S2Rect(lat: R1Interval(lo: -0.5 * .pi, hi: -S2Cell.poleMinLat), lng: S1Interval(lo: -.pi, hi: .pi))
 		}
 	}
 	

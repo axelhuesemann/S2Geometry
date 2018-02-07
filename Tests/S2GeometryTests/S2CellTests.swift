@@ -29,7 +29,7 @@ class S2CellTests: XCTestCase {
 			XCTAssertEqual(Int(cell.face), face)
 			XCTAssertEqual(cell.level, 0)
 			// Top-level faces have alternating orientations to get RHS coordinates.
-			XCTAssertEqual(Int(cell.orientation), face & S2.swapMask)
+			XCTAssertEqual(Int(cell.orientation), face & S2Lookup.swapMask)
 			XCTAssert(!cell.isLeaf)
 			for k in 0 ..< 4 {
 				let rawEdge = cell.getRawEdge(k)
@@ -140,7 +140,7 @@ class S2CellTests: XCTestCase {
 
 			// Check that the child geometry is consistent with its cell id.
 			XCTAssertEqual(children[i].cellId, childId)
-      XCTAssert(children[i].center.approxEqual(childId.point, accuracy: 1e-15))
+      XCTAssert(children[i].center.approxEquals(childId.point, accuracy: 1e-15))
 			let direct = S2Cell(cellId: childId) 
 			XCTAssertEqual(children[i].face, direct.face)
 			XCTAssertEqual(children[i].level, direct.level)
@@ -178,18 +178,18 @@ class S2CellTests: XCTestCase {
 			XCTAssert(parentRect.contains(point: children[i].rawCenter))
 			for j in 0 ..< 4 {
 //				XCTAssert(childCap.contains(point: children[i].getVertex(j)))
-				XCTAssert(childRect.contains(point: children[i].getVertex(j)))
+				XCTAssert(childRect.contains(point: children[i].vertex(j)))
 				XCTAssert(childRect.contains(point: children[i].getRawVertex(j)))
 //				XCTAssert(parentCap.contains(point: children[i].getVertex(j)))
-				if (!parentRect.contains(point: children[i].getVertex(j))) {
+				if (!parentRect.contains(point: children[i].vertex(j))) {
 					print("cell: \(cell) i: \(i) j: \(j)")
 					print("Children \(i): \(children[i])")
 					print("Parent rect: \(parentRect)")
-					print("Vertex raw(j) \(children[i].getVertex(j))")
-					print("Latlng of vertex: \(S2LatLng(point: children[i].getVertex(j)))")
+					print("Vertex raw(j) \(children[i].vertex(j))")
+					print("Latlng of vertex: \(S2LatLng(point: children[i].vertex(j)))")
 					_ = cell.rectBound
 				}
-				XCTAssert(parentRect.contains(point: children[i].getVertex(j)))
+				XCTAssert(parentRect.contains(point: children[i].vertex(j)))
 				if (!parentRect.contains(point: children[i].getRawVertex(j))) {
 					print("cell: \(cell) i: \(i) j: \(j)")
 					print("Children \(i): \(children[i])")
@@ -205,7 +205,7 @@ class S2CellTests: XCTestCase {
 					var capCount = 0
 					var rectCount = 0
 					for k in 0 ..< 4 {
-						if (childCap.contains(point: children[j].getVertex(k))) {
+						if (childCap.contains(point: children[j].vertex(k))) {
 						  capCount += 1
 						}
 						if (childRect.contains(point: children[j].getRawVertex(k))) {
@@ -257,7 +257,7 @@ class S2CellTests: XCTestCase {
 		XCTAssert(abs(log(averageArea / cell.averageArea)) <= abs(log(1 + 1e-15)))
 	}
 
-	func testMinMaxAvg(_ label: String, _ level: Int, _ count: Double, _ absError: Double, _ minValue: Double, _ maxValue: Double, _ avgValue: Double, _ minMetric: S2.Metric, _ maxMetric: S2.Metric, _ avgMetric: S2.Metric) {
+	func testMinMaxAvg(_ label: String, _ level: Int, _ count: Double, _ absError: Double, _ minValue: Double, _ maxValue: Double, _ avgValue: Double, _ minMetric: S2Metric, _ maxMetric: S2Metric, _ avgMetric: S2Metric) {
 
 		// All metrics are minimums, maximums, or averages of differential
 		// quantities, and therefore will not be exact for cells at any finite

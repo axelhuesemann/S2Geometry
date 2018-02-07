@@ -122,7 +122,7 @@ class S2CellIdTests: XCTestCase {
 			XCTAssert(!child.isLeaf)
       let (childFace, _, _, childOrientation) = child.toFaceIJOrientation()
 			XCTAssertEqual(childFace, face)
-			XCTAssertEqual(childOrientation, orientation ^ S2.posToOrientation(position: pos))
+			XCTAssertEqual(childOrientation, orientation ^ S2Lookup.posToOrientation(position: pos))
 			parentMap[child] = parent
 			expandCell(child, &cells, &parentMap)
 			pos += 1

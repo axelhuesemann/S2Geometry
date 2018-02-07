@@ -73,8 +73,8 @@ class S2LoopTests: XCTestCase {
 		XCTAssert(candyCane.rectBound.latLo.degrees < -20)
 		XCTAssert(candyCane.rectBound.latHi.degrees > 10)
 		XCTAssert(smallNeCw.rectBound.isFull)
-		XCTAssertEqual(arctic80.rectBound, S2LatLngRect(lo: S2LatLng.fromDegrees(lat: 80, lng: -180), hi: S2LatLng.fromDegrees(lat: 90, lng: 180)))
-		XCTAssertEqual(antarctic80.rectBound, S2LatLngRect(lo: S2LatLng.fromDegrees(lat: -90, lng: -180), hi: S2LatLng.fromDegrees(lat: -80, lng: 180)))
+		XCTAssertEqual(arctic80.rectBound, S2Rect(lo: S2LatLng.fromDegrees(lat: 80, lng: -180), hi: S2LatLng.fromDegrees(lat: 90, lng: 180)))
+		XCTAssertEqual(antarctic80.rectBound, S2Rect(lo: S2LatLng.fromDegrees(lat: -90, lng: -180), hi: S2LatLng.fromDegrees(lat: -80, lng: 180)))
 		let invertedArctic80 = arctic80.inverted()
 		// The highest latitude of each edge is attained at its midpoint.
 		let mid = (invertedArctic80.vertex(0) + invertedArctic80.vertex(1)) * 0.5
@@ -186,8 +186,8 @@ class S2LoopTests: XCTestCase {
 				let cell = S2Cell(cellId: id)
 				points.insert(cell.center)
 				for k in 0 ..< 4 {
-					loopVertices.append(cell.getVertex(k))
-					points.insert(cell.getVertex(k))
+					loopVertices.append(cell.vertex(k))
+					points.insert(cell.vertex(k))
 				}
 				loops.append(S2Loop(points: loopVertices)!)
 				loopVertices.removeAll()

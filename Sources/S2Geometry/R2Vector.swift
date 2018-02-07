@@ -40,6 +40,40 @@ public struct R2Vector {
 		return x * b.y - y * b.x
 	}
 	
+  // MARK: ccw
+  
+  public static func planarCCW(a: R2Vector, b: R2Vector) -> Int {
+    // Return +1 if the edge AB is CCW around the origin, etc.
+    let sab: Double = (a.dotProd(b) > 0) ? -1 : 1
+    let vab = a + (b * sab)
+    let da = a.norm2
+    let db = b.norm2
+    let sign: Double
+    if da < db || (da == db && a < b) {
+      sign = a.crossProd(vab) * sab
+    } else {
+      sign = vab.crossProd(b)
+    }
+    if sign > 0 {
+      return 1
+    }
+    if sign < 0 {
+      return -1
+    }
+    return 0
+  }
+  
+  public static func planarOrderedCCW(a: R2Vector, b: R2Vector, c: R2Vector) -> Int {
+    let sum = planarCCW(a: a, b: b) + planarCCW(a: b, b: c) + planarCCW(a: c, b: a)
+    if sum > 0 {
+      return 1
+    }
+    if sum < 0 {
+      return -1
+    }
+    return 0
+  }
+
 }
 
 extension R2Vector: Equatable, Comparable {

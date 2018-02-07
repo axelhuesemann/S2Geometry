@@ -34,21 +34,19 @@ public struct S2Cap: S2Region {
 	public let axis: S2Point
 	public let height: Double
 	
-	/**
-		Create a cap given its axis and the cap height, i.e. the maximum projected
-		distance along the cap axis from the cap center. 'axis' should be a
-		unit-length vector.
-	*/
+  // MARK: init / factory
+  
+	/// Create a cap given its axis and the cap height, i.e. the maximum projected
+	/// distance along the cap axis from the cap center. 'axis' should be a
+	/// unit-length vector.
 	public init(axis: S2Point = S2Point(), height: Double = 0) {
 		self.axis = axis
 		self.height = height
 	}
 	
-	/**
-		Create a cap given its axis and the cap opening angle, i.e. maximum angle
-		between the axis and a point on the cap. 'axis' should be a unit-length
-		vector, and 'angle' should be between 0 and 180 degrees.
-	*/
+	/// Create a cap given its axis and the cap opening angle, i.e. maximum angle
+  /// between the axis and a point on the cap. 'axis' should be a unit-length
+  /// vector, and 'angle' should be between 0 and 180 degrees.
 	public init(axis: S2Point, angle: S1Angle) {
 		// The height of the cap can be computed as 1-cos(angle), but this isn't
 		// very accurate for angles close to zero (where cos(angle) is almost 1).
@@ -59,10 +57,8 @@ public struct S2Cap: S2Region {
 		self.init(axis: axis, height: 2 * d * d)
 	}
 	
-	/**
-		Create a cap given its axis and its area in steradians. 'axis' should be a
-		unit-length vector, and 'area' should be between 0 and 4 * .pi.
-	*/
+	/// Create a cap given its axis and its area in steradians. 'axis' should be a
+  /// unit-length vector, and 'area' should be between 0 and 4 * .pi.
 	public init(axis: S2Point, area: Double) {
 		// assert (S2.isUnitLength(axis));
 		self.init(axis: axis, height: area / (2 * .pi))
@@ -91,7 +87,7 @@ public struct S2Cap: S2Region {
 	
 	/// We allow negative heights (to represent empty caps) but not heights greater than 2.
 	public var isValid: Bool {
-		return S2.isUnitLength(point: axis) && height <= 2
+		return axis.isUnitLength && height <= 2
 	}
 	
 	/// Return true if the cap is empty, i.e. it contains no points.
@@ -250,7 +246,7 @@ public struct S2Cap: S2Region {
 		return self
 	}
 	
-	public var rectBound: S2LatLngRect {
+	public var rectBound: S2Rect {
 		if isEmpty {
 			return .empty
 		}
@@ -295,7 +291,7 @@ public struct S2Cap: S2Region {
 				lng.1 = remainder(axisLatLng.lng.radians + angleA, 2 * .pi)
 			}
 		}
-		return S2LatLngRect(lat: R1Interval(lo: lat.0, hi: lat.1), lng: S1Interval(lo: lng.0, hi: lng.1))
+		return S2Rect(lat: R1Interval(lo: lat.0, hi: lat.1), lng: S1Interval(lo: lng.0, hi: lng.1))
 	}
 	
 	public func contains(cell: S2Cell) -> Bool {
@@ -305,7 +301,7 @@ public struct S2Cap: S2Region {
 		// of 2-epsilon is rounded off to 2).
 		var vertices: [S2Point] = []
 		for k in 0 ..< 4 {
-			let vertex = cell.getVertex(k)
+			let vertex = cell.vertex(k)
 			if !contains(point: vertex) {
 				return false
 			}
@@ -321,7 +317,7 @@ public struct S2Cap: S2Region {
 		// If the cap contains any cell vertex, return true.
 		var vertices: [S2Point] = []
 		for k in 0 ..< 4 {
-			let vertex = cell.getVertex(k)
+			let vertex = cell.vertex(k)
 			if contains(point: vertex) {
 				return true
 			}

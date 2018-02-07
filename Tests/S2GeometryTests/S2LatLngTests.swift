@@ -53,13 +53,12 @@ class S2LatLngTests: XCTestCase {
 		XCTAssertEqual(S2LatLng(point: S2LatLng.fromRadians(lat: -0.5 * .pi, lng: 1).point).lat.radians, -0.5 * .pi)
 		XCTAssertEqual(abs(S2LatLng(point: S2LatLng.fromDegrees(lat: 12.2, lng: 180.0).point).lng.degrees), 180.0, accuracy: 1e-9)
 		XCTAssertEqual(abs(S2LatLng(point: S2LatLng.fromRadians(lat: 0.1, lng: -.pi).point).lng.radians), .pi)
-		
 		// Test a bunch of random points.
 		for _ in 0 ..< 100000 {
-			let p = S2Point.random
-			XCTAssert(S2.approxEquals(p, S2LatLng(point: p).point))
+			let p1 = S2Point.random
+      let p2 = S2LatLng(point: p1).point
+			XCTAssert(S2Point.approxEquals(p1, p2))
 		}
-		
 		// Test generation from E5
 		let test = S2LatLng.fromE5(lat: 123456, lng: 98765)
 		XCTAssertEqual(test.lat.degrees, 1.23456, accuracy: 1e-9)

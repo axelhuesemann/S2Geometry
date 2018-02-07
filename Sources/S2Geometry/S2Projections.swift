@@ -81,27 +81,27 @@ public struct S2Projections {
 	// and the maximum is at most MAX_AREA.GetValue(k). The average area of all
 	// cells at level k is exactly AVG_AREA.GetValue(k).
 	
-	public static let minArea: S2.Metric = {
+	public static let minArea: S2Metric = {
 		let x: Double
 		switch s2Projection {
 		case .linear:		x = 1 / (3 * sqrt(3))				// 0.192
 		case .tan:			x = (.pi * .pi) / (16 * 2.squareRoot())	// 0.436
 		case .quadratic:	x = 2 * 2.squareRoot() / 9					// 0.314
 		}
-		return S2.Metric(dim: 2, deriv: x)
+		return S2Metric(dim: 2, deriv: x)
 	}()
 	
-	public static let maxArea: S2.Metric = {
+	public static let maxArea: S2Metric = {
 		let x: Double
 		switch s2Projection {
 		case .linear:		x = 1						// 1.000
 		case .tan:			x = .pi * .pi / 16			// 0.617
 		case .quadratic:	x = 0.65894981424079037		// 0.659
 		}
-		return S2.Metric(dim: 2, deriv: x)
+		return S2Metric(dim: 2, deriv: x)
 	}()
 	
-	public static let avgArea = S2.Metric(dim: 2, deriv: .pi / 6) // 0.524
+	public static let avgArea = S2Metric(dim: 2, deriv: .pi / 6) // 0.524
 	
 	// Each cell is bounded by four planes passing through its four edges and
 	// the center of the sphere. These metrics relate to the angle between each
@@ -111,27 +111,27 @@ public struct S2Projections {
 	// level k is MAX_ANGLE_SPAN.GetValue(k), and the average angle span for all
 	// cells at level k is approximately AVG_ANGLE_SPAN.GetValue(k).
 	
-	public static let minAngleSpan: S2.Metric = {
+	public static let minAngleSpan: S2Metric = {
 		let x: Double
 		switch s2Projection {
 		case .linear:		x = 0.5						// 0.500
 		case .tan:			x = .pi / 4					// 0.785
 		case .quadratic:	x = 2 / 3					// 0.667
 		}
-		return S2.Metric(dim: 1, deriv: x)
+		return S2Metric(dim: 1, deriv: x)
 	}()
 	
-	public static let maxAngleSpan: S2.Metric = {
+	public static let maxAngleSpan: S2Metric = {
 		let x: Double
 		switch s2Projection {
 		case .linear:		x = 1						// 1.000
 		case .tan:			x = .pi / 4					// 0.785
 		case .quadratic:	x = 0.85244858959960922		// 0.852
 		}
-		return S2.Metric(dim: 1, deriv: x)
+		return S2Metric(dim: 1, deriv: x)
 	}()
 	
-	public static let avgAngleSpan = S2.Metric(dim: 1, deriv: .pi / 4) // 0.785
+	public static let avgAngleSpan = S2Metric(dim: 1, deriv: .pi / 4) // 0.785
 	
 	// The width of geometric figure is defined as the distance between two
 	// parallel bounding lines in a given direction. For cells, the minimum
@@ -152,26 +152,26 @@ public struct S2Projections {
 	// point on one edge of a cell to the closest point on the opposite edge.
 	// For example, this is useful when "growing" regions by a fixed distance.
 	
-	public static let minWidth: S2.Metric = {
+	public static let minWidth: S2Metric = {
 		let x: Double
 		switch s2Projection {
 		case .linear:		x = 1 / sqrt(6)				// 0.408
 		case .tan:			x = .pi / (4 * 2.squareRoot())		// 0.555
 		case .quadratic:	x = 2.squareRoot() / 3				// 0.471
 		}
-		return S2.Metric(dim: 1, deriv: x)
+		return S2Metric(dim: 1, deriv: x)
 	}()
 	
-	public static let maxWidth = S2.Metric(dim: 1, deriv: maxAngleSpan.deriv)
+	public static let maxWidth = S2Metric(dim: 1, deriv: maxAngleSpan.deriv)
 	
-	public static let avgWidth: S2.Metric = {
+	public static let avgWidth: S2Metric = {
 		let x: Double
 		switch s2Projection {
 		case .linear:		x = 0.70572967292222848		// 0.706
 		case .tan:			x = 0.71865931946258044		// 0.719
 		case .quadratic:	x = 0.71726183644304969		// 0.717
 		}
-		return S2.Metric(dim: 1, deriv: x)
+		return S2Metric(dim: 1, deriv: x)
 	}()
 	
 	// The minimum edge length of any cell at level k is at least
@@ -184,26 +184,26 @@ public struct S2Projections {
 	// between adjacent cell centers along the space-filling Hilbert curve for
 	// cells at any given level.
 	
-	public static let minEdge: S2.Metric = {
+	public static let minEdge: S2Metric = {
 		let x: Double
 		switch s2Projection {
 		case .linear:		x = 2.squareRoot() / 3				// 0.471
 		case .tan:			x = .pi / (4 * 2.squareRoot())		// 0.555
 		case .quadratic:	x = 2.squareRoot() / 3				// 0.471
 		}
-		return S2.Metric(dim: 1, deriv: x)
+		return S2Metric(dim: 1, deriv: x)
 	}()
 	
-	public static let maxEdge = S2.Metric(dim: 1, deriv: maxAngleSpan.deriv)
+	public static let maxEdge = S2Metric(dim: 1, deriv: maxAngleSpan.deriv)
 	
-	public static let avgEdge: S2.Metric = {
+	public static let avgEdge: S2Metric = {
 		let x: Double
 		switch s2Projection {
 		case .linear:		x = 0.72001709647780182		// 0.720
 		case .tan:			x = 0.73083351627336963		// 0.731
 		case .quadratic:	x = 0.72960687319305303		// 0.730
 		}
-		return S2.Metric(dim: 1, deriv: x)
+		return S2Metric(dim: 1, deriv: x)
 	}()
 	
 	// The minimum diagonal length of any cell at level k is at least
@@ -215,34 +215,34 @@ public struct S2Projections {
 	// example, the distance from an arbitrary point to the closest cell center
 	// at a given level is at most half the maximum diagonal length.
 	
-	public static let minDiag: S2.Metric = {
+	public static let minDiag: S2Metric = {
 		let x: Double
 		switch s2Projection {
 		case .linear:		x = 2.squareRoot() / 3				// 0.471
 		case .tan:			x = .pi / (3 * 2.squareRoot())		// 0.740
 		case .quadratic:	x = 4 * 2.squareRoot() / 9			// 0.629
 		}
-		return S2.Metric(dim: 1, deriv: x)
+		return S2Metric(dim: 1, deriv: x)
 	}()
 	
-	public static let maxDiag: S2.Metric = {
+	public static let maxDiag: S2Metric = {
 		let x: Double
 		switch s2Projection {
 		case .linear:		x = 2.squareRoot()					// 1.414
 		case .tan:			x = .pi / sqrt(6)			// 1.283
 		case .quadratic:	x = 1.2193272972170106		// 1.219
 		}
-		return S2.Metric(dim: 1, deriv: x)
+		return S2Metric(dim: 1, deriv: x)
 	}()
 	
-	public static let avgDiag: S2.Metric = {
+	public static let avgDiag: S2Metric = {
 		let x: Double
 		switch s2Projection {
 		case .linear:		x = 1.0159089332094063		// 1.016
 		case .tan:			x = 1.0318115985978178		// 1.032
 		case .quadratic:	x = 1.03021136949923584		// 1.030
 		}
-		return S2.Metric(dim: 1, deriv: x)
+		return S2Metric(dim: 1, deriv: x)
 	}()
 	
 	// This is the maximum edge aspect ratio over all cells at any level, where

@@ -701,7 +701,7 @@ public struct S2CellId {
     // no effect, while each occurrence of "00" has the effect of reversing
     // the kSwapMask bit.
     if (lowestOnBit & 0x1111111111111110) != 0 {
-      bits ^= S2.swapMask
+      bits ^= S2Lookup.swapMask
     }
     orientation = bits
     return (face, i, j, orientation)
@@ -782,8 +782,8 @@ public struct S2CellId {
 			pos <<= 2
 			// Initialize each sub-cell recursively.
 			for subPos in 0 ..< 4 {
-				let ij = S2.posToIJ(orientation: orientation, position: subPos)
-				let orientationMask = S2.posToOrientation(position: subPos)
+				let ij = S2Lookup.posToIJ(orientation: orientation, position: subPos)
+				let orientationMask = S2Lookup.posToOrientation(position: subPos)
 				initLookupCell(level: level, i: i + (ij >> 1), j: j + (ij & 1), origOrientation: origOrientation, pos: pos + subPos, orientation: orientation ^ orientationMask)
 			}
 		}
@@ -803,6 +803,91 @@ extension S2CellId: Comparable, Hashable {
 
   public var hashValue: Int {
     return Int(truncatingIfNeeded: (uid >> 32) + uid)
+  }
+  
+}
+
+public struct S2Lookup {
+  
+  // Together these flags define a cell orientation. If SWAP_MASK
+  // is true, then canonical traversal order is flipped around the
+  // diagonal (i.e. i and j are swapped with each other). If
+  // INVERT_MASK is true, then the traversal order is rotated by 180
+  // degrees (i.e. the bits of i and j are inverted, or equivalently,
+  // the axis directions are reversed).
+  public static let swapMask = 0x01
+  public static let invertMask = 0x02
+  
+  // Number of bits in the mantissa of a double.
+  private static let exponentShift = 52
+  // Mask to extract the exponent from a double.
+  private static let exponentMask: Int64 = 0x7ff0000000000000
+  
+  /// If v is non-zero, return an integer `exp` such that
+  /// `(0.5 <= |v|*2^(-exp) < 1)`. If v is zero, return 0.
+  /// Note that this arguably a bad definition of exponent because it makes `exp(9) == 4`.
+  /// In decimal this would be like saying that the exponent of 1234 is 4, when in scientific 'exponent' notation 1234 is `1.234 x 10^3`.
+  /// TODO(dbeaumont): Replace this with "DoubleUtils.getExponent(v) - 1" ?
+  static func exp(v: Double) -> Int {
+    guard v != 0 else { return 0 }
+    let bits = Int64(bitPattern: v.bitPattern)
+    return Int((exponentMask & bits) >> Int64(exponentShift)) - 1022
+  }
+  
+  /// Mapping Hilbert traversal order to orientation adjustment mask.
+  internal static let posToOrientation = [swapMask, 0, 0, invertMask + swapMask]
+  
+  /// Returns an XOR bit mask indicating how the orientation of a child subcell
+  /// is related to the orientation of its parent cell. The returned value can
+  /// be XOR'd with the parent cell's orientation to give the orientation of
+  /// the child cell.
+  /// - Parameter position: The position of the subcell in the Hilbert traversal, in the range [0,3].
+  /// - Throws: `IllegalArgumentException` if position is out of bounds.
+  /// - Returns: A bit mask containing some combination of {@link #SWAP_MASK} and {@link #INVERT_MASK}.
+  public static func posToOrientation(position: Int) -> Int {
+    precondition(0 <= position && position < 4)
+    return posToOrientation[position]
+  }
+  
+  /// Mapping from cell orientation + Hilbert traversal to IJ-index.
+  private static let posToIJ: [[Int]] = [
+    //     0  1  2  3
+    [0, 1, 3, 2],  // canonical order: (0,0), (0,1), (1,1), (1,0)
+    [0, 2, 3, 1],  // axes swapped: (0,0), (1,0), (1,1), (0,1)
+    [3, 2, 0, 1],  // bits inverted: (1,1), (1,0), (0,0), (0,1)
+    [3, 1, 0, 2]  // swapped & inverted: (1,1), (0,1), (0,0), (1,0)
+  ]
+  
+  /// Return the IJ-index of the subcell at the given position in the Hilbert
+  /// curve traversal with the given orientation. This is the inverse of `ijToPos`
+  /// - Parameter orientation: The subcell orientation, in the range [0,3].
+  /// - Parameter position: The position of the subcell in the Hilbert traversal, in the range [0,3].
+  /// - Throws: `IllegalArgumentException` if either parameter is out of bounds.
+  /// - Returns: The IJ-index where `0->(0,0), 1->(0,1), 2->(1,0), 3->(1,1)`.
+  public static func posToIJ(orientation: Int, position: Int) -> Int {
+    precondition(0 <= orientation && orientation < 4)
+    precondition(0 <= position && position < 4)
+    return posToIJ[orientation][position]
+  }
+  
+  /// Mapping from Hilbert traversal order + cell orientation to IJ-index.
+  private static let ijToPos: [[Int]] = [
+    // (0,0) (0,1) (1,0) (1,1)
+    [0, 1, 3, 2],  // canonical order
+    [0, 3, 1, 2],  // axes swapped
+    [2, 3, 1, 0],  // bits inverted
+    [2, 1, 3, 0]]  // swapped & inverted
+  
+  /// Returns the order in which a specified subcell is visited by the Hilbert
+  /// curve. This is the inverse of `posToIJ`
+  /// - Parameter orientation: The subcell orientation, in the range [0,3].
+  /// - Parameter ijIndex: The subcell index where `0->(0,0), 1->(0,1), 2->(1,0), 3->(1,1)`.
+  /// - Throws: `IllegalArgumentException` if either parameter is out of bounds.
+  /// - Returns: The position of the subcell in the Hilbert traversal, in the range [0,3].
+  public static func toPos(orientation: Int, ijIndex: Int) -> Int {
+    precondition(0 <= orientation && orientation < 4)
+    precondition(0 <= ijIndex && ijIndex < 4)
+    return ijToPos[orientation][ijIndex]
   }
   
 }

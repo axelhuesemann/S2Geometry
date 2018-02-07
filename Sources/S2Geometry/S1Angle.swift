@@ -30,7 +30,7 @@ public struct S1Angle {
 	
   // MARK: init
   
-	public init(radians: Double = 0) {
+	public init(radians: Double) {
 		self.radians = radians
 	}
 	

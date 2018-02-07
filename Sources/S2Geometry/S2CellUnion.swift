@@ -507,8 +507,8 @@ public struct S2CellUnion: S2Region {
 		return cap
 	}
 	
-	public var rectBound: S2LatLngRect {
-		var bound: S2LatLngRect = .empty
+	public var rectBound: S2Rect {
+		var bound: S2Rect = .empty
 		for id in cellIds {
 			bound = bound.union(rect: S2Cell(cellId: id).rectBound)
 		}

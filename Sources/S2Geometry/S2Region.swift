@@ -19,7 +19,7 @@ public protocol S2Region {
 	var capBound: S2Cap { get }
 	
 	/// Return a bounding latitude-longitude rectangle.
-	var rectBound: S2LatLngRect { get }
+	var rectBound: S2Rect { get }
 	
 	/// If this method returns true, the region completely contains the given cell.
   /// Otherwise, either the region does not contain the cell or the containment

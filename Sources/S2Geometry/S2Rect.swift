@@ -14,7 +14,7 @@
 
 /// An S2LatLngRect represents a latitude-longitude rectangle. It is capable of
 /// representing the empty and full rectangles as well as single points.
-public struct S2LatLngRect: S2Region {
+public struct S2Rect: S2Region {
 	
 	public let lat: R1Interval
 	public let lng: S1Interval
@@ -63,13 +63,13 @@ public struct S2LatLngRect: S2Region {
 	}
 	
 	/// The canonical empty rectangle
-	public static var empty: S2LatLngRect {
-		return S2LatLngRect(lat: .empty, lng: .empty)
+	public static var empty: S2Rect {
+		return S2Rect(lat: .empty, lng: .empty)
 	}
 	
 	/// The canonical full rectangle.
-	public static var full: S2LatLngRect {
-		return S2LatLngRect(lat: fullLat, lng: fullLng)
+	public static var full: S2Rect {
+		return S2Rect(lat: fullLat, lng: fullLng)
 	}
 	
 	/// The full allowable range of latitudes.
@@ -101,7 +101,7 @@ public struct S2LatLngRect: S2Region {
 	
 	/// Return true if the rectangle is full, i.e. it contains all points.
 	public var isFull: Bool {
-		return lat == S2LatLngRect.fullLat && lng.isFull
+		return lat == S2Rect.fullLat && lng.isFull
 	}
 	
 	/// Return true if lng_.lo() > lng_.hi(), i.e. the rectangle crosses the 180 degree latitude line.
@@ -160,7 +160,7 @@ public struct S2LatLngRect: S2Region {
 	* Return the minimum distance (measured along the surface of the sphere) to
 	* the given S2LatLngRect. Both S2LatLngRects must be non-empty.
 	*/
-	public func getDistance(rect b: S2LatLngRect) -> S1Angle {
+	public func getDistance(rect b: S2Rect) -> S1Angle {
 		let a = self
 		precondition(!a.isEmpty)
 		precondition(!b.isEmpty)
@@ -248,7 +248,7 @@ public struct S2LatLngRect: S2Region {
 	* Return true if and only if the rectangle contains the given other
 	* rectangle.
 	*/
-  public func contains(rect: S2LatLngRect) -> Bool {
+  public func contains(rect: S2Rect) -> Bool {
 		return lat.contains(interval: rect.lat) && lng.contains(interval: rect.lng)
 	}
 	
@@ -256,12 +256,12 @@ public struct S2LatLngRect: S2Region {
 		Return true if and only if the interior of this rectangle contains all
 		points of the given other rectangle (including its boundary).
 	*/
-	public func interiorContains(rect: S2LatLngRect) -> Bool {
+	public func interiorContains(rect: S2Rect) -> Bool {
 		return lat.interiorContains(interval: rect.lat) && lng.interiorContains(interval: rect.lng)
 	}
 	
 	/// Return true if this rectangle and the given other rectangle have any points in common.
-	public func intersects(rect: S2LatLngRect) -> Bool {
+	public func intersects(rect: S2Rect) -> Bool {
 		return lat.intersects(interval: rect.lat) && lng.intersects(interval: rect.lng)
 	}
 	
@@ -293,7 +293,7 @@ public struct S2LatLngRect: S2Region {
 		var cellV: [S2Point] = []
 		var cellLl: [S2LatLng] = []
 		for i in 0 ..< 4 {
-			let vertex = cell.getVertex(i)
+			let vertex = cell.vertex(i)
 			cellV.append(vertex) // Must be normalized.
 			let latLng = S2LatLng(point: vertex)
 			cellLl.append(latLng)
@@ -309,19 +309,19 @@ public struct S2LatLngRect: S2Region {
 				let a = cellV[i]
 			let b = cellV[(i + 1) & 3]
 			if edgeLng.contains(point: lng.lo) {
-				if S2LatLngRect.intersectsLngEdge(a: a, b: b, lat: lat, lng: lng.lo) {
+				if S2Rect.intersectsLngEdge(a: a, b: b, lat: lat, lng: lng.lo) {
 					return true
 				}
 			}
 			if edgeLng.contains(point: lng.hi) {
-				if S2LatLngRect.intersectsLngEdge(a: a, b: b, lat: lat, lng: lng.hi) {
+				if S2Rect.intersectsLngEdge(a: a, b: b, lat: lat, lng: lng.hi) {
 					return true
 				}
 			}
-			if S2LatLngRect.intersectsLatEdge(a: a, b: b, lat: lat.lo, lng: lng) {
+			if S2Rect.intersectsLatEdge(a: a, b: b, lat: lat.lo, lng: lng) {
 				return true
 			}
-			if S2LatLngRect.intersectsLatEdge(a: a, b: b, lat: lat.hi, lng: lng) {
+			if S2Rect.intersectsLatEdge(a: a, b: b, lat: lat.hi, lng: lng) {
 				return true
 			}
 		}
@@ -332,21 +332,21 @@ public struct S2LatLngRect: S2Region {
 		Return true if and only if the interior of this rectangle intersects any
 		point (including the boundary) of the given other rectangle.
 	*/
-	public func interiorIntersects(rect: S2LatLngRect) -> Bool {
+	public func interiorIntersects(rect: S2Rect) -> Bool {
 		return lat.interiorIntersects(interval: rect.lat) && lng.interiorIntersects(interval: rect.lng)
 	}
 	
-	public func add(point p: S2Point) -> S2LatLngRect {
+	public func add(point p: S2Point) -> S2Rect {
 		return add(point: S2LatLng(point: p))
 	}
 	
 	// Increase the size of the bounding rectangle to include the given point.
 	// The rectangle is expanded by the minimum amount possible.
-	public func add(point ll: S2LatLng) -> S2LatLngRect {
+	public func add(point ll: S2LatLng) -> S2Rect {
 		// assert (ll.isValid());
 		let newLat = lat.add(point: ll.lat.radians)
 		let newLng = lng.add(point: ll.lng.radians)
-		return S2LatLngRect(lat: newLat, lng: newLng)
+		return S2Rect(lat: newLat, lng: newLng)
 	}
 	
 	/**
@@ -360,17 +360,17 @@ public struct S2LatLngRect: S2Region {
 		NOTE: If you are trying to grow a rectangle by a certain *distance* on the
 		sphere (e.g. 5km), use the ConvolveWithCap() method instead.
 	*/
-	public func expanded(margin: S2LatLng) -> S2LatLngRect {
+	public func expanded(margin: S2LatLng) -> S2Rect {
 		// assert (margin.lat().radians() >= 0 && margin.lng().radians() >= 0);
 		if isEmpty {
 			return self
 		}
-		return S2LatLngRect(lat: lat.expanded(radius: margin.lat.radians).intersection(interval: S2LatLngRect.fullLat), lng: lng.expanded(radius: margin.lng.radians))
+		return S2Rect(lat: lat.expanded(radius: margin.lat.radians).intersection(interval: S2Rect.fullLat), lng: lng.expanded(radius: margin.lng.radians))
 	}
 	
 	/// Return the smallest rectangle containing the union of this rectangle and the given rectangle.
-	public func union(rect: S2LatLngRect) -> S2LatLngRect {
-		return S2LatLngRect(lat: lat.union(interval: rect.lat), lng: lng.union(interval: rect.lng))
+	public func union(rect: S2Rect) -> S2Rect {
+		return S2Rect(lat: lat.union(interval: rect.lat), lng: lng.union(interval: rect.lng))
 	}
 	
 	/// The point 'p' does not need to be normalized.
@@ -383,7 +383,7 @@ public struct S2LatLngRect: S2Region {
 		// Return true if the segment AB intersects the given edge of constant
 		// longitude. The nice thing about edges of constant longitude is that
 		// they are straight lines on the sphere (geodesics).
-		return S2.simpleCrossing(a: a, b: b, c: S2LatLng.fromRadians(lat: lat.lo, lng: lng).point, d: S2LatLng.fromRadians(lat: lat.hi, lng: lng).point)
+		return S2Point.simpleCrossing(a: a, b: b, c: S2LatLng.fromRadians(lat: lat.lo, lng: lng).point, d: S2LatLng.fromRadians(lat: lat.hi, lng: lng).point)
 	}
 		
 	/// Return true if the edge AB intersects the given edge of constant latitude.
@@ -393,13 +393,13 @@ public struct S2LatLngRect: S2Region {
 		// the sphere. They can intersect a straight edge in 0, 1, or 2 points.
 		// assert (S2.isUnitLength(a) && S2.isUnitLength(b));
 		// First, compute the normal to the plane AB that points vaguely north.
-		var z = S2Point.normalize(point: S2.robustCrossProd(a: a, b: b))
+		var z = S2Point.normalize(point: S2Point.robustCrossProd(a: a, b: b))
 		if z.z < 0 {
 			z = -z
 		}
 		// Extend this to an orthonormal frame (x,y,z) where x is the direction
 		// where the great circle through AB achieves its maximium latitude.
-		let y = S2Point.normalize(point: S2.robustCrossProd(a: z, b: S2Point(x: 0, y: 0, z: 1)))
+		let y = S2Point.normalize(point: S2Point.robustCrossProd(a: z, b: S2Point(x: 0, y: 0, z: 1)))
 		let x = y.crossProd(z)
 		// assert (S2.isUnitLength(x) && x.z >= 0);
 		// Compute the angle "theta" from the x-axis (in the x-y plane defined
@@ -476,7 +476,7 @@ public struct S2LatLngRect: S2Region {
 		return poleCap
 	}
 	
-	public var rectBound: S2LatLngRect {
+	public var rectBound: S2Rect {
 		return self
 	}
 	
@@ -500,9 +500,9 @@ public struct S2LatLngRect: S2Region {
 
 }
 
-extension S2LatLngRect: Equatable {
+extension S2Rect: Equatable {
 
-	public static func == (lhs: S2LatLngRect, rhs: S2LatLngRect) -> Bool {
+	public static func == (lhs: S2Rect, rhs: S2Rect) -> Bool {
 		return lhs.lat == rhs.lat && lhs.lng == rhs.lng
 	}
 	

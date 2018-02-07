@@ -133,10 +133,10 @@ public struct R1Interval {
   // MARK: compare
   
 	/// Return true if length of the symmetric difference between the two intervals is at most the given tolerance.
-	public func approxEquals(_ y: R1Interval, maxError: Double = 1e-15) -> Bool {
-		guard !isEmpty else { return y.length <= maxError }
-		guard !y.isEmpty else { return length <= maxError }
-		return abs(y.lo - lo) + abs(y.hi - hi) <= maxError
+	public func approxEquals(_ other: R1Interval, maxError: Double = 1e-15) -> Bool {
+		guard !isEmpty else { return other.length <= maxError }
+		guard !other.isEmpty else { return length <= maxError }
+		return abs(other.lo - lo) + abs(other.hi - hi) <= maxError
 	}
 	
 }

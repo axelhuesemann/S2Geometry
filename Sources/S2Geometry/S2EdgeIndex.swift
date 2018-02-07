@@ -383,7 +383,7 @@ public class S2EdgeIndex {
 	private static func edgeIntersectsCellBoundary(a: S2Point, b: S2Point, cell: S2Cell) -> Bool {
 		var vertices: [S2Point] = []
 		for i in 0 ..< 4 {
-			vertices.append(cell.getVertex(i))
+			vertices.append(cell.vertex(i))
 		}
 		for i in 0 ..< 4 {
 			let fromPoint = vertices[i];
