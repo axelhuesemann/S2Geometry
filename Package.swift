@@ -5,7 +5,7 @@ import PackageDescription
 let package = Package(
   name: "S2Geometry",
   products: [
-    .library(name: "S2Geo", targets: ["S2Geometry"])
+    .library(name: "S2Geometry", targets: ["S2Geometry"])
   ],
   dependencies: [],
   targets: [
